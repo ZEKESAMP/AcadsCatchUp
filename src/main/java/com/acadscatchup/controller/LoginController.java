@@ -182,11 +182,14 @@ public class LoginController {
 
     private void navigateToDashboard(User user) {
         try {
-            // ADMIN and PROFESSOR both go to professor dashboard (full access)
-            boolean isProfOrAdmin = "PROFESSOR".equals(user.getRole()) || "ADMIN".equals(user.getRole());
-            String fxml = isProfOrAdmin
-                    ? "/com/acadscatchup/fxml/prof_dashboard.fxml"
-                    : "/com/acadscatchup/fxml/student_dashboard.fxml";
+            String fxml;
+            if (user.isAdmin()) {
+                fxml = "/com/acadscatchup/fxml/admin_dashboard.fxml";
+            } else if (user.isProfessor()) {
+                fxml = "/com/acadscatchup/fxml/prof_dashboard.fxml";
+            } else {
+                fxml = "/com/acadscatchup/fxml/student_dashboard.fxml";
+            }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();

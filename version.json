@@ -1,0 +1,6 @@
+{
+  "version": "1.0.1",
+  "release_date": "2026-09-05",
+  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.1/AcadsCatchUp.jar",
+  "notes": "Removed Gmail delivery notice from OTP authorization dialog, updated Admin Dashboard, and streamlined pure Java auto-update distribution."
+}

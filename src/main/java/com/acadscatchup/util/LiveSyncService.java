@@ -95,14 +95,20 @@ public class LiveSyncService {
                  FROM enrollments WHERE student_id = ?),
                 '#',
                 (SELECT CONCAT(COUNT(*), ':', COALESCE(MAX(id), 0))
-                 FROM subjects)
+                 FROM subjects),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(professor_id), 0), ':', COALESCE(SUM(subject_id), 0))
+                 FROM professor_subjects),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(id), 0), ':', COALESCE(MAX(id), 0))
+                 FROM users WHERE role = 'PROFESSOR')
             ) AS fingerprint
             """;
         return new LiveSyncService(sql, new Object[]{studentId, studentId, studentId}, listener);
     }
 
     /**
-     * Factory method for Professor / Admin view real-time synchronization.
+     * Factory method for Professor view real-time synchronization.
      */
     public static LiveSyncService forProfessor(int profId, boolean isAdmin, SyncListener listener) {
         String sql = """
@@ -120,10 +126,45 @@ public class LiveSyncService {
                  FROM enrollments),
                 '#',
                 (SELECT CONCAT(COUNT(*), ':', COALESCE(MAX(id), 0))
-                 FROM subjects)
+                 FROM subjects),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(professor_id), 0), ':', COALESCE(SUM(subject_id), 0))
+                 FROM professor_subjects),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(id), 0))
+                 FROM users)
             ) AS fingerprint
             """;
         return new LiveSyncService(sql, new Object[]{profId}, listener);
+    }
+
+    /**
+     * Factory method for Administrator view real-time synchronization.
+     * Monitors changes to users, subjects, professor assignments, enrollments, help reports, and inbox.
+     */
+    public static LiveSyncService forAdmin(int adminId, SyncListener listener) {
+        String sql = """
+            SELECT CONCAT(
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(id), 0), ':', COALESCE(SUM(is_verified), 0))
+                 FROM users),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(MAX(id), 0))
+                 FROM subjects),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(professor_id), 0), ':', COALESCE(SUM(subject_id), 0))
+                 FROM professor_subjects),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(SUM(student_id), 0), ':', COALESCE(SUM(subject_id), 0))
+                 FROM enrollments),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(MAX(id), 0), ':', COALESCE(SUM(status='OPEN'), 0))
+                 FROM help_reports),
+                '#',
+                (SELECT CONCAT(COUNT(*), ':', COALESCE(MAX(id), 0), ':', COALESCE(SUM(is_read), 0))
+                 FROM inbox_messages WHERE recipient_id = ?)
+            ) AS fingerprint
+            """;
+        return new LiveSyncService(sql, new Object[]{adminId}, listener);
     }
 
     /**

@@ -337,4 +337,174 @@ public class ResponsiveLayoutUtil {
             }
         }
     }
+
+    /**
+     * Installs intelligent auto-scaling responsiveness for the Admin Dashboard.
+     */
+    public static void installAdminResponsiveLayout(
+            ScrollPane scrollPane,
+            HBox topBar,
+            Label appTitle,
+            Label roleBadge,
+            Label syncBadge,
+            Button adminInboxBtn,
+            Button smtpConfigBtn,
+            Button settingsBtn,
+            Label adminNameLabel,
+            Button logoutBtn,
+            HBox statsRow
+    ) {
+        if (scrollPane != null) {
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPannable(false);
+            scrollPane.hvalueProperty().addListener((obs, oldV, newV) -> {
+                if (newV.doubleValue() != 0) {
+                    Platform.runLater(() -> scrollPane.setHvalue(0));
+                }
+            });
+        }
+
+        if (adminInboxBtn != null && adminInboxBtn.getTooltip() == null) {
+            adminInboxBtn.setTooltip(new Tooltip("Bug Reports & User Issues"));
+        }
+        if (smtpConfigBtn != null && smtpConfigBtn.getTooltip() == null) {
+            smtpConfigBtn.setTooltip(new Tooltip("SMTP & 2FA Configuration"));
+        }
+        if (settingsBtn != null && settingsBtn.getTooltip() == null) {
+            settingsBtn.setTooltip(new Tooltip("Account & Security Settings"));
+        }
+        if (logoutBtn != null && logoutBtn.getTooltip() == null) {
+            logoutBtn.setTooltip(new Tooltip("Logout of AcadsCatchUp"));
+        }
+
+        Platform.runLater(() -> {
+            if (topBar == null || topBar.getScene() == null) return;
+            Scene scene = topBar.getScene();
+
+            ChangeListener<Number> widthListener = (obs, oldW, newW) -> {
+                double w = newW.doubleValue();
+                applyAdminBreakpoints(w, roleBadge, syncBadge, adminInboxBtn, smtpConfigBtn, settingsBtn, adminNameLabel, logoutBtn, topBar, statsRow);
+            };
+
+            scene.widthProperty().addListener(widthListener);
+            applyAdminBreakpoints(scene.getWidth(), roleBadge, syncBadge, adminInboxBtn, smtpConfigBtn, settingsBtn, adminNameLabel, logoutBtn, topBar, statsRow);
+        });
+    }
+
+    private static void applyAdminBreakpoints(
+            double w,
+            Label roleBadge,
+            Label syncBadge,
+            Button adminInboxBtn,
+            Button smtpConfigBtn,
+            Button settingsBtn,
+            Label adminNameLabel,
+            Button logoutBtn,
+            HBox topBar,
+            HBox statsRow
+    ) {
+        if (w <= 0) return;
+
+        if (w < 960.0) {
+            // ── COMPACT MODE (< 960px) ──
+            if (topBar != null) {
+                topBar.setStyle("-fx-padding: 8 12; -fx-spacing: 6;");
+            }
+            if (roleBadge != null) {
+                roleBadge.setVisible(false);
+                roleBadge.setManaged(false);
+            }
+            if (syncBadge != null) {
+                syncBadge.setText(OSCompat.label("🟢"));
+                syncBadge.setTooltip(new Tooltip("Live Cloud Sync Active"));
+            }
+            if (adminInboxBtn != null) {
+                String t = adminInboxBtn.getText();
+                int idx = t != null ? t.indexOf('(') : -1;
+                adminInboxBtn.setText(idx != -1 ? OSCompat.label("📥 ") + t.substring(idx) : OSCompat.label("📥"));
+            }
+            if (smtpConfigBtn != null) {
+                smtpConfigBtn.setText(OSCompat.label("📧"));
+            }
+            if (settingsBtn != null) {
+                settingsBtn.setText(OSCompat.label("⚙"));
+            }
+            if (logoutBtn != null) {
+                logoutBtn.setText(OSCompat.label("🚪"));
+            }
+            if (adminNameLabel != null) {
+                adminNameLabel.setMaxWidth(110);
+            }
+            if (statsRow != null) {
+                statsRow.setStyle("-fx-padding: 10 14 8 14; -fx-spacing: 8;");
+            }
+        } else if (w < 1180.0) {
+            // ── MEDIUM MODE (960px - 1180px) ──
+            if (topBar != null) {
+                topBar.setStyle("-fx-padding: 10 16; -fx-spacing: 8;");
+            }
+            if (roleBadge != null) {
+                roleBadge.setVisible(true);
+                roleBadge.setManaged(true);
+                roleBadge.setText("Admin");
+            }
+            if (syncBadge != null) {
+                syncBadge.setText(OSCompat.label("🟢 Sync"));
+                syncBadge.setTooltip(new Tooltip("Live Real-Time Sync"));
+            }
+            if (adminInboxBtn != null) {
+                String t = adminInboxBtn.getText();
+                int idx = t != null ? t.indexOf('(') : -1;
+                adminInboxBtn.setText(idx != -1 ? OSCompat.label("📥 Reports ") + t.substring(idx) : OSCompat.label("📥 Reports"));
+            }
+            if (smtpConfigBtn != null) {
+                smtpConfigBtn.setText(OSCompat.label("📧 SMTP"));
+            }
+            if (settingsBtn != null) {
+                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+            }
+            if (logoutBtn != null) {
+                logoutBtn.setText("Logout");
+            }
+            if (adminNameLabel != null) {
+                adminNameLabel.setMaxWidth(150);
+            }
+            if (statsRow != null) {
+                statsRow.setStyle("-fx-padding: 14 18 12 18; -fx-spacing: 12;");
+            }
+        } else {
+            // ── FULL WIDE MODE (>= 1180px) ──
+            if (topBar != null) {
+                topBar.setStyle("-fx-padding: 12 22; -fx-spacing: 12;");
+            }
+            if (roleBadge != null) {
+                roleBadge.setVisible(true);
+                roleBadge.setManaged(true);
+                roleBadge.setText("Admin Dashboard");
+            }
+            if (syncBadge != null) {
+                syncBadge.setText(OSCompat.label("🟢 Live Sync"));
+            }
+            if (adminInboxBtn != null) {
+                String t = adminInboxBtn.getText();
+                int idx = t != null ? t.indexOf('(') : -1;
+                adminInboxBtn.setText(idx != -1 ? OSCompat.label("📥 Bug Reports ") + t.substring(idx) : OSCompat.label("📥 Bug Reports (0)"));
+            }
+            if (smtpConfigBtn != null) {
+                smtpConfigBtn.setText(OSCompat.label("📧 SMTP Config"));
+            }
+            if (settingsBtn != null) {
+                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+            }
+            if (logoutBtn != null) {
+                logoutBtn.setText("Logout");
+            }
+            if (adminNameLabel != null) {
+                adminNameLabel.setMaxWidth(200);
+            }
+            if (statsRow != null) {
+                statsRow.setStyle("-fx-padding: 20 24 16 24; -fx-spacing: 16;");
+            }
+        }
+    }
 }

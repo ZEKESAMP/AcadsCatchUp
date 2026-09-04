@@ -113,7 +113,6 @@
                     <Button text="✏ Edit"       styleClass="btn-secondary" id="editItemBtn"      onAction="#handleEditItem"      minWidth="-Infinity" />
                     <Button text="🗑 Delete"    styleClass="btn-danger"    id="deleteItemBtn"    onAction="#handleDeleteItem"    minWidth="-Infinity" />
                     <Separator orientation="VERTICAL" />
-                    <Button text="✔ Submitted"  styleClass="btn-submitted" id="markSubmittedBtn" onAction="#handleMarkSubmitted" minWidth="-Infinity" />
                     <Button text="★ Graded"     styleClass="btn-graded"    id="markGradedBtn"    onAction="#handleMarkGraded"    minWidth="-Infinity" />
                     <Separator orientation="VERTICAL" />
                     <Button text="📄 Export CSV" styleClass="btn-ghost"     id="exportCsvBtn"     onAction="#handleExportCSV"     minWidth="-Infinity" />
