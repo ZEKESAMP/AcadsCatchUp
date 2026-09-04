@@ -105,7 +105,6 @@ public class LoginController {
 
                         if (targetEmail == null || targetEmail.isBlank()) {
                             final String[] emailResult = new String[]{null};
-                            final boolean[] skipVerification = new boolean[]{false};
                             VBox promptBox = new VBox(14);
                             promptBox.setStyle("-fx-background-color: #1a1d2e; -fx-padding: 24; -fx-background-radius: 12; -fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-border-radius: 12;");
 
@@ -124,13 +123,6 @@ public class LoginController {
                             btnCancel.getStyleClass().add("btn-ghost");
                             btnCancel.setOnAction(e -> com.acadscatchup.util.ModalOverlay.close(btnCancel));
 
-                            Button btnVerifyLater = new Button("Verify Later");
-                            btnVerifyLater.setStyle("-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-border-color: #f59e0b; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold; -fx-padding: 7 14; -fx-cursor: hand;");
-                            btnVerifyLater.setOnAction(e -> {
-                                skipVerification[0] = true;
-                                com.acadscatchup.util.ModalOverlay.close(btnVerifyLater);
-                            });
-
                             Button btnOk = new Button(com.acadscatchup.util.OSCompat.label("Proceed to Verification ➔"));
                             btnOk.getStyleClass().add("btn-primary");
 
@@ -148,17 +140,10 @@ public class LoginController {
                             };
                             btnOk.setOnAction(e -> submitAction.run());
                             tf.setOnAction(e -> submitAction.run());
-                            buttons.getChildren().addAll(btnCancel, btnVerifyLater, btnOk);
+                            buttons.getChildren().addAll(btnCancel, btnOk);
 
                             promptBox.getChildren().addAll(title, desc, tf, buttons);
                             com.acadscatchup.util.ModalOverlay.showAndWait(rootPane, promptBox, 480, 240);
-
-                            // User chose "Verify Later" — skip verification, go to dashboard
-                            if (skipVerification[0]) {
-                                Session.setCurrentUser(user);
-                                navigateToDashboard(user);
-                                return;
-                            }
 
                             if (emailResult[0] == null || emailResult[0].isBlank()) {
                                 errorLabel.setText("Account verification is required on your first login.");
@@ -170,21 +155,6 @@ public class LoginController {
                         boolean verified = com.acadscatchup.util.OtpVerifyDialog.show(
                                 win, targetEmail, user.getFullName(), "First-Time Account Verification");
                         if (!verified) {
-                            // Offer "Verify Later" as a second chance
-                            boolean skipNow = com.acadscatchup.util.CustomAlert.showConfirmation(
-                                    win,
-                                    "Skip Verification?",
-                                    "You can verify your email later. You will be prompted again on your next login.\n\nDo you want to skip verification and proceed to the dashboard?");
-                            if (skipNow) {
-                                // Save email if entered but skip marking as verified
-                                if (targetEmail != null && !targetEmail.isBlank()) {
-                                    userDAO.updateUserEmail(user.getId(), targetEmail);
-                                    user.setEmail(targetEmail);
-                                }
-                                Session.setCurrentUser(user);
-                                navigateToDashboard(user);
-                                return;
-                            }
                             errorLabel.setText("Account verification was not completed. Please verify to access your dashboard.");
                             return;
                         }
