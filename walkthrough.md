@@ -643,31 +643,34 @@ Students can now attach either an external/cloud link or any type of local file 
   - Added horizontal viewport lock (`scrollPane.hvalue = 0.0`) to permanently prevent leftward content shift.
   - Lowered stage minimum bounds in [LoginController.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/controller/LoginController.java) to `720x520` for smooth Windows Snap / half-screen tiling.
 
-### 2. Dedicated 100% Pure Java Cloud Microservice for Koyeb
-- **Project Requirement**: Java only (no Python, Node.js, or external runtimes).
-- **Architecture**:
-  - Directory: [`koyeb-server/`](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/koyeb-server)
-  - [GmailCheckerServer.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/koyeb-server/src/com/acadscatchup/server/GmailCheckerServer.java):
-    - Uses standard library `com.sun.net.httpserver.HttpServer` and `javax.naming.directory`. Zero third-party JARs.
-    - Resolves DNS MX records for any domain (`gmail-smtp-in.l.google.com`).
-    - Initiates raw socket SMTP handshake on port 25 up to `RCPT TO:<email>` to test mailbox existence.
-    - Automatic cloud fallback: If the cloud host blocks outbound port 25, automatically falls back to deliverability APIs.
-    - Endpoints:
-      - `GET /` — Interactive web UI for manual in-browser testing.
-      - `GET /health` — Service health check for Koyeb container monitor.
-      - `GET /api/check?email=...` — REST API returning validation JSON.
-  - [Dockerfile](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/koyeb-server/Dockerfile):
-    - Multi-stage Alpine container using `eclipse-temurin:21-jdk-alpine` to compile with standard `javac` and `eclipse-temurin:21-jre-alpine` for the final runner (< 100 MB RAM, boots in ~1 second).
-  - [GmailLookupUtil.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/util/GmailLookupUtil.java):
-    - Added `setKoyebServiceUrl(String url)` and support for `-Dacadscatchup.checker.url=...` or `ACADSCATCHUP_CHECKER_URL` environment variable.
-    - Queries the Koyeb microservice first, then gracefully falls back to local + DNS validation.
+### 2. Direct AbstractAPI 5-Key Pool Integration (499 Free Checks/Month)
+- **Eliminated Intermediate Servers**: Completely removed `koyeb-server` and Render dependencies. `AcadsCatchUp.exe` now directly communicates with AbstractAPI via secure HTTPS.
+- **5-Key Pool with Automatic Failover**:
+  - Embedded 5 AbstractAPI Email Reputation keys (`40e5befe...`, `feddf784...`, `dd3d0514...`, `cadf0856...`, `a40032f5...`) providing 499 total checks per month.
+  - Obfuscated using XOR byte-level encoding (`OBF_KEY_VAL = 0x5A`) in [GmailLookupUtil.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/util/GmailLookupUtil.java) to protect keys against decompiler extraction.
+  - Automatically advances to the next key on HTTP 429 quota exhaustion.
+  - In-memory `VALIDATION_CACHE` eliminates duplicate API hits for previously checked emails within the same session.
+- **Real-Time Mailbox Existence Detection**:
+  - Queries `https://emailreputation.abstractapi.com/v1/`.
+  - Flags `"status":"undeliverable"`, `"status_detail":"invalid_mailbox"`, or `"is_smtp_valid":false`.
+  - Instantly stops non-existent accounts (such as `watanabeaizennn@gmail.com` and `zakekiyoo@gmail.com`) before the OTP dialog can ever be opened.
 
-### 3. Verification & Compliance
-- **DeveloperGuard Compliant**: All 43 project classes and `GmailCheckerServer.java` include `public static final String DEVELOPER = "F4TAL";`.
+### 3. Strict OTP Delivery Rejection Protection
+- In [EmailService.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/util/EmailService.java):
+  - When email dispatch fails (e.g. Google bounces or rejects delivery for a non-existent recipient), returns `success = false` instead of falling back to simulation mode.
+  - Clears cached OTP for rejected recipients.
+- In [OtpVerifyDialog.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/util/OtpVerifyDialog.java):
+  - Checked `sendResult.success` before constructing the UI; if `false`, displays an immediate error alert and aborts without opening the OTP verification modal.
+  - Applied the same safety guard to the "Resend Code" action.
+- In [AccountSettingsDialog.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/util/AccountSettingsDialog.java):
+  - Added visual error status feedback if email verification is rejected or aborted.
+
+### 4. Verification & Distribution Build
+- **DeveloperGuard Compliant**: All 44 project classes verified (`DEVELOPER = "F4TAL"`).
 - **All Distributions Updated**:
-  - `dist\AcadsCatchUp.jar` (28.88 MB)
-  - `dist\AcadsCatchUp.exe` and `dist\AcadsCatchUp-Setup.exe`
-  - `dist\AcadsCatchUp-v1.0.zip`
+  - `dist\AcadsCatchUp.jar` (28.89 MB)
+  - `dist\AcadsCatchUp.exe` and `dist\AcadsCatchUp-Setup.exe` (133 MB)
+  - `dist\AcadsCatchUp-v1.0.zip` (143 MB)
   - `dist\AcadsCatchUp-Linux.zip` & `dist\AcadsCatchUp-Linux.tar.gz` (27.4 MB)
 
 
