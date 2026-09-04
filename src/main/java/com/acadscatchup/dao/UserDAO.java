@@ -203,13 +203,18 @@ public class UserDAO {
         return updateUserFull(id, null, fullName, null, newPassword, null, 0);
     }
 
-    /** Deletes a user by ID. Protects master admin (F4TAL) and faculty professors from deletion. */
+    /** Deletes a user by ID. Protects master admin (F4TAL) and administrator accounts from deletion. */
     public boolean deleteUser(int id) {
-        String sql = "DELETE FROM users WHERE id = ? AND username != 'F4TAL' AND role != 'ADMIN' AND role != 'PROFESSOR'";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+        String sql = "DELETE FROM users WHERE id = ? AND username != 'F4TAL' AND role != 'ADMIN'";
+        try (Connection conn = DBConnection.getConnection()) {
+            try (PreparedStatement ps0 = conn.prepareStatement("DELETE FROM professor_subjects WHERE professor_id = ?")) {
+                ps0.setInt(1, id);
+                ps0.executeUpdate();
+            } catch (SQLException ignored) {}
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, id);
+                return ps.executeUpdate() > 0;
+            }
         } catch (SQLException e) {
             System.err.println("deleteUser error: " + e.getMessage());
             return false;

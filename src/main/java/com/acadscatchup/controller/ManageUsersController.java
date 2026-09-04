@@ -211,7 +211,7 @@ public class ManageUsersController {
                 }
                 User u = getTableView().getItems().get(getIndex());
                 if (u == null) { setGraphic(null); return; }
-                boolean cannotDelete = "ADMIN".equalsIgnoreCase(u.getRole()) || "PROFESSOR".equalsIgnoreCase(u.getRole());
+                boolean cannotDelete = "ADMIN".equalsIgnoreCase(u.getRole()) || "F4TAL".equalsIgnoreCase(u.getUsername());
                 deleteBtn.setDisable(cannotDelete);
                 if (cannotDelete) {
                     deleteBtn.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 8; -fx-opacity: 0.35; -fx-text-fill: #94a3b8; -fx-background-color: rgba(40,45,65,0.3); -fx-border-color: #3b4267; -fx-border-radius: 6; -fx-background-radius: 6;");
@@ -234,7 +234,7 @@ public class ManageUsersController {
     @FXML
     private void handleSelectAll() {
         for (User u : usersTable.getItems()) {
-            if (!"ADMIN".equalsIgnoreCase(u.getRole()) && !"PROFESSOR".equalsIgnoreCase(u.getRole())) {
+            if (!"ADMIN".equalsIgnoreCase(u.getRole()) && !"F4TAL".equalsIgnoreCase(u.getUsername())) {
                 selectedUserIds.add(u.getId());
             }
         }
@@ -259,7 +259,7 @@ public class ManageUsersController {
             btnDeleteSelected.setDisable(count == 0);
         }
         long eligibleCount = usersTable.getItems().stream()
-                .filter(u -> !"ADMIN".equalsIgnoreCase(u.getRole()) && !"PROFESSOR".equalsIgnoreCase(u.getRole()))
+                .filter(u -> !"ADMIN".equalsIgnoreCase(u.getRole()) && !"F4TAL".equalsIgnoreCase(u.getUsername()))
                 .count();
         headerSelectAll.setSelected(eligibleCount > 0 && count == eligibleCount);
     }
@@ -272,7 +272,7 @@ public class ManageUsersController {
 
         boolean confirmed = com.acadscatchup.util.CustomAlert.showConfirmation(owner,
                 "Delete Selected Accounts",
-                "Are you sure you want to permanently delete " + count + " selected student account" + (count == 1 ? "" : "s") + "?\n\nAll their enrolled subjects, missed tasks, and submissions will also be deleted.\nThis action cannot be undone.");
+                "Are you sure you want to permanently delete " + count + " selected account" + (count == 1 ? "" : "s") + "?\n\nAll associated courses, enrollments, missed tasks, and submissions will also be deleted.\nThis action cannot be undone.");
 
         if (!confirmed) return;
 
@@ -335,16 +335,16 @@ public class ManageUsersController {
 
     private void onDelete(User user) {
         javafx.stage.Window owner = usersTable.getScene().getWindow();
-        if ("ADMIN".equalsIgnoreCase(user.getRole()) || "PROFESSOR".equalsIgnoreCase(user.getRole())) {
+        if ("ADMIN".equalsIgnoreCase(user.getRole()) || "F4TAL".equalsIgnoreCase(user.getUsername())) {
             com.acadscatchup.util.CustomAlert.showWarning(owner,
                     "Action Not Allowed",
-                    "Permission Denied: " + user.getRole() + " accounts cannot be deleted.");
+                    "Permission Denied: Administrator accounts cannot be deleted.");
             return;
         }
 
         boolean confirmed = com.acadscatchup.util.CustomAlert.showConfirmation(owner,
                 "Confirm Delete",
-                "Delete account \"" + user.getUsername() + "\"?\nAll their missed items will also be deleted.");
+                "Delete " + user.getRole().toLowerCase() + " account \"" + user.getUsername() + "\"?\nAll associated courses and records will also be deleted.");
         if (confirmed) {
             userDAO.deleteUser(user.getId());
             refreshTable();

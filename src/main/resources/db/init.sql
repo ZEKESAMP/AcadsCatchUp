@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS help_reports (
 
 -- Master Administrator account (F4TAL) — ALWAYS PRESERVED
 INSERT IGNORE INTO users (username, password, full_name, role) VALUES
-('F4TAL', 'zekesamp', 'System Administrator', 'ADMIN');
+('F4TAL', 'SHA256:lpJNC+SU9Yq//MK+jwIxaQ==:MSO0EGwa3wqm9hHE2Lvqn/4k5Mi/qmzmg1LKHrxjvec=', 'System Administrator', 'ADMIN');
 
 -- Subjects
 INSERT IGNORE INTO subjects (code, name) VALUES

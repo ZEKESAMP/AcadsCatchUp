@@ -431,11 +431,11 @@ public class DBConnection {
 
             ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM users");
             if (rs.next() && rs.getInt(1) == 0) {
-                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (1, 'F4TAL', 'zekesamp', 'System Administrator', 'ADMIN', 'ADMIN', 0)");
-                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (8, 'Ace', 'ace', 'Sir. Ace', 'PROFESSOR', 'BSIT', 0)");
-                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (11, 'Jesusa', 'jesusa', 'Del rosario Jesusa', 'PROFESSOR', 'BSIT', 0)");
-                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (12, 'kurt', 'test', 'Rebundella Kurt', 'STUDENT', 'BSIT', 1)");
-                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (13, 'yoshi', 'yoshi', 'Yoshi', 'STUDENT', 'BSIT', 2)");
+                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (1, 'F4TAL', 'SHA256:lpJNC+SU9Yq//MK+jwIxaQ==:MSO0EGwa3wqm9hHE2Lvqn/4k5Mi/qmzmg1LKHrxjvec=', 'System Administrator', 'ADMIN', 'ADMIN', 0)");
+                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (8, 'Ace', 'SHA256:qvQymRtFsvVd6WvFUgLXTQ==:ncDFuV72tJ8/fJ08k7hPS5fjfKYte4MYu6O9wdGs8ow=', 'Sir. Ace', 'PROFESSOR', 'BSIT', 0)");
+                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (11, 'Jesusa', 'SHA256:fPK1Qef9SMcG+KN3pd5Siw==:3wtfZN4kkHUaMHFwmHQcnNlDtHZjzW0lkAKLB1hln5U=', 'Del rosario Jesusa', 'PROFESSOR', 'BSIT', 0)");
+                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (12, 'kurt', 'SHA256:WzweKoqiKmqvcQnPstlj0g==:1VyhgUJNwRUHgIg22OUibvUPKL5hLsbU5oz2y/dCsa4=', 'Rebundella Kurt', 'STUDENT', 'BSIT', 1)");
+                st.executeUpdate("INSERT INTO users (id, username, password, full_name, role, program, year_level) VALUES (13, 'yoshi', 'SHA256:UOVGLbeHVALGLi7Vqf77sg==:NboTU5TJdW0x290RR8iIiCTpoV9GoQWCgXclii4PBFM=', 'Yoshi', 'STUDENT', 'BSIT', 2)");
             }
         }
     }

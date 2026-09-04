@@ -39,7 +39,6 @@ if %ERRORLEVEL% neq 0 (
 
 copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\app\AcadsCatchUp.jar" > nul
 copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\app\acadscatchup-app.jar" > nul
-copy /y "dist\AcadsCatchUp.jar" "target\acadscatchup-1.0.0.jar" > nul
 
 if exist "C:\Program Files\WinRAR\WinRAR.exe" (
     echo ===================================================
