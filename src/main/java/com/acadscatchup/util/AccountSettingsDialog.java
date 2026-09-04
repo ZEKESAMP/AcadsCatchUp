@@ -194,7 +194,7 @@ public class AccountSettingsDialog {
         Label lblNew = new Label("New Password:");
         lblNew.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 11.5px; -fx-font-weight: bold;");
         PasswordToggleHelper.PasswordBox pfNew = PasswordToggleHelper.createPasswordBox(
-                "At least 4 characters",
+                "Enter your New Password",
                 "-fx-background-color: #121520; -fx-text-fill: #f8fafc; -fx-border-color: #2d3255; -fx-border-radius: 6; -fx-padding: 6 36 6 10;"
         );
 

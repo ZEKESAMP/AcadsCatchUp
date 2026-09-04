@@ -66,3 +66,7 @@ Write-Host "  -> Assembling standalone executable Fat JAR: $OutputJar..."
 
 $sizeMb = [math]::Round(((Get-Item $OutputJar).Length / 1MB), 2)
 Write-Host "  -> Stand-alone executable JAR created successfully! ($sizeMb MB)"
+
+# Clean up staging directory to keep project structure lightweight
+Write-Host "  -> Cleaning up staging directory..."
+Remove-Item -Recurse -Force $StagingDir -ErrorAction SilentlyContinue

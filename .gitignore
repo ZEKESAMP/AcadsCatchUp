@@ -1,15 +1,10 @@
 # Compiled class files
 *.class
-koyeb-server/bin/
 
-# Maven
-target/classes/
-target/generated-sources/
-target/generated-test-sources/
-target/maven-archiver/
-target/maven-status/
-target/fatjar_staging/
-target/sources.txt
+# Maven build artifacts (preserve offline-first dependency cache and manifest)
+target/*
+!target/libs/
+!target/MANIFEST.MF
 
 # Log files
 *.log
@@ -29,7 +24,7 @@ Thumbs.db
 ehthumbs.db
 desktop.ini
 
-# Build artifacts & distributions (>100MB files rejected by GitHub)
+# Build artifacts & distributions (prevent binary bloat and GitHub file limits)
 dist/*.exe
 dist/*.zip
 dist/*.tar.gz
@@ -37,6 +32,9 @@ dist/*.jar
 dist/*.tmp
 dist/AcadsCatchUp/
 dist/AcadsCatchUp-Portable/
+dist/AcadsCatchUp-Linux/*.jar
+dist/AcadsCatchUp-Linux/*.zip
+dist/AcadsCatchUp-Linux/*.tar.gz
 dist/jfx-mods/
 dist/libs/
 

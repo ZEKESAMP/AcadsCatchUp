@@ -1,7 +1,7 @@
 param(
     [string]$DistDir = "dist",
     [string]$LinuxDir = "dist\AcadsCatchUp-Linux",
-    [string]$IconPath = "C:\Users\X0LUMZ\.gemini\antigravity-ide\brain\1ae14d6d-f789-4c33-9f1e-698b685121bb\acadscatchup_app_icon.png"
+    [string]$IconPath = "dist\AcadsCatchUp-Linux\app_icon.png"
 )
 
 $ErrorActionPreference = "Stop"
@@ -24,10 +24,13 @@ if (Test-Path "$DistDir\AcadsCatchUp-Portable\database.properties") {
 }
 
 # 3. Copy Application Icon
+$targetIcon = "$LinuxDir\app_icon.png"
 if (Test-Path $IconPath) {
-    Copy-Item $IconPath "$LinuxDir\app_icon.png" -Force
+    if (!(Test-Path $targetIcon) -or ((Resolve-Path $IconPath).Path -ne (Resolve-Path $targetIcon).Path)) {
+        Copy-Item $IconPath $targetIcon -Force
+    }
 } elseif (Test-Path "src\main\resources\com\acadscatchup\img\book_icon_blue.png") {
-    Copy-Item "src\main\resources\com\acadscatchup\img\book_icon_blue.png" "$LinuxDir\app_icon.png" -Force
+    Copy-Item "src\main\resources\com\acadscatchup\img\book_icon_blue.png" $targetIcon -Force
 } elseif (Test-Path "dist\app_icon.ico") {
     Copy-Item "dist\app_icon.ico" "$LinuxDir\app_icon.ico" -Force
 }

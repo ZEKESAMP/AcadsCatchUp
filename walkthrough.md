@@ -646,7 +646,7 @@ Students can now attach either an external/cloud link or any type of local file 
 ### 2. Direct AbstractAPI 5-Key Pool Integration (499 Free Checks/Month)
 - **Eliminated Intermediate Servers**: Completely removed `koyeb-server` and Render dependencies. `AcadsCatchUp.exe` now directly communicates with AbstractAPI via secure HTTPS.
 - **5-Key Pool with Automatic Failover**:
-  - Embedded 5 AbstractAPI Email Reputation keys (`40e5befe...`, `feddf784...`, `dd3d0514...`, `cadf0856...`, `a40032f5...`) providing 499 total checks per month.
+  - Embedded an obfuscated 5-key pool for AbstractAPI Email Reputation providing 499 total checks per month.
   - Obfuscated using XOR byte-level encoding (`OBF_KEY_VAL = 0x5A`) in [GmailLookupUtil.java](file:///c:/Users/X0LUMZ/Documents/AcadsCatchUp/src/main/java/com/acadscatchup/util/GmailLookupUtil.java) to protect keys against decompiler extraction.
   - Automatically advances to the next key on HTTP 429 quota exhaustion.
   - In-memory `VALIDATION_CACHE` eliminates duplicate API hits for previously checked emails within the same session.
