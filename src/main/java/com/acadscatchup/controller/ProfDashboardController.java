@@ -887,13 +887,6 @@ public class ProfDashboardController {
                         toastBody,
                         java.awt.TrayIcon.MessageType.INFO
                 );
-                if (profNameLabel.getScene() != null && profNameLabel.getScene().getRoot() instanceof javafx.scene.layout.Pane p) {
-                    com.acadscatchup.util.InAppNotification.show(
-                            p, toastTitle,
-                            toastBody,
-                            false
-                    );
-                }
             }
         } else {
             profInboxBtn.setStyle("");

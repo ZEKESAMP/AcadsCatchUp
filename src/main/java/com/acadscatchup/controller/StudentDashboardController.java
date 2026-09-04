@@ -231,13 +231,6 @@ public class StudentDashboardController {
                     toastBody,
                     (isResolved || isGraded) ? java.awt.TrayIcon.MessageType.INFO : java.awt.TrayIcon.MessageType.WARNING
             );
-            if (studentNameLabel.getScene() != null && studentNameLabel.getScene().getRoot() instanceof javafx.scene.layout.Pane p) {
-                com.acadscatchup.util.InAppNotification.show(
-                        p, toastTitle,
-                        toastBody,
-                        !isGraded && !isResolved
-                );
-            }
             loadItems(); // Automatically refresh table to show new items or updated status!
         }
 
@@ -383,17 +376,6 @@ public class StudentDashboardController {
             String nearestDeadlineStr = nearest != null ? nearest.toString() : null;
             com.acadscatchup.util.WindowsNotificationUtil.notifyStudentDeficiencies(
                     Session.getCurrentUser(), stats[1], nearestDeadlineStr);
-
-            javafx.application.Platform.runLater(() -> {
-                if (studentNameLabel.getScene() != null && studentNameLabel.getScene().getRoot() instanceof javafx.scene.layout.Pane p) {
-                    String msg = stats[1] > 0
-                            ? "You have " + stats[1] + " pending missed activity/quiz." + (nearestDeadlineStr != null ? " Deadline: " + nearestDeadlineStr : "")
-                            : "All caught up! You have 0 pending missed activities.";
-                    com.acadscatchup.util.InAppNotification.show(
-                            p, "AcadsCatchUp! Deficiency Alert", msg, stats[1] > 0
-                    );
-                }
-            });
         }
     }
 

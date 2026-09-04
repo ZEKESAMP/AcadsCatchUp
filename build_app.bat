@@ -39,20 +39,13 @@ if %ERRORLEVEL% neq 0 (
 
 copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\app\AcadsCatchUp.jar" > nul
 copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\app\acadscatchup-app.jar" > nul
-
-if exist "C:\Program Files\WinRAR\WinRAR.exe" (
-    echo ===================================================
-    echo [5/6] Packaging standalone AcadsCatchUp.exe...
-    echo ===================================================
-    "C:\Program Files\WinRAR\WinRAR.exe" a -r -sfx -z"dist\sfx_config.txt" -iicon"dist\app_icon.ico" -ep1 "dist\AcadsCatchUp.exe" "dist\AcadsCatchUp-Portable\*" > nul
-    copy /y "dist\AcadsCatchUp.exe" "dist\AcadsCatchUp-Setup.exe" > nul
-    echo Standalone executables updated!
-)
+copy /y "dist\Install_AcadsCatchUp.bat" "dist\AcadsCatchUp-Portable\Install_AcadsCatchUp.bat" > nul
+copy /y "dist\AcadsCatchUp-Setup.jar" "dist\AcadsCatchUp-Portable\AcadsCatchUp-Setup.jar" > nul
 
 where 7z >nul 2>nul
 if %ERRORLEVEL% equ 0 (
     echo ===================================================
-    echo [6/7] Packaging AcadsCatchUp-v1.0.zip...
+    echo [5/6] Packaging AcadsCatchUp-v1.0.zip...
     echo ===================================================
     if exist "dist\AcadsCatchUp-v1.0.zip" del /q "dist\AcadsCatchUp-v1.0.zip"
     7z a -tzip "dist\AcadsCatchUp-v1.0.zip" ".\dist\AcadsCatchUp-Portable\*" > nul
@@ -60,7 +53,7 @@ if %ERRORLEVEL% equ 0 (
 )
 
 echo ===================================================
-echo [7/7] Packaging AcadsCatchUp-Linux distribution...
+echo [6/6] Packaging AcadsCatchUp-Linux distribution...
 echo ===================================================
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0package_linux.ps1"
 

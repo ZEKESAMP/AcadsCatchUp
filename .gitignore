@@ -29,6 +29,7 @@ dist/*.exe
 dist/*.zip
 dist/*.tar.gz
 dist/*.jar
+dist/*.bat
 dist/*.tmp
 dist/AcadsCatchUp/
 dist/AcadsCatchUp-Portable/

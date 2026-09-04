@@ -395,7 +395,6 @@ public class ManageUsersController {
         // ── Fields ──────────────────────────────────────────────────
         TextField     tfUsername  = new TextField(isEdit ? existing.getUsername() : "");
         TextField     tfFullName  = new TextField(isEdit ? existing.getFullName()  : "");
-        TextField     tfEmail     = isEdit ? new TextField(existing.getEmail() != null ? existing.getEmail() : "") : null;
         com.acadscatchup.util.PasswordToggleHelper.PasswordBox boxPassword =
                 com.acadscatchup.util.PasswordToggleHelper.createPasswordBox(
                         isEdit ? "Leave blank to keep current" : "Set password",
@@ -454,7 +453,6 @@ public class ManageUsersController {
 
         tfUsername.setPromptText("e.g. juan.dela");
         tfFullName.setPromptText("e.g. Juan Dela Cruz");
-        if (tfEmail != null) tfEmail.setPromptText("e.g. juan@gmail.com");
 
         // ── Layout ──────────────────────────────────────────────────
         GridPane grid = new GridPane();
@@ -467,9 +465,6 @@ public class ManageUsersController {
         }
         grid.addRow(row++, styledLabel("Username:"),      tfUsername);
         grid.addRow(row++, styledLabel("Full Name:"),     tfFullName);
-        if (isEdit && tfEmail != null) {
-            grid.addRow(row++, styledLabel("Gmail Address:"), tfEmail);
-        }
         grid.addRow(row++, styledLabel("Password:"),      boxPassword);
 
         // Student-only fields
@@ -533,7 +528,7 @@ public class ManageUsersController {
             // ── Validate ─────────────────────────────────────────────────
             String username = tfUsername.getText().trim();
             String fullName = tfFullName.getText().trim();
-            String email    = (isEdit && tfEmail != null) ? tfEmail.getText().trim() : "";
+            String email    = (isEdit && existing.getEmail() != null) ? existing.getEmail() : "";
             String password = boxPassword.getText().trim();
             String roleVal  = isEdit ? existing.getRole() : cbRole.getValue();
             boolean studentRole = "STUDENT".equals(roleVal);
@@ -555,14 +550,6 @@ public class ManageUsersController {
                 showError("Username and Full Name are required.");
                 return;
             }
-            if (isEdit && !email.isEmpty()) {
-                com.acadscatchup.util.GmailLookupUtil.ValidationResult valRes =
-                        com.acadscatchup.util.GmailLookupUtil.validateEmail(email);
-                if (!valRes.isValid()) {
-                    showError(valRes.getMessage());
-                    return;
-                }
-            }
             if (!isEdit && password.isEmpty()) {
                 showError("Password is required for new accounts.");
                 return;
@@ -577,10 +564,6 @@ public class ManageUsersController {
                 showError("The username \"" + username + "\" is already taken.");
                 return;
             }
-            if (!email.isEmpty() && userDAO.isEmailTaken(email, excludeId)) {
-                showError("The email \"" + email + "\" is already registered to another account.");
-                return;
-            }
 
             List<Integer> selectedSubIds = new ArrayList<>();
             if (profRole) {
@@ -591,15 +574,6 @@ public class ManageUsersController {
                 }
                 if (selectedSubIds.isEmpty()) {
                     showError("Please select at least one teaching subject for the professor.");
-                    return;
-                }
-            }
-
-            // ── Email Change OTP Verification (only when editing and email changed) ──
-            if (isEdit && !email.isEmpty() && (existing.getEmail() == null || !existing.getEmail().equalsIgnoreCase(email))) {
-                boolean verified = com.acadscatchup.util.OtpVerifyDialog.show(
-                        usersTable.getScene().getWindow(), email, fullName, "Email Change Verification");
-                if (!verified) {
                     return;
                 }
             }

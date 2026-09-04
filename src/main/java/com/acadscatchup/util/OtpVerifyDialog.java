@@ -104,11 +104,6 @@ public class OtpVerifyDialog {
         emailNotice.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-text-alignment: center; -fx-alignment: center;");
         emailNotice.setWrapText(true);
 
-        Label hintNotice = new Label("⚠️ Note: Make sure this Gmail account is already registered and active on Google. If the account does not exist, Google rejects delivery and you will not receive your code.");
-        hintNotice.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-text-alignment: center;");
-        hintNotice.setWrapText(true);
-        hintNotice.setMaxWidth(380);
-
         // Simulation banner if active
         VBox simBanner = new VBox(6);
         simBanner.setAlignment(Pos.CENTER);
@@ -194,7 +189,7 @@ public class OtpVerifyDialog {
             errorLbl.setManaged(true);
         });
 
-        content.getChildren().addAll(emailNotice, hintNotice, simBanner, tfOtp, errorLbl, btnResend);
+        content.getChildren().addAll(emailNotice, simBanner, tfOtp, errorLbl, btnResend);
 
         // ── Footer ──────────────────────────────────────────────────────────
         HBox footer = new HBox(10);

@@ -67,6 +67,24 @@ Write-Host "  -> Assembling standalone executable Fat JAR: $OutputJar..."
 $sizeMb = [math]::Round(((Get-Item $OutputJar).Length / 1MB), 2)
 Write-Host "  -> Stand-alone executable JAR created successfully! ($sizeMb MB)"
 
+# Assembling Pure Java Windows Installer JAR
+$installerJar = "dist\AcadsCatchUp-Setup.jar"
+$installerManifest = "target\INSTALLER_MANIFEST.MF"
+$installerManifestContent = "Manifest-Version: 1.0`r`nMain-Class: com.acadscatchup.installer.AcadsCatchUpInstaller`r`nCreated-By: F4TAL`r`n"
+[System.IO.File]::WriteAllText($installerManifest, $installerManifestContent)
+
+Write-Host "  -> Assembling pure Java Setup & Installation Wizard: $installerJar..."
+& $JarExe -cfm $installerJar $installerManifest -C $StagingDir .
+$setupSizeMb = [math]::Round(((Get-Item $installerJar).Length / 1MB), 2)
+Write-Host "  -> Pure Java Setup JAR created successfully! ($setupSizeMb MB)"
+
+# Generate 1-Click Pure Java Installer Batch Script
+$installBat = "dist\Install_AcadsCatchUp.bat"
+$batContent = "@echo off`r`nstart javaw -jar `"%~dp0AcadsCatchUp-Setup.jar`" %*`r`n"
+[System.IO.File]::WriteAllText($installBat, $batContent)
+Write-Host "  -> Generated 1-click Pure Java setup batch script: $installBat"
+
 # Clean up staging directory to keep project structure lightweight
 Write-Host "  -> Cleaning up staging directory..."
 Remove-Item -Recurse -Force $StagingDir -ErrorAction SilentlyContinue
+
