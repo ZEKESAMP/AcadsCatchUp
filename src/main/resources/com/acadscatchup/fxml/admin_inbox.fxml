@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.AdminInboxController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="860" prefHeight="640" spacing="0">
+
+    <!-- Header (FAQ style draggable) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="14" styleClass="dialog-header" style="-fx-cursor: move;">
+        <ImageView fitWidth="34" fitHeight="34" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label text="Admin Inbox — Bug Reports &amp; Help Requests" styleClass="dialog-title" />
+            <Label text="System Administrator Inbox — Messages reported by Professors and Students" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="openCountBadge" text="0 Open"
+               style="-fx-background-color: rgba(239,68,68,0.2); -fx-text-fill: #f87171; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 12px;" />
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox spacing="14" VBox.vgrow="ALWAYS" style="-fx-padding: 18 20 18 20;">
+
+        <!-- Reports Table -->
+        <TableView fx:id="reportsTable" prefHeight="260" VBox.vgrow="ALWAYS" styleClass="items-table">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="colId"     text="#"         prefWidth="45"  minWidth="35"  maxWidth="60" />
+                <TableColumn fx:id="colUser"   text="Reporter"  prefWidth="160" minWidth="120" />
+                <TableColumn fx:id="colRole"   text="Role"      prefWidth="100" minWidth="80"  maxWidth="120" />
+                <TableColumn fx:id="colTitle"  text="Subject"   prefWidth="260" minWidth="180" />
+                <TableColumn fx:id="colDate"   text="Date"      prefWidth="150" minWidth="120" />
+                <TableColumn fx:id="colStatus" text="Status"    prefWidth="100" minWidth="80"  maxWidth="120" />
+            </columns>
+            <placeholder>
+                <Label text="No help reports or bug submissions in inbox! 🎉" styleClass="table-placeholder" />
+            </placeholder>
+        </TableView>
+
+        <!-- Message Detail Card -->
+        <VBox spacing="10"
+              style="-fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 16;">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label text="MESSAGE DETAILS" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnResolve" text="✔ Mark as Resolved" styleClass="btn-submitted" minWidth="-Infinity" onAction="#handleToggleStatus" />
+                <Button text="🗑 Delete" styleClass="btn-danger" minWidth="-Infinity" onAction="#handleDeleteReport" />
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-padding: 4 0;">
+                <Label fx:id="detailSenderLabel" text="Select a report from the table above to view its contents."
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #94a3b8; -fx-font-weight: bold;" />
+            </HBox>
+
+            <TextArea fx:id="detailMessageArea" editable="false" wrapText="true" prefRowCount="4"
+                      promptText="Full paragraph explanation will appear here..."
+                      style="-fx-control-inner-background: #151825; -fx-text-fill: #e2e8f0; -fx-border-color: #2d3255; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 12.5px; -fx-font-family: 'Segoe UI', sans-serif;" />
+        </VBox>
+
+        <!-- Bottom Bar -->
+        <HBox alignment="CENTER_RIGHT" spacing="12">
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Close" styleClass="btn-ghost" minWidth="-Infinity" onAction="#handleClose" />
+        </HBox>
+
+    </VBox>
+
+</VBox>

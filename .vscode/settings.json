@@ -1,0 +1,10 @@
+{
+    "css.validate": false,
+    "css.lint.unknownVendorSpecificProperties": "ignore",
+    "css.lint.unknownProperties": "ignore",
+    "css.lint.propertyIgnoredDueToDisplay": "ignore",
+    "css.lint.universalSelector": "ignore",
+    "css.lint.zeroUnits": "ignore",
+    "html.validate.scripts": false,
+    "html.validate.styles": false
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.ManageUsersController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      spacing="0" prefWidth="960" prefHeight="600">
+
+    <!-- Draggable Header (FAQ Style) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="12" styleClass="dialog-header" style="-fx-cursor: move; -fx-padding: 14 20;">
+        <ImageView fitWidth="30" fitHeight="30" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label text="👥  Manage User Accounts" styleClass="dialog-title" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;" />
+            <Label text="Add, edit, or manage professors and students" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnAddUser" text="＋ Add User" minWidth="-Infinity" styleClass="btn-primary" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 6 16;" onAction="#onAddUser"/>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox spacing="12" VBox.vgrow="ALWAYS" style="-fx-padding: 16 22 16 22;">
+        <!-- Dedicated Action Toolbar (Never squeezed!) -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label fx:id="selectionCountLabel" text="0 accounts selected" minWidth="-Infinity" style="-fx-text-fill: #94a3b8; -fx-font-size: 12px; -fx-font-weight: bold;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Select All" minWidth="-Infinity" styleClass="btn-secondary" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 12;" onAction="#handleSelectAll" />
+            <Button text="Deselect" minWidth="-Infinity" styleClass="btn-ghost" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 12;" onAction="#handleDeselectAll" />
+            <Button fx:id="btnDeleteSelected" text="🗑 Delete Selected (0)" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleDeleteSelected" disable="true" />
+            <Button fx:id="btnBulkDeleteStudents" text="💥 Bulk Delete (All Students)" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleBulkDeleteStudents" />
+        </HBox>
+
+        <!-- User Table -->
+        <TableView fx:id="usersTable" VBox.vgrow="ALWAYS" styleClass="items-table">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="colSelect"   prefWidth="50" minWidth="45"  maxWidth="55" resizable="false" />
+                <TableColumn fx:id="colRole"     text="Role"       prefWidth="85" minWidth="75"  maxWidth="105" />
+                <TableColumn fx:id="colUsername" text="Username"   prefWidth="120" minWidth="95" />
+                <TableColumn fx:id="colFullName" text="Full Name"  prefWidth="165" minWidth="130" />
+                <TableColumn fx:id="colEmail"    text="Gmail / Email" prefWidth="185" minWidth="135" />
+                <TableColumn fx:id="colProgram"  text="Program"    prefWidth="85"  minWidth="70"  maxWidth="110" />
+                <TableColumn fx:id="colYear"     text="Year"       prefWidth="75"  minWidth="65"  maxWidth="95" />
+                <TableColumn fx:id="colActions"  text="Actions"    prefWidth="175" minWidth="160" maxWidth="195" />
+            </columns>
+            <placeholder>
+                <Label text="No accounts found." styleClass="table-placeholder"/>
+            </placeholder>
+        </TableView>
+
+        <!-- Footer -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Label text="Admin accounts &amp; Professors cannot be deleted." style="-fx-text-fill: #64748b; -fx-font-size: 11.5px; -fx-font-style: italic;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Close" minWidth="-Infinity" styleClass="btn-ghost" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 6 18;" onAction="#onClose"/>
+        </HBox>
+    </VBox>
+</VBox>

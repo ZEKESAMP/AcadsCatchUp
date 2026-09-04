@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.acadscatchup.AppLauncher
+Created-By: F4TAL
+

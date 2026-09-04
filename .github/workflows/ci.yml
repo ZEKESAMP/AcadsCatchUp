@@ -1,0 +1,130 @@
+name: AcadsCatchUp CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # ============================================================================
+  # 1. Desktop Application Build & Cross-Platform Packaging
+  # ============================================================================
+  build-desktop-app:
+    name: Build & Package Desktop Client
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Enforce DeveloperGuard signature requirement
+      - name: Verify DeveloperGuard Compliance (F4TAL Signature)
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File verify_developer_guard.ps1
+
+      # Compile source code
+      - name: Compile Java Application
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path target/classes -Force | Out-Null
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          
+          # List all java sources
+          $sources = (Get-ChildItem -Path src/main/java -Recurse -Filter *.java).FullName
+          Set-Content -Path target/sources.txt -Value $sources -Encoding Utf8
+          
+          Write-Host "Compiling $($sources.Count) Java classes..."
+          javac --release 21 -cp "target/libs/*" -d target/classes "@target/sources.txt"
+          
+          Write-Host "Copying resources..."
+          Copy-Item -Path src/main/resources/* -Destination target/classes -Recurse -Force
+
+      # Build standalone Fat JAR
+      - name: Package Standalone Fat JAR
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File package_fatjar.ps1
+
+      # Package Linux Distribution
+      - name: Package Linux Distribution
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File package_linux.ps1
+
+      # Package Portable Windows Distribution ZIP
+      - name: Package Windows Portable Archive
+        shell: pwsh
+        run: |
+          if (Test-Path "dist/AcadsCatchUp-Portable") {
+              Compress-Archive -Path "dist/AcadsCatchUp-Portable/*" -DestinationPath "dist/AcadsCatchUp-v1.0.zip" -Force
+          }
+
+      # Upload Build Artifacts
+      - name: Upload Standalone Fat JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: AcadsCatchUp-FatJAR
+          path: dist/AcadsCatchUp.jar
+          if-no-files-found: error
+
+      - name: Upload Linux Distribution Packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: AcadsCatchUp-Linux-Dist
+          path: |
+            dist/AcadsCatchUp-Linux.zip
+            dist/AcadsCatchUp-Linux.tar.gz
+          if-no-files-found: warn
+
+      - name: Upload Portable Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: AcadsCatchUp-Portable-Zip
+          path: dist/AcadsCatchUp-v1.0.zip
+          if-no-files-found: warn
+
+  # ============================================================================
+  # 2. Koyeb / Render Java Microservice Test & Container Build
+  # ============================================================================
+  test-checker-server:
+    name: Test & Validate Email Checker Microservice
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Compile Microservice Source
+        run: |
+          mkdir -p koyeb-server/bin
+          javac -d koyeb-server/bin koyeb-server/src/com/acadscatchup/server/GmailCheckerServer.java
+
+      - name: Build Docker Container
+        run: |
+          docker build -t acadscatchup-checker:test koyeb-server/
+
+      - name: Test Container Boot & Health Endpoint
+        run: |
+          docker run -d --name checker -p 8000:8000 acadscatchup-checker:test
+          sleep 4
+          curl --fail --retry 3 http://localhost:8000/health
+          docker stop checker

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.UserInboxController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="840" prefHeight="600" spacing="0">
+
+    <!-- Draggable Header (FAQ style) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="14" styleClass="dialog-header" style="-fx-cursor: move;">
+        <ImageView fitWidth="32" fitHeight="32" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label fx:id="inboxTitleLabel" text="Personal Inbox &amp; Notifications" styleClass="dialog-title" />
+            <Label text="Submissions, system updates, and resolved bug reports" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="unreadBadge" text="0 Unread"
+               style="-fx-background-color: rgba(59,130,246,0.2); -fx-text-fill: #60a5fa; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 12px;" />
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox spacing="14" VBox.vgrow="ALWAYS" style="-fx-padding: 18 22 18 22;">
+
+        <!-- Messages Table -->
+        <TableView fx:id="messagesTable" prefHeight="230" VBox.vgrow="ALWAYS" styleClass="items-table">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="colType"    text="Type"     prefWidth="110" minWidth="90"  maxWidth="130" />
+                <TableColumn fx:id="colSender"  text="From"     prefWidth="160" minWidth="120" />
+                <TableColumn fx:id="colSubject" text="Subject"  prefWidth="280" minWidth="180" />
+                <TableColumn fx:id="colDate"    text="Received" prefWidth="140" minWidth="120" />
+                <TableColumn fx:id="colStatus"  text="Status"   prefWidth="90"  minWidth="75"  maxWidth="110" />
+            </columns>
+            <placeholder>
+                <Label text="No messages in your inbox. 🎉" styleClass="table-placeholder" />
+            </placeholder>
+        </TableView>
+
+        <!-- Message Details Card -->
+        <VBox spacing="10"
+              style="-fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14 16;">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label fx:id="detailSenderLabel" text="Select a message above to read its content."
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #38bdf8; -fx-font-weight: bold;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnViewAttached" text="📎 View Attached" styleClass="btn-secondary"
+                        style="-fx-background-color: rgba(56,189,248,0.2); -fx-text-fill: #38bdf8; -fx-font-weight: bold;"
+                        visible="false" managed="false" minWidth="-Infinity"
+                        onAction="#handleViewAttached" />
+                <Button fx:id="btnGradeItem" text="✔ Mark Item as Graded" styleClass="btn-secondary"
+                        style="-fx-background-color: rgba(16,185,129,0.2); -fx-text-fill: #34d399; -fx-font-weight: bold;"
+                        minWidth="-Infinity"
+                        onAction="#handleMarkGraded" />
+                <Button text="🗑 Delete" styleClass="btn-danger" minWidth="-Infinity" onAction="#handleDelete" />
+            </HBox>
+
+            <TextArea fx:id="detailMessageArea" editable="false" wrapText="true" prefRowCount="4"
+                      promptText="Message content will appear here..."
+                      style="-fx-control-inner-background: #151825; -fx-text-fill: #e2e8f0; -fx-border-color: #2d3255; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 12px; -fx-font-family: 'Segoe UI', sans-serif;" />
+        </VBox>
+
+        <!-- Bottom Bar -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Button fx:id="btnMarkAllGraded" text="✔ Mark all item as Graded" styleClass="btn-secondary"
+                    style="-fx-background-color: rgba(16,185,129,0.2); -fx-text-fill: #34d399; -fx-font-weight: bold;"
+                    visible="false" managed="false" minWidth="-Infinity"
+                    onAction="#handleMarkAllGraded" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Close" styleClass="btn-ghost" minWidth="-Infinity" onAction="#handleClose" />
+        </HBox>
+
+    </VBox>
+
+</VBox>

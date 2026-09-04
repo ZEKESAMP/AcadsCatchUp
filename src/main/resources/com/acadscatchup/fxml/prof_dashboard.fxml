@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.acadscatchup.controller.ProfDashboardController"
+            styleClass="root-pane"
+            stylesheets="@../css/style.css">
+
+    <!-- ── TOP BAR ── -->
+    <top>
+        <HBox fx:id="topBar" styleClass="top-bar" alignment="CENTER_LEFT" spacing="12">
+            <!-- Left Branding Cluster: Guaranteed minWidth, never squishes or truncates -->
+            <HBox alignment="CENTER_LEFT" spacing="10" minWidth="-Infinity">
+                <ImageView fitWidth="28" fitHeight="28" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/book_icon_blue.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="appTitleLabel" text="AcadsCatchUp" styleClass="app-title" minWidth="-Infinity" />
+                <Label fx:id="roleBadge" text="Professor Dashboard" styleClass="dash-role-label" minWidth="-Infinity" />
+                <Label fx:id="profSyncStatusLabel" text="🟢 Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" minWidth="8" />
+
+            <!-- Right Controls Cluster: Cleanly grouped, user name truncated, logout always visible -->
+            <HBox alignment="CENTER_RIGHT" spacing="8" minWidth="-Infinity">
+                <Button fx:id="adminInboxBtn" text="📥 Bug Reports (0)" styleClass="btn-submitted" onAction="#handleOpenAdminInbox" minWidth="-Infinity" />
+                <Button fx:id="profInboxBtn" text="📬 Submissions (0)" styleClass="btn-submitted" onAction="#handleOpenProfInbox" minWidth="-Infinity" />
+                <Button fx:id="helpBtn" text="💬 Help / Report Bug" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
+                <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
+                <Label fx:id="profNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
+                <Button text="Logout" styleClass="btn-outline-sm" id="profLogoutBtn" fx:id="profLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ── LEFT SIDEBAR ── -->
+    <left>
+        <VBox styleClass="sidebar" spacing="12" minWidth="230">
+            <HBox alignment="CENTER_LEFT" spacing="6">
+                <Label text="STUDENTS" styleClass="sidebar-section-title" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="enrollStudentBtn" text="🎓 Enroll" styleClass="btn-primary" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 8;" onAction="#handleOpenEnrollDialog" />
+                <Button fx:id="addStudentBtn" text="＋ Add" styleClass="btn-secondary" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 8;" onAction="#handleManageUsers" />
+            </HBox>
+            <ComboBox fx:id="studentScopeCombo" maxWidth="Infinity" style="-fx-font-size: 11.5px;" />
+            <TextField fx:id="studentSearchField" promptText="Search student..." styleClass="sidebar-search" />
+            <ListView fx:id="studentListView" styleClass="student-list" VBox.vgrow="ALWAYS" id="studentListView" />
+
+            <Separator />
+            <Label text="FILTER" styleClass="sidebar-section-title" />
+
+            <VBox spacing="4">
+                <Label text="Year Level" styleClass="filter-label" />
+                <ComboBox fx:id="yearFilterCombo" maxWidth="Infinity" id="yearFilter" />
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Status" styleClass="filter-label" />
+                <ComboBox fx:id="statusFilterCombo" maxWidth="Infinity" id="statusFilter" />
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Subject" styleClass="filter-label" />
+                <ComboBox fx:id="subjectFilterCombo" maxWidth="Infinity" id="subjectFilter" />
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Type" styleClass="filter-label" />
+                <ComboBox fx:id="typeFilterCombo" maxWidth="Infinity" id="typeFilter" />
+            </VBox>
+
+            <Button text="Apply Filters" styleClass="btn-secondary" maxWidth="Infinity" onAction="#applyFilters" />
+            <Button text="Clear Filters" styleClass="btn-ghost" maxWidth="Infinity" onAction="#clearFilters" />
+        </VBox>
+    </left>
+
+    <!-- ── CENTER CONTENT ── -->
+    <center>
+        <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="dashboard-scroll">
+            <VBox spacing="14" styleClass="content-area">
+
+                <!-- Stats Row -->
+                <HBox fx:id="statsRow" styleClass="stats-row" spacing="16">
+                    <VBox fx:id="statTotal"     styleClass="stat-card stat-total"     HBox.hgrow="ALWAYS" alignment="CENTER">
+                        <Label fx:id="totalCount"     text="0" styleClass="stat-number" />
+                        <Label text="Total Items" styleClass="stat-label" />
+                    </VBox>
+                    <VBox fx:id="statPending"   styleClass="stat-card stat-pending"   HBox.hgrow="ALWAYS" alignment="CENTER">
+                        <Label fx:id="pendingCount"   text="0" styleClass="stat-number" />
+                        <Label text="Pending" styleClass="stat-label" />
+                    </VBox>
+                    <VBox fx:id="statSubmitted" styleClass="stat-card stat-submitted" HBox.hgrow="ALWAYS" alignment="CENTER">
+                        <Label fx:id="submittedCount" text="0" styleClass="stat-number" />
+                        <Label text="Submitted" styleClass="stat-label" />
+                    </VBox>
+                    <VBox fx:id="statGraded"    styleClass="stat-card stat-graded"    HBox.hgrow="ALWAYS" alignment="CENTER">
+                        <Label fx:id="gradedCount"    text="0" styleClass="stat-number" />
+                        <Label text="Graded" styleClass="stat-label" />
+                    </VBox>
+                </HBox>
+
+                <!-- Responsive Auto-Arranging Action Bar -->
+                <FlowPane hgap="8" vgap="8" alignment="CENTER_LEFT" styleClass="action-bar-flow">
+                    <Label text="Missed Items" styleClass="section-title" minWidth="-Infinity" />
+                    <TextField fx:id="searchField" promptText="🔍  Search items..." styleClass="search-box" prefWidth="160" minWidth="110" onAction="#applyFilters" />
+                    <Region prefWidth="8" />
+                    <Button text="+ Add Item"   styleClass="btn-primary"   id="addItemBtn"       onAction="#handleAddItem"       minWidth="-Infinity" />
+                    <Button text="✏ Edit"       styleClass="btn-secondary" id="editItemBtn"      onAction="#handleEditItem"      minWidth="-Infinity" />
+                    <Button text="🗑 Delete"    styleClass="btn-danger"    id="deleteItemBtn"    onAction="#handleDeleteItem"    minWidth="-Infinity" />
+                    <Separator orientation="VERTICAL" />
+                    <Button text="✔ Submitted"  styleClass="btn-submitted" id="markSubmittedBtn" onAction="#handleMarkSubmitted" minWidth="-Infinity" />
+                    <Button text="★ Graded"     styleClass="btn-graded"    id="markGradedBtn"    onAction="#handleMarkGraded"    minWidth="-Infinity" />
+                    <Separator orientation="VERTICAL" />
+                    <Button text="📄 Export CSV" styleClass="btn-ghost"     id="exportCsvBtn"     onAction="#handleExportCSV"     minWidth="-Infinity" />
+                    <Separator fx:id="manageUsersSep" orientation="VERTICAL" />
+                    <Button fx:id="manageUsersBtn" text="👥 Manage Users" styleClass="btn-ghost" id="manageUsersBtn" onAction="#handleManageUsers" minWidth="-Infinity" />
+                    <Separator fx:id="adminSep" orientation="VERTICAL" />
+                    <Button fx:id="addSubjectBtn" text="📚 Add Subject"    styleClass="btn-secondary" id="addSubjectBtn" onAction="#handleAddSubject" minWidth="-Infinity" />
+                </FlowPane>
+
+                <!-- Table with full responsive width auto-sizing -->
+                <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS" minHeight="280" prefHeight="400" styleClass="items-table" id="missedItemsTable">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="colStudent"    text="Student"     prefWidth="110" minWidth="60" />
+                        <TableColumn fx:id="colSubject"    text="Subject"     prefWidth="130" minWidth="60" />
+                        <TableColumn fx:id="colType"       text="Type"        prefWidth="80"  minWidth="45" />
+                        <TableColumn fx:id="colItemName"   text="Item Name"   prefWidth="150" minWidth="75" />
+                        <TableColumn fx:id="colDateMissed" text="Date Missed" prefWidth="90"  minWidth="55" />
+                        <TableColumn fx:id="colDeadline"   text="Deadline"    prefWidth="90"  minWidth="55" />
+                        <TableColumn fx:id="colStatus"     text="Status"      prefWidth="80"  minWidth="50" />
+                        <TableColumn fx:id="colNotes"      text="Notes"       prefWidth="140" minWidth="60" />
+                    </columns>
+                    <placeholder>
+                        <Label text="No missed items found." styleClass="table-placeholder" />
+                    </placeholder>
+                </TableView>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

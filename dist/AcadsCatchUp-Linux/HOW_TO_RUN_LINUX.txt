@@ -1,0 +1,48 @@
+================================================================================
+AcadsCatchUp Desktop Client — Linux Quick Start Guide
+================================================================================
+
+PREREQUISITE:
+Java 21 or later is required (OpenJDK 21).
+
+To check if Java 21 is installed:
+  java -version
+
+If not installed, install it using your distribution's package manager:
+  • Ubuntu / Debian / Linux Mint:
+      sudo apt update && sudo apt install openjdk-21-jre -y
+  • Fedora / RHEL / AlmaLinux:
+      sudo dnf install java-21-openjdk -y
+  • Arch Linux / Manjaro:
+      sudo pacman -S jre21-openjdk
+  • openSUSE:
+      sudo zypper install java-21-openjdk
+
+--------------------------------------------------------------------------------
+HOW TO RUN:
+--------------------------------------------------------------------------------
+
+OPTION 1: Double-Click Shell Script
+  1. Make sure Launch_AcadsCatchUp.sh is executable:
+       chmod +x Launch_AcadsCatchUp.sh
+  2. Double-click "Launch_AcadsCatchUp.sh" (select "Run as a Program" if prompted).
+
+OPTION 2: Double-Click the Standalone JAR
+  1. Right-click "AcadsCatchUp.jar" -> Open With -> "OpenJDK Java 21 Runtime".
+  2. Or double-click if .jar file associations are enabled.
+
+OPTION 3: Terminal Command
+  Open terminal in this directory and run:
+       ./Launch_AcadsCatchUp.sh
+  OR:
+       java -jar AcadsCatchUp.jar
+
+OPTION 4: Desktop Entry
+  1. Allow launching:
+       chmod +x AcadsCatchUp.desktop
+  2. Double-click "AcadsCatchUp.desktop" or copy to ~/.local/share/applications/
+
+================================================================================
+Developed by F4TAL (Stevenson James G. Gastanes)
+© 2026 AcadsCatchUp. All rights reserved.
+================================================================================

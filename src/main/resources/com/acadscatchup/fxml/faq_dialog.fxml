@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.FAQController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="560" prefHeight="620" spacing="0">
+
+    <!-- Header -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="14" styleClass="dialog-header" style="-fx-cursor: move;">
+        <ImageView fitWidth="36" fitHeight="36" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label text="AcadsCatchUp — FAQs &amp; Credits" styleClass="dialog-title" />
+            <Label text="Computer Programming Final Project" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Content Scroll -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;">
+        <VBox spacing="16" style="-fx-padding: 20 24 20 24;">
+
+            <!-- Section 1: What is AcadsCatchUp -->
+            <VBox spacing="8" styleClass="stat-card" style="-fx-padding: 16; -fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="💡" style="-fx-font-size: 16px;" />
+                    <Label text="What is AcadsCatchUp?" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;" />
+                </HBox>
+                <Label wrapText="true" style="-fx-font-size: 12.5px; -fx-text-fill: #cbd5e1; -fx-line-spacing: 3px;"
+                       text="AcadsCatchUp is a desktop academic management system designed for our Computer Programming course. It provides a centralized platform for professors and students to track, organize, and complete missed quizzes, activities, and assignments caused by absences or emergencies." />
+            </VBox>
+
+            <!-- Section 2: Who is F4TAL -->
+            <VBox spacing="8" styleClass="stat-card" style="-fx-padding: 16; -fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="💻" style="-fx-font-size: 16px;" />
+                    <Label text="Who is F4TAL?" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #a78bfa;" />
+                </HBox>
+                <Label wrapText="true" style="-fx-font-size: 12.5px; -fx-text-fill: #cbd5e1; -fx-line-spacing: 3px;"
+                       text="&quot;F4TAL&quot; is the developer alias and online moniker created by Stevenson James G. Gastanes. He serves as the primary author and architect of the project's source code and application development." />
+            </VBox>
+
+            <!-- Section 3: Group Members -->
+            <VBox spacing="10" styleClass="stat-card" style="-fx-padding: 16; -fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="👥" style="-fx-font-size: 16px;" />
+                    <Label text="Project Team &amp; Contributors" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #34d399;" />
+                </HBox>
+                <Label wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"
+                       text="This system was collaboratively conceptualized and developed with group members sharing ideas, testing features, and shaping requirements:" />
+
+                <!-- Lead -->
+                <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: rgba(108,99,255,0.12); -fx-padding: 8 12; -fx-background-radius: 8; -fx-border-color: rgba(108,99,255,0.3); -fx-border-radius: 8;">
+                    <Label text="⭐ Lead Developer:" style="-fx-font-weight: bold; -fx-text-fill: #818cf8; -fx-font-size: 12px;" />
+                    <Label text="Gastanes, Stevenson James G. (F4TAL)" style="-fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-font-size: 12px;" />
+                </HBox>
+
+                <!-- Members Grid -->
+                <VBox spacing="6" style="-fx-padding: 4 0 0 0;">
+                    <Label text="Group Members:" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;" />
+                    <GridPane hgap="24" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+                        <Label text="• Lazaro, Erish"     style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <Label text="• Ore, Edrian"       style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                        <Label text="• Molina, Jeremee"   style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                        <Label text="• Lancero, Althea"   style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                        <Label text="• Aguirre, Raniel"   style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                        <Label text="• Orjaleza, Hazel"   style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                        <Label text="• Alpajora, Mayumi"  style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                        <Label text="• Obayan, Isaac"     style="-fx-text-fill: #e2e8f0; -fx-font-size: 12px;" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    </GridPane>
+                </VBox>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+    <!-- Footer -->
+    <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 14 24; -fx-background-color: #151825; -fx-border-color: #2d3255 transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+        <Button text="Close" styleClass="btn-primary" style="-fx-padding: 8 28; -fx-font-weight: bold; -fx-font-size: 13px;" onAction="#handleClose" />
+    </HBox>
+</VBox>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.HelpReportController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="560" spacing="0">
+
+    <!-- Draggable Header (matches FAQ style) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="14" styleClass="dialog-header" style="-fx-cursor: move;">
+        <ImageView fitWidth="32" fitHeight="32" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label text="Help &amp; Bug Report" styleClass="dialog-title" />
+            <Label text="Your message will be sent directly to the System Administrator's Inbox" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Body -->
+    <VBox spacing="16" style="-fx-padding: 24;">
+
+        <!-- Reporter details card -->
+        <HBox alignment="CENTER_LEFT" spacing="16"
+              style="-fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12 16;">
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <Label text="REPORTING USER" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                <Label fx:id="reporterNameLabel" text="User Name" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;" />
+            </VBox>
+            <Separator orientation="VERTICAL" />
+            <VBox spacing="3">
+                <Label text="ROLE" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                <Label fx:id="reporterRoleLabel" text="Student" style="-fx-font-size: 12px; -fx-text-fill: #a5b4fc; -fx-font-weight: bold;" />
+            </VBox>
+            <Separator orientation="VERTICAL" />
+            <VBox spacing="3">
+                <Label text="DATE" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                <Label fx:id="reportDateLabel" text="2026-09-03" style="-fx-font-size: 12px; -fx-text-fill: #cbd5e1;" />
+            </VBox>
+        </HBox>
+
+        <!-- Issue Subject -->
+        <VBox spacing="6">
+            <Label text="Issue Subject / Summary *" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1;" />
+            <TextField fx:id="titleField" promptText="Brief title (e.g. Cannot edit deadline on Quiz 1)"
+                       styleClass="search-box" style="-fx-font-size: 13px;" />
+        </VBox>
+
+        <!-- Detailed Problem Description -->
+        <VBox spacing="6">
+            <Label text="Detailed Problem / Explanation (Paragraph) *" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1;" />
+            <TextArea fx:id="messageArea" wrapText="true" prefRowCount="6"
+                      promptText="Describe what happened, what went wrong, or what help you need in detail so an administrator can review and resolve it..."
+                      style="-fx-control-inner-background: #1a1d2e; -fx-text-fill: #e2e8f0; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12.5px; -fx-font-family: 'Segoe UI', sans-serif;" />
+        </VBox>
+
+        <!-- Status / Error message -->
+        <Label fx:id="statusLabel" text="" style="-fx-text-fill: #f87171; -fx-font-size: 12px;" />
+
+        <!-- Buttons -->
+        <HBox spacing="12" alignment="CENTER_RIGHT">
+            <Button text="Cancel" styleClass="btn-ghost" minWidth="-Infinity" onAction="#handleCancel" />
+            <Button fx:id="submitButton" text="✉ Send Bug Report" styleClass="btn-primary" minWidth="-Infinity" onAction="#handleSubmit" />
+        </HBox>
+
+    </VBox>
+
+</VBox>

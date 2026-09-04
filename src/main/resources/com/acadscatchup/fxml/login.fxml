@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="rootPane"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.acadscatchup.controller.LoginController"
+           styleClass="root-pane"
+           stylesheets="@../css/style.css">
+
+    <!-- Background Image (OLLC campus) -->
+    <ImageView fx:id="bgImageView" preserveRatio="false" smooth="true">
+        <image>
+            <Image url="@../img/ollc.jpg" />
+        </image>
+    </ImageView>
+
+    <!-- Dark tinted blue overlay for high-contrast readability -->
+    <Region style="-fx-background-color: linear-gradient(to bottom right, rgba(8, 12, 28, 0.80), rgba(15, 17, 26, 0.90));" />
+
+    <!-- Main Container -->
+    <VBox alignment="CENTER" style="-fx-background-color: transparent; -fx-padding: 20;">
+
+        <!-- Login Card with modern glassmorphism -->
+        <VBox alignment="CENTER" spacing="0" styleClass="login-card" maxWidth="420"
+              style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.65), 30, 0, 0, 10);">
+
+            <!-- Logo / Header Section -->
+            <VBox alignment="CENTER" spacing="8" styleClass="login-header">
+                <ImageView fitWidth="68" fitHeight="68" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/book_icon_blue.png" />
+                    </image>
+                </ImageView>
+                <Label text="AcadsCatchUp" styleClass="login-title" />
+                <Label text="Track • Submit • Succeed" styleClass="login-subtitle" />
+            </VBox>
+
+            <!-- Form Section -->
+            <VBox spacing="16" styleClass="login-form">
+
+                <!-- Username -->
+                <VBox spacing="6">
+                    <Label text="Username" styleClass="field-label" />
+                    <TextField fx:id="usernameField"
+                               promptText="Enter your username"
+                               styleClass="text-input"
+                               id="loginUsernameField" />
+                </VBox>
+
+                <!-- Password -->
+                <VBox spacing="6">
+                    <Label text="Password" styleClass="field-label" />
+                    <StackPane alignment="CENTER_RIGHT">
+                        <PasswordField fx:id="passwordField"
+                                      promptText="Enter your password"
+                                      styleClass="text-input"
+                                      style="-fx-padding: 10 38 10 14;"
+                                      id="loginPasswordField" />
+                        <TextField fx:id="plainPasswordField"
+                                   promptText="Enter your password"
+                                   styleClass="text-input"
+                                   style="-fx-padding: 10 38 10 14;"
+                                   visible="false"
+                                   managed="false"
+                                   id="loginPlainPasswordField" />
+                        <Button fx:id="btnTogglePassword"
+                                styleClass="btn-eye-toggle"
+                                id="loginBtnTogglePassword" />
+                    </StackPane>
+                </VBox>
+
+                <!-- Error label -->
+                <Label fx:id="errorLabel" styleClass="error-label" text="" wrapText="true" />
+
+                <!-- Login Button -->
+                <Button fx:id="loginButton"
+                        text="Sign In"
+                        styleClass="btn-primary"
+                        maxWidth="Infinity"
+                        id="loginButton"
+                        onAction="#handleLogin" />
+
+                <!-- Forgot Password Link -->
+                <HBox alignment="CENTER">
+                    <Hyperlink text="Forgot Password?"
+                               style="-fx-text-fill: #38bdf8; -fx-font-size: 11.5px; -fx-border-color: transparent;"
+                               id="forgotPasswordLink"
+                               onAction="#handleForgotPassword" />
+                </HBox>
+
+            </VBox>
+
+            <!-- Footer Section with FAQs, Credits, and Copyright -->
+            <VBox alignment="CENTER" spacing="7" styleClass="login-footer">
+                <Button text="ℹ  FAQs &amp; Group Credits"
+                        styleClass="btn-secondary"
+                        style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 22; -fx-border-color: #3b82f6; -fx-text-fill: #93c5fd;"
+                        id="faqBtn"
+                        onAction="#handleShowFAQ" />
+                <Label text="Developed by: F4TAL"
+                       style="-fx-text-fill: #38bdf8; -fx-font-size: 11.5px; -fx-font-weight: bold;" />
+                <Label text="© 2026 AcadsCatchUp. All rights reserved."
+                       style="-fx-text-fill: #64748b; -fx-font-size: 10.5px;" />
+            </VBox>
+
+        </VBox>
+    </VBox>
+</StackPane>

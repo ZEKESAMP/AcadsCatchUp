@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.SubmitItemController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="560" prefHeight="620" spacing="0">
+
+    <!-- Draggable Header (FAQ Style) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="14" styleClass="dialog-header" style="-fx-cursor: move;">
+        <ImageView fitWidth="32" fitHeight="32" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label text="Submit Deficiency to Professor" styleClass="dialog-title" />
+            <Label text="Direct academic delivery to your professor's inbox" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Scrollable Body (Guarantees all content fits smoothly on any resolution) -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;">
+        <VBox spacing="14" style="-fx-padding: 18 22 18 22;">
+
+            <!-- Deficiency Details Card -->
+            <VBox spacing="8"
+                  style="-fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12 16;">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="DEFICIENCY ITEM" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="itemTypeBadge" text="QUIZ"
+                           style="-fx-background-color: rgba(99,102,241,0.2); -fx-text-fill: #a5b4fc; -fx-padding: 2 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;" />
+                </HBox>
+                <Label fx:id="itemNameLabel" text="Quiz 1 - Variables"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;" />
+                <Label fx:id="itemSubjectLabel" text="CP - Computer Programming"
+                       style="-fx-font-size: 12px; -fx-text-fill: #cbd5e1;" />
+            </VBox>
+
+            <!-- Dedicated Professor Dropdown -->
+            <VBox spacing="4">
+                <Label text="Choose Dedicated Professor *" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1;" />
+                <ComboBox fx:id="profCombo" promptText="Select your instructor for this subject..."
+                          maxWidth="Infinity" styleClass="combo-box" style="-fx-font-size: 12.5px;" />
+                <Label text="Your submission notification will be delivered directly to this professor's Inbox."
+                       style="-fx-font-size: 10.5px; -fx-text-fill: #64748b;" />
+            </VBox>
+
+            <!-- Attachment Section (Checkboxes) -->
+            <VBox spacing="10" style="-fx-background-color: #1a1d2e; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12 14;">
+                <HBox alignment="CENTER_LEFT" spacing="14">
+                    <Label text="📎 Attachment" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <CheckBox fx:id="chkLink" text="Web / Cloud Link" style="-fx-text-fill: #cbd5e1; -fx-font-size: 11.5px;" />
+                    <CheckBox fx:id="chkFile" text="Upload File" style="-fx-text-fill: #cbd5e1; -fx-font-size: 11.5px;" />
+                </HBox>
+
+                <!-- Link Input Box -->
+                <VBox fx:id="linkInputBox" spacing="4" visible="false" managed="false">
+                    <Label text="URL / Share Link *" style="-fx-font-size: 11px; -fx-text-fill: #cbd5e1;" />
+                    <TextField fx:id="linkField" promptText="https://drive.google.com/... or https://github.com/..."
+                               styleClass="search-box" style="-fx-font-size: 12px;" />
+                </VBox>
+
+                <!-- File Upload Box -->
+                <VBox fx:id="fileInputBox" spacing="6" visible="false" managed="false">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Button fx:id="btnChooseFile" text="📂 Choose File..." styleClass="btn-secondary"
+                                style="-fx-font-size: 11.5px; -fx-padding: 4 10;" onAction="#handleChooseFile" />
+                        <Label fx:id="selectedFileNameLabel" text="No file chosen (Any format supported)"
+                               style="-fx-text-fill: #94a3b8; -fx-font-size: 11.5px;" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnClearFile" text="Clear" styleClass="btn-ghost"
+                                style="-fx-font-size: 11px; -fx-padding: 2 6;" visible="false" managed="false" onAction="#handleClearFile" />
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Submission Notes / Message -->
+            <VBox spacing="4">
+                <Label text="Submission Message / Notes" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1;" />
+                <TextArea fx:id="notesArea" wrapText="true" prefRowCount="3"
+                          promptText="e.g. Finished and uploaded / attached requirements for review..."
+                          style="-fx-control-inner-background: #1a1d2e; -fx-text-fill: #e2e8f0; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-font-family: 'Segoe UI', sans-serif;" />
+            </VBox>
+
+            <!-- Status / Error message -->
+            <Label fx:id="statusLabel" text="" style="-fx-text-fill: #f87171; -fx-font-size: 12px;" />
+
+        </VBox>
+    </ScrollPane>
+
+    <!-- Pinned Bottom Action Bar (Always visible) -->
+    <HBox alignment="CENTER_RIGHT" spacing="12"
+          style="-fx-padding: 14 22; -fx-background-color: #151825; -fx-border-color: #2d3255 transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+        <Button text="Cancel" styleClass="btn-ghost" minWidth="-Infinity" onAction="#handleCancel" />
+        <Button fx:id="submitBtn" text="📤 Submit to Dedicated Professor" minWidth="-Infinity" styleClass="btn-primary" onAction="#handleSubmit" />
+    </HBox>
+
+</VBox>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.EnrollStudentController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="880" prefHeight="600" spacing="0">
+
+    <!-- Header (FAQ style) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="12" styleClass="dialog-header" style="-fx-cursor: move; -fx-padding: 14 18;">
+        <ImageView fitWidth="28" fitHeight="28" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="2">
+            <Label text="Enroll Students to Subject" styleClass="dialog-title" style="-fx-font-size: 14.5px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;" />
+            <Label text="AcadsCatchUp • Student Enrollment" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Filter & Search Controls -->
+    <VBox spacing="10" style="-fx-padding: 14 20 10 20;">
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="TARGET SUBJECT" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;" />
+                <ComboBox fx:id="subjectCombo" maxWidth="Infinity" />
+            </VBox>
+            <VBox spacing="4" prefWidth="220">
+                <Label text="SUBJECT PROFESSOR" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;" />
+                <Label fx:id="profNameLabel" text="👤 Sir. Ace" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #60a5fa; -fx-padding: 6 0 0 0;" />
+            </VBox>
+            <VBox spacing="4" prefWidth="160">
+                <Label text="FILTER BY YEAR" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;" />
+                <ComboBox fx:id="yearFilterCombo" maxWidth="Infinity" />
+            </VBox>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="🔍  Search all registered students..." HBox.hgrow="ALWAYS" styleClass="search-box" />
+            <Button text="Select All" styleClass="btn-secondary" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleSelectAll" />
+            <Button text="Deselect" styleClass="btn-ghost" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleDeselectAll" />
+        </HBox>
+    </VBox>
+
+    <!-- Students Table -->
+    <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 0 20 12 20;">
+        <TableView fx:id="studentsTable" VBox.vgrow="ALWAYS" styleClass="items-table">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="colSelect"   text="Enroll"    prefWidth="65"  maxWidth="75"  minWidth="60"  />
+                <TableColumn fx:id="colFullName" text="Full Name" prefWidth="220" minWidth="160" />
+                <TableColumn fx:id="colProgram"  text="Program"   prefWidth="85"  minWidth="75"  maxWidth="105" />
+                <TableColumn fx:id="colYear"     text="Year"      prefWidth="90"  minWidth="80"  maxWidth="110" />
+                <TableColumn fx:id="colStatus"   text="Status"    prefWidth="130" minWidth="115" maxWidth="150" />
+                <TableColumn fx:id="colProf"     text="Professor" prefWidth="175" minWidth="130" />
+            </columns>
+            <placeholder>
+                <Label text="No registered students found matching filter." styleClass="table-placeholder" />
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Footer Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: #151825; -fx-padding: 14 20; -fx-border-color: #2d3255; -fx-border-width: 1 0 0 0;">
+        <Label fx:id="selectedCountLabel" text="0 students selected" minWidth="-Infinity" style="-fx-text-fill: #94a3b8; -fx-font-size: 12px; -fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="Cancel" styleClass="btn-ghost" minWidth="-Infinity" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleCancel" />
+        <Button fx:id="btnUnenroll" text="❌ Unenroll" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16; -fx-background-color: rgba(239, 68, 68, 0.2); -fx-text-fill: #f87171; -fx-border-color: #ef4444; -fx-border-radius: 6; -fx-background-radius: 6;" onAction="#handleUnenroll" />
+        <Button fx:id="btnUnenrollAllSubjects" text="🗑 Unenroll from ALL Subjects" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleUnenrollAllSubjects" />
+        <Button fx:id="btnEnrollAllSubjects" text="🎓 Enroll to ALL Subjects" minWidth="-Infinity" styleClass="btn-secondary" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleEnrollAllSubjects" />
+        <Button fx:id="btnEnroll" text="💾 Save Enrollments" minWidth="-Infinity" styleClass="btn-primary" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 18;" onAction="#handleEnroll" />
+    </HBox>
+</VBox>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.acadscatchup.controller.AddEditItemController"
+      styleClass="root-pane"
+      stylesheets="@../css/style.css"
+      style="-fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-background-color: #0f1117;"
+      prefWidth="560" prefHeight="640" spacing="0">
+
+    <!-- Draggable Header (FAQ Style with Close '✕' Button) -->
+    <HBox fx:id="headerBar" alignment="CENTER_LEFT" spacing="12" styleClass="dialog-header" style="-fx-cursor: move;">
+        <ImageView fitWidth="30" fitHeight="30" preserveRatio="true">
+            <image>
+                <Image url="@../img/book_icon_blue.png" />
+            </image>
+        </ImageView>
+        <VBox spacing="1">
+            <Label fx:id="dialogTitleLabel" text="Add Missed Item" styleClass="dialog-title" />
+            <Label text="Configure deficiency item and academic deadline" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Scrollable Content to guarantee all fields & buttons fit on any screen resolution -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;">
+        <VBox spacing="12" style="-fx-padding: 16 22 10 22;">
+
+            <!-- Subject Selection -->
+            <VBox spacing="4">
+                <Label text="Subject (Course) *" styleClass="field-label" />
+                <ComboBox fx:id="subjectCombo" maxWidth="Infinity" promptText="Select subject / course" id="itemSubjectCombo" />
+            </VBox>
+
+            <!-- Student Selection -->
+            <VBox spacing="4">
+                <Label text="Enrolled Student *" styleClass="field-label" />
+                <ComboBox fx:id="studentCombo" maxWidth="Infinity" promptText="Select enrolled student" id="itemStudentCombo" />
+            </VBox>
+
+            <!-- Type + Status row -->
+            <HBox spacing="12">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Type *" styleClass="field-label" />
+                    <ComboBox fx:id="typeCombo" maxWidth="Infinity" id="itemTypeCombo" />
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Status" styleClass="field-label" />
+                    <ComboBox fx:id="statusCombo" maxWidth="Infinity" id="itemStatusCombo" />
+                </VBox>
+            </HBox>
+
+            <!-- Item Name -->
+            <VBox spacing="4">
+                <Label text="Item Name *" styleClass="field-label" />
+                <TextField fx:id="itemNameField" promptText="e.g. Quiz 1 - Variables" styleClass="text-input" id="itemNameField" />
+            </VBox>
+
+            <!-- Dates row -->
+            <HBox spacing="12">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Date Missed *" styleClass="field-label" />
+                    <DatePicker fx:id="dateMissedPicker" maxWidth="Infinity" id="itemDateMissed" />
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Deadline" styleClass="field-label" />
+                    <DatePicker fx:id="deadlinePicker" maxWidth="Infinity" id="itemDeadline" />
+                </VBox>
+            </HBox>
+
+            <!-- Notes -->
+            <VBox spacing="4">
+                <Label text="Notes (Optional)" styleClass="field-label" />
+                <TextArea fx:id="notesArea" promptText="Optional notes or instructions..." styleClass="text-area" prefRowCount="2" id="itemNotes" />
+            </VBox>
+
+            <!-- Error -->
+            <Label fx:id="errorLabel" styleClass="error-label" text="" wrapText="true" />
+
+        </VBox>
+    </ScrollPane>
+
+    <!-- Bottom Action Buttons (Always Pinned and Visible) -->
+    <HBox alignment="CENTER_RIGHT" spacing="12"
+          style="-fx-background-color: #151825; -fx-padding: 12 22 14 22; -fx-border-color: #2d3255; -fx-border-width: 1 0 0 0;">
+        <Button text="Cancel" styleClass="btn-ghost" id="dialogCancelBtn" minWidth="-Infinity" onAction="#handleCancel" />
+        <Button fx:id="saveButton" text="＋ Add Missed Item" styleClass="btn-primary" id="dialogSaveBtn" minWidth="-Infinity" onAction="#handleSave" />
+    </HBox>
+
+</VBox>

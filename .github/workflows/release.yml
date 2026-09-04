@@ -1,0 +1,82 @@
+name: AcadsCatchUp Official Release Publisher
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Release Tag Name (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Official GitHub Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Verify DeveloperGuard
+      - name: Verify DeveloperGuard Compliance
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File verify_developer_guard.ps1
+
+      # Compile and assemble
+      - name: Compile and Package Artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path target/classes -Force | Out-Null
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          
+          $sources = (Get-ChildItem -Path src/main/java -Recurse -Filter *.java).FullName
+          Set-Content -Path target/sources.txt -Value $sources -Encoding Utf8
+          javac --release 21 -cp "target/libs/*" -d target/classes "@target/sources.txt"
+          Copy-Item -Path src/main/resources/* -Destination target/classes -Recurse -Force
+          
+          # Package Fat JAR
+          powershell -ExecutionPolicy Bypass -File package_fatjar.ps1
+          
+          # Package Linux Distribution
+          powershell -ExecutionPolicy Bypass -File package_linux.ps1
+          
+          # Package Windows Portable Zip
+          if (Test-Path "dist/AcadsCatchUp-Portable") {
+              Compress-Archive -Path "dist/AcadsCatchUp-Portable/*" -DestinationPath "dist/AcadsCatchUp-v1.0.zip" -Force
+          }
+
+      # Publish Official GitHub Release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version_tag || github.ref_name }}
+          name: AcadsCatchUp ${{ github.event.inputs.version_tag || github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ### AcadsCatchUp Official Release
+            **Developer & System Architect**: F4TAL (Stevenson James G. Gastanes)
+            
+            #### 📦 Included Downloads:
+            - **`AcadsCatchUp.jar`**: Cross-platform Standalone Executable Fat JAR (Windows, Linux, macOS). Run with `java -jar AcadsCatchUp.jar`.
+            - **`AcadsCatchUp-Linux.zip` & `.tar.gz`**: Dedicated Linux distribution with desktop entry and launch shell script.
+            - **`AcadsCatchUp-v1.0.zip`**: Complete portable bundle for Windows.
+          files: |
+            dist/AcadsCatchUp.jar
+            dist/AcadsCatchUp-Linux.zip
+            dist/AcadsCatchUp-Linux.tar.gz
+            dist/AcadsCatchUp-v1.0.zip
