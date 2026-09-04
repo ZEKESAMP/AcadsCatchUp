@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Data Access Object for MissedItem CRUD and queries.

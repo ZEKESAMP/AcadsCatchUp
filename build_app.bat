@@ -37,6 +37,7 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
+copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\AcadsCatchUp.jar" > nul
 copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\app\AcadsCatchUp.jar" > nul
 copy /y "dist\AcadsCatchUp.jar" "dist\AcadsCatchUp-Portable\app\acadscatchup-app.jar" > nul
 copy /y "dist\Install_AcadsCatchUp.bat" "dist\AcadsCatchUp-Portable\Install_AcadsCatchUp.bat" > nul
@@ -60,5 +61,3 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0package_linux.ps1"
 echo ===================================================
 echo [SUCCESS] Build completed successfully!
 echo ===================================================
-
-

@@ -15,7 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for Student and Professor personal inbox.

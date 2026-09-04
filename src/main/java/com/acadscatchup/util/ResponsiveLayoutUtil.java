@@ -8,8 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.stage.Stage;
 
 /**
  * Modern auto-scaling and responsive layout manager for AcadsCatchUp dashboards.

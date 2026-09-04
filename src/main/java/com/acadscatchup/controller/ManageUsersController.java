@@ -13,13 +13,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import com.acadscatchup.util.EmailService;
-import com.acadscatchup.util.WindowUtil;
 import com.acadscatchup.util.CustomAlert;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**

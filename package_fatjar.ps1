@@ -47,7 +47,7 @@ $jars = Get-ChildItem -Path "$LibsDir\*.jar"
 foreach ($jar in $jars) {
     Push-Location $StagingDir
     try {
-        & $JarExe -xf $jar.FullName
+        & $JarExe -J-Xmx384m -xf $jar.FullName
     } finally {
         Pop-Location
     }
@@ -62,7 +62,7 @@ if (Test-Path $metaInf) {
 }
 
 Write-Host "  -> Assembling standalone executable Fat JAR: $OutputJar..."
-& $JarExe -cfm $OutputJar $Manifest -C $StagingDir .
+& $JarExe -J-Xmx384m -cfm $OutputJar $Manifest -C $StagingDir .
 
 $sizeMb = [math]::Round(((Get-Item $OutputJar).Length / 1MB), 2)
 Write-Host "  -> Stand-alone executable JAR created successfully! ($sizeMb MB)"
@@ -74,7 +74,7 @@ $installerManifestContent = "Manifest-Version: 1.0`r`nMain-Class: com.acadscatch
 [System.IO.File]::WriteAllText($installerManifest, $installerManifestContent)
 
 Write-Host "  -> Assembling pure Java Setup & Installation Wizard: $installerJar..."
-& $JarExe -cfm $installerJar $installerManifest -C $StagingDir .
+& $JarExe -J-Xmx384m -cfm $installerJar $installerManifest -C $StagingDir .
 $setupSizeMb = [math]::Round(((Get-Item $installerJar).Length / 1MB), 2)
 Write-Host "  -> Pure Java Setup JAR created successfully! ($setupSizeMb MB)"
 

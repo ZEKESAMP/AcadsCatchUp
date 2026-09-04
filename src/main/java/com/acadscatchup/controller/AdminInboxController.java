@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for Admin Inbox where F4TAL manages submitted help and bug reports.
