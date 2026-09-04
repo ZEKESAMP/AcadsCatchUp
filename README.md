@@ -14,20 +14,18 @@ Table of Contents
 - [Role Permissions](#role-permissions)
 - [Architecture](#architecture)
 - [Installation](#installation)
-- [Building from Source](#building-from-source)
 - [Database Configuration](#database-configuration)
 - [Security](#security)
 - [Contributing](#contributing)
-- [License](#license)
 - [Author](#author)
 
 ## Overview
 
-AcadsCatchUp is project attempt to solve issues with missed activiy deadlines for students. It provides direct workflows for faculty and students to handle missed coursework (Activities, Quizzes, Examinations, and Assignments).
+AcadsCatchUp is project aims to attempt at solving issues with missed activiy deadlines for students. It provides direct workflows for faculty and students to handle missed coursework (Activities, Quizzes, Examinations, and Assignments).
 
 ### Core Highlights
 
-- **Dynamic syncing**: Automatically syncs into cloud for real-time campus-wide academic management system.
+- **Dynamic syncing**: Automatically syncs into cloud for real-time campus-wide academic management system and updates.
 - **Role-Based Access Control**: Professors and Students each have different UI and limitations.
 
 ## Features
