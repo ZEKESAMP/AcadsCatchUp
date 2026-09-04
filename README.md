@@ -16,7 +16,6 @@ Table of Contents
 - [Installation](#installation)
 - [Database Configuration](#database-configuration)
 - [Security](#security)
-- [Contributing](#contributing)
 - [Author](#author)
 
 ## Overview
