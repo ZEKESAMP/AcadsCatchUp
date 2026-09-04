@@ -40,7 +40,7 @@ public class AcadsCatchUpInstaller extends Application {
 
     public static final String DEVELOPER = "F4TAL";
     public static final String APP_NAME = "AcadsCatchUp";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
     public static final String PUBLISHER = "F4TAL (Stevenson James G. Gastanes)";
     public static final String PROJECT_URL = "https://github.com/ZEKESAMP/AcadsCatchUp";
 

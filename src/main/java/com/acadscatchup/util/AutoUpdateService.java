@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class AutoUpdateService {
 
     public static final String DEVELOPER = "F4TAL";
-    public static final String CURRENT_VERSION = "1.0.0";
+    public static final String CURRENT_VERSION = "1.0.1";
     public static final String DEFAULT_UPDATE_URL =
             "https://raw.githubusercontent.com/ZEKESAMP/AcadsCatchUp/main/version.json";
 
