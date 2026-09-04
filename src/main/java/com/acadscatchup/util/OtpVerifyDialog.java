@@ -42,6 +42,13 @@ public class OtpVerifyDialog {
         // Initial OTP dispatch
         EmailService.OtpSendResult sendResult = EmailService.generateAndSendOtp(recipientEmail, recipientName, purpose);
 
+        // If email delivery was rejected by the mail server, do NOT open the dialog!
+        if (!sendResult.success) {
+            CustomAlert.showError(owner, "Email Verification Failed",
+                    sendResult.message != null ? sendResult.message : "Could not deliver verification code to " + recipientEmail);
+            return false;
+        }
+
         VBox root = new VBox(0);
         root.setStyle("-fx-background-color: #1a1d2e; -fx-background-radius: 12; -fx-border-color: #2d3255; -fx-border-width: 1.5; -fx-border-radius: 12;");
 
@@ -169,6 +176,13 @@ public class OtpVerifyDialog {
             countdownSeconds = 60;
             countdownTimeline.playFromStart();
             EmailService.OtpSendResult resendResult = EmailService.generateAndSendOtp(recipientEmail, recipientName, purpose);
+            if (!resendResult.success) {
+                errorLbl.setText(resendResult.message != null ? resendResult.message : "Failed to deliver email to this address.");
+                errorLbl.setStyle("-fx-text-fill: #f87171; -fx-font-size: 12px;");
+                errorLbl.setVisible(true);
+                errorLbl.setManaged(true);
+                return;
+            }
             if (resendResult.isSimulation && resendResult.otpCode != null) {
                 simLbl.setText("💡 Simulation Code: " + resendResult.otpCode);
                 simBanner.setVisible(true);

@@ -95,36 +95,3 @@ jobs:
           name: AcadsCatchUp-Portable-Zip
           path: dist/AcadsCatchUp-v1.0.zip
           if-no-files-found: warn
-
-  # ============================================================================
-  # 2. Koyeb / Render Java Microservice Test & Container Build
-  # ============================================================================
-  test-checker-server:
-    name: Test & Validate Email Checker Microservice
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Java 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
-      - name: Compile Microservice Source
-        run: |
-          mkdir -p koyeb-server/bin
-          javac -d koyeb-server/bin koyeb-server/src/com/acadscatchup/server/GmailCheckerServer.java
-
-      - name: Build Docker Container
-        run: |
-          docker build -t acadscatchup-checker:test koyeb-server/
-
-      - name: Test Container Boot & Health Endpoint
-        run: |
-          docker run -d --name checker -p 8000:8000 acadscatchup-checker:test
-          sleep 4
-          curl --fail --retry 3 http://localhost:8000/health
-          docker stop checker

@@ -283,9 +283,18 @@ public class EmailService {
             return new OtpSendResult(true, false, code, details.headerTitle() + " code sent to " + recipientEmail);
         } catch (Exception e) {
             System.err.println("[EmailService] Delivery failed: " + e.getMessage());
-            // Fallback to simulation mode if delivery failed due to network / invalid credentials
-            return new OtpSendResult(true, true, code,
-                    "Could not send email (" + e.getMessage() + ").\nSimulation OTP: " + code);
+            // Clear cached OTP for failed email so invalid addresses cannot proceed
+            OTP_CACHE.remove(emailKey);
+            
+            String err = e.getMessage() != null ? e.getMessage() : "Unknown error";
+            String userFriendly;
+            if (err.contains("550") || err.contains("5.1.1") || err.contains("does not exist") 
+                    || err.contains("not found") || err.contains("Invalid") || err.contains("rejected")) {
+                userFriendly = "Google mail servers actively rejected delivery: The email address \"" + recipientEmail + "\" does not exist or is not receiving mail.";
+            } else {
+                userFriendly = "Could not deliver email to \"" + recipientEmail + "\". Please verify that your Gmail address exists and is typed correctly (" + err + ").";
+            }
+            return new OtpSendResult(false, false, null, userFriendly);
         }
     }
 

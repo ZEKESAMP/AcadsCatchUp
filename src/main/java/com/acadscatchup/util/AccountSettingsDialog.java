@@ -162,6 +162,10 @@ public class AccountSettingsDialog {
                     emailMsg.setStyle("-fx-text-fill: #f87171; -fx-font-size: 11.5px;");
                     emailMsg.setVisible(true); emailMsg.setManaged(true);
                 }
+            } else {
+                emailMsg.setText("Verification was not completed. Email was not changed.");
+                emailMsg.setStyle("-fx-text-fill: #fbbf24; -fx-font-size: 11.5px;");
+                emailMsg.setVisible(true); emailMsg.setManaged(true);
             }
         });
 
