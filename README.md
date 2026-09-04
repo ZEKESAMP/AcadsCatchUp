@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="dist/AcadsCatchUp-Linux/app_icon.png" alt="AcadsCatchUp Logo" width="128" height="128" />
+  <img src="src/main/resources/com/acadscatchup/img/Acads%20Catch%20UPp.jpg" alt="AcadsCatchUp Logo" width="220" />
 
   # AcadsCatchUp
 
