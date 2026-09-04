@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="src/main/resources/com/acadscatchup/img/Acads%20Catch%20UPp.jpg" alt="AcadsCatchUp Logo" width="220" />
+  <img src="src/main/resources/com/acadscatchup/img/Acads_Catch_UPp-removebg-preview.png" alt="AcadsCatchUp Logo" width="220" />
 
   # AcadsCatchUp
 
@@ -9,20 +9,20 @@
   *A modern, cross-platform desktop application empowering educators and students to track, manage, and resolve academic deficiencies with real-time notifications, 2FA security, and dual database support.*
 
   <p align="center">
-    <a href="#key-features">Key Features</a> •
-    <a href="#system-architecture">Architecture</a> •
-    <a href="#quick-start">Quick Start</a> •
-    <a href="#building-from-source">Build</a> •
-    <a href="#database-setup">Database</a> •
-    <a href="#security">Security</a> •
-    <a href="#license">License</a>
+    <a href="#key-features"><b>Key Features</b></a> &nbsp;•&nbsp;
+    <a href="#system-architecture"><b>Architecture</b></a> &nbsp;•&nbsp;
+    <a href="#quick-start"><b>Quick Start</b></a> &nbsp;•&nbsp;
+    <a href="#building-from-source"><b>Build</b></a> &nbsp;•&nbsp;
+    <a href="#database-setup"><b>Database</b></a> &nbsp;•&nbsp;
+    <a href="#security"><b>Security</b></a> &nbsp;•&nbsp;
+    <a href="#license"><b>License</b></a>
   </p>
 
   [![Java](https://img.shields.io/badge/Java-21%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
   [![JavaFX](https://img.shields.io/badge/JavaFX-21-FF6F00?style=for-the-badge&logo=javafx&logoColor=white)](https://openjfx.io/)
   [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
   [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-  [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=for-the-badge)](LICENSE)
+  [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=for-the-badge)](#license)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4E54C8?style=for-the-badge)](#quick-start)
   [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-Automated%20Build-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/ZEKESAMP/AcadsCatchUp/actions)
 
@@ -30,6 +30,7 @@
 
 ---
 
+<a id="overview"></a>
 ## 📖 Overview
 
 **AcadsCatchUp** is an enterprise-grade academic remediation tracking solution built using JavaFX and modern MVC/DAO architectural patterns. It bridges the communication gap between university faculty and students by centralizing the identification, assignment, submission, and grading of missed school requirements (Activities, Quizzes, Examinations, and Assignments).
@@ -42,6 +43,7 @@ Designed with resilience and user experience in mind, AcadsCatchUp features:
 
 ---
 
+<a id="key-features"></a>
 ## ⚡ Key Features
 
 ### 👥 Role-Based Workspaces
@@ -63,6 +65,7 @@ Designed with resilience and user experience in mind, AcadsCatchUp features:
 
 ---
 
+<a id="role-matrix"></a>
 ## 📊 Role Capability Matrix
 
 | Feature | Student | Professor | Administrator |
@@ -81,6 +84,8 @@ Designed with resilience and user experience in mind, AcadsCatchUp features:
 
 ---
 
+<a id="system-architecture"></a>
+<a id="architecture"></a>
 ## 🏗️ System Architecture
 
 AcadsCatchUp is organized into strict architectural boundaries ensuring clean separation of concerns, testability, and maintainability:
@@ -120,6 +125,7 @@ AcadsCatchUp
 
 ---
 
+<a id="quick-start"></a>
 ## 🚀 Quick Start
 
 ### Windows (Portable / Pre-packaged)
@@ -150,6 +156,8 @@ java -jar AcadsCatchUp.jar
 
 ---
 
+<a id="building-from-source"></a>
+<a id="build"></a>
 ## 🛠️ Building from Source
 
 ### Prerequisites
@@ -195,6 +203,8 @@ java -jar AcadsCatchUp.jar
 
 ---
 
+<a id="database-setup"></a>
+<a id="database"></a>
 ## 🗄️ Database Setup
 
 ### Option 1: SQLite (Default — Zero-Config)
@@ -214,6 +224,8 @@ For shared multi-user installations across university networks:
 
 ---
 
+<a id="security"></a>
+<a id="security-architecture"></a>
 ## 🔒 Security Architecture
 
 | Security Layer | Implementation Details |
@@ -226,6 +238,7 @@ For shared multi-user installations across university networks:
 
 ---
 
+<a id="contributing"></a>
 ## 🤝 Contributing
 
 Contributions are welcome! If you would like to help improve AcadsCatchUp:
@@ -240,6 +253,7 @@ Please ensure all modified Java files maintain `public static final String DEVEL
 
 ---
 
+<a id="license"></a>
 ## 📄 License
 
 This project is licensed under the **GNU General Public License v3.0** — see the [LICENSE](LICENSE) file for details.
