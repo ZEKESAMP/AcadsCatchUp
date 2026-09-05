@@ -10,6 +10,10 @@ on:
         description: 'Release Tag Name (e.g. v1.0.0)'
         required: true
         default: 'v1.0.0'
+      release_notes:
+        description: ''
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -22,6 +26,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Java 21 (Temurin)
         uses: actions/setup-java@v4
@@ -34,6 +40,24 @@ jobs:
         shell: pwsh
         run: |
           powershell -ExecutionPolicy Bypass -File verify_developer_guard.ps1
+
+      - name: Resolve Release Context
+        shell: pwsh
+        run: |
+          # 1. Resolve Tag Name
+          $TAG = "${{ github.event.inputs.version_tag }}"
+          if ([string]::isNullorEmpty($TAG)) { $TAG = "${{ github.ref_name }}" }
+          echo "RELEASE_TAG=$TAG" >> $env:GITHUB_ENV
+
+          # 2. Resolve Notes (get commit message)
+          $NOTES = "${{ github.event.inputs.release_notes }}"
+          if ([string]::isNullorEmpty($NOTES)) {
+              $NOTES = (git log -1 --pretty=%B).Trim()
+          }
+
+          echo "RELEASE_NOTES<<EOF" >> $env:GITHUB_ENV
+          echo "$NOTES" >> $env:GITHUB_ENV
+          echo "EOF" >> $env:GITHUB_ENV
 
       # Compile and assemble
       - name: Compile and Package Artifacts
@@ -55,28 +79,30 @@ jobs:
           
           # Package Windows Portable Zip
           if (Test-Path "dist/AcadsCatchUp-Portable") {
-              Compress-Archive -Path "dist/AcadsCatchUp-Portable/*" -DestinationPath "dist/AcadsCatchUp-v1.0.zip" -Force
+              Compress-Archive -Path "dist/AcadsCatchUp-Portable/*" -DestinationPath "dist/AcadsCatchUp-$env:RELEASE_TAG.zip" -Force
           }
 
       # Publish Official GitHub Release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.version_tag || github.ref_name }}
-          name: AcadsCatchUp ${{ github.event.inputs.version_tag || github.ref_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: AcadsCatchUp ${{ env.RELEASE_TAG }}
           draft: false
           prerelease: false
           generate_release_notes: true
           body: |
-            ### AcadsCatchUp Official Release
-            **Developer & System Architect**: F4TAL (Stevenson James G. Gastanes)
+            ### New Release ${{ env.RELEASE_TAG }}
+            ${{ env.RELEASE_NOTES }}
             
-            #### 📦 Included Downloads:
+            #### Included Downloads:
             - **`AcadsCatchUp.jar`**: Cross-platform Standalone Executable Fat JAR (Windows, Linux, macOS). Run with `java -jar AcadsCatchUp.jar`.
             - **`AcadsCatchUp-Linux.zip` & `.tar.gz`**: Dedicated Linux distribution with desktop entry and launch shell script.
-            - **`AcadsCatchUp-v1.0.zip`**: Complete portable bundle for Windows.
+            - **`AcadsCatchUp-${{ env.RELEASE_TAG }}.zip`**: Complete portable bundle for Windows.
+
+            **Developer & System Architect**: F4TAL (Stevenson James G. Gastanes)
           files: |
             dist/AcadsCatchUp.jar
             dist/AcadsCatchUp-Linux.zip
             dist/AcadsCatchUp-Linux.tar.gz
-            dist/AcadsCatchUp-v1.0.zip
+            dist/AcadsCatchUp-${{ env.RELEASE_TAG }}.zip
