@@ -63,6 +63,7 @@ public class UpdatesDialog {
         HBox.setHgrow(headerSpacer, Priority.ALWAYS);
 
         Label currentBadge = new Label("🟢 v" + UpdateSplash.CURRENT_VERSION + " Installed");
+        currentBadge.setMinWidth(Region.USE_PREF_SIZE);
         currentBadge.setStyle(
                 "-fx-background-color: rgba(35, 165, 90, 0.15); " +
                 "-fx-text-fill: #23a55a; " +
@@ -77,9 +78,11 @@ public class UpdatesDialog {
 
         header.getChildren().addAll(iconLbl, titleBox, headerSpacer, currentBadge);
 
-        // ── 2. VERSION SELECTOR BAR (Buttons) ────────────────────────────────
-        HBox versionBar = new HBox(8);
+        // ── 2. VERSION SELECTOR BAR (FlowPane with wrap & fixed pref size) ──
+        FlowPane versionBar = new FlowPane();
         versionBar.setAlignment(Pos.CENTER_LEFT);
+        versionBar.setHgap(8);
+        versionBar.setVgap(6);
         versionBar.setStyle(
                 "-fx-background-color: #121520; " +
                 "-fx-padding: 10 22; " +
@@ -89,6 +92,7 @@ public class UpdatesDialog {
 
         Label selectLbl = new Label("Select Version:");
         selectLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11.5px; -fx-font-weight: bold;");
+        selectLbl.setMinWidth(Region.USE_PREF_SIZE);
 
         versionBar.getChildren().add(selectLbl);
 
@@ -102,13 +106,14 @@ public class UpdatesDialog {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         // Version definitions
-        String[] versions = new String[] { "v1.0.8", "v1.0.7", "v1.0.6", "v1.0.5", "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
-        final String[] currentSelectedVersion = new String[] { "v1.0.8" };
+        String[] versions = new String[] { "v1.0.9", "v1.0.8", "v1.0.7", "v1.0.6", "v1.0.5", "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
+        final String[] currentSelectedVersion = new String[] { "v1.0.9" };
         Map<String, Button> versionButtons = new HashMap<>();
 
         for (String v : versions) {
-            String labelText = v.equals("v1.0.8") ? "✨ v1.0.8 (Latest)" : v;
+            String labelText = v.equals("v1.0.9") ? "✨ v1.0.9 (Latest)" : v;
             Button vBtn = new Button(labelText);
+            vBtn.setMinWidth(Region.USE_PREF_SIZE);
             vBtn.setStyle(
                     "-fx-background-color: #242840; " +
                     "-fx-text-fill: #94a3b8; " +
@@ -160,8 +165,8 @@ public class UpdatesDialog {
             versionBar.getChildren().add(vBtn);
         }
 
-        // Default to v1.0.8
-        Button defaultBtn = versionButtons.get("v1.0.8");
+        // Default to v1.0.9
+        Button defaultBtn = versionButtons.get("v1.0.9");
         if (defaultBtn != null) {
             defaultBtn.setStyle(
                     "-fx-background-color: #5865f2; " +
@@ -175,7 +180,7 @@ public class UpdatesDialog {
                     "-fx-border-width: 1; " +
                     "-fx-cursor: hand;"
             );
-            renderVersionNotes(contentBox, "v1.0.8");
+            renderVersionNotes(contentBox, "v1.0.9");
         }
 
         // ── 3. FOOTER ────────────────────────────────────────────────────────
@@ -194,30 +199,6 @@ public class UpdatesDialog {
         btnCheckUpdate.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 14;");
         btnCheckUpdate.setOnAction(e -> UpdateSplash.checkManual(owner));
 
-        Button btnSendToInbox = new Button("📨 Send to My Inbox");
-        btnSendToInbox.getStyleClass().add("btn-ghost");
-        btnSendToInbox.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 14;");
-        btnSendToInbox.setOnAction(e -> {
-            com.acadscatchup.model.User user = Session.getCurrentUser();
-            if (user != null) {
-                com.acadscatchup.dao.InboxDAO inboxDAO = new com.acadscatchup.dao.InboxDAO();
-                if (inboxDAO.hasUserReceivedUpdate(user.getId(), currentSelectedVersion[0])) {
-                    CustomAlert.showInfo(owner, "Already in Inbox ✔",
-                            "✔ Release notes for " + currentSelectedVersion[0] + " are already in your personal Inbox!");
-                    return;
-                }
-                String notes = UpdateNoticeUtil.getWhatsNewText(currentSelectedVersion[0]);
-                boolean ok = UpdateNoticeUtil.sendNoticeToUser(user, currentSelectedVersion[0], notes);
-                if (ok) {
-                    CustomAlert.showInfo(owner, "Delivered to Inbox", "✔ Release notes for " + currentSelectedVersion[0] + " have been delivered to your personal Inbox!");
-                } else {
-                    CustomAlert.showWarning(owner, "Delivery Failed", "Could not deliver release notes to your Inbox at this time.");
-                }
-            } else {
-                CustomAlert.showInfo(owner, "Notice", "Please log in to receive release notes in your Inbox.");
-            }
-        });
-
         Region footerSpacer = new Region();
         HBox.setHgrow(footerSpacer, Priority.ALWAYS);
 
@@ -226,12 +207,16 @@ public class UpdatesDialog {
         doneBtn.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 18;");
         doneBtn.setOnAction(e -> ModalOverlay.close(doneBtn));
 
-        footer.getChildren().addAll(btnCheckUpdate, btnSendToInbox, footerSpacer, doneBtn);
+        footer.getChildren().addAll(btnCheckUpdate, footerSpacer, doneBtn);
 
         root.getChildren().addAll(header, versionBar, scrollPane, footer);
 
         Node anchor = (owner != null && owner.getScene() != null) ? owner.getScene().getRoot() : null;
-        ModalOverlay.showAndWait(anchor, root, 640, 600);
+        double screenW = (owner != null && owner.getScene() != null) ? owner.getScene().getWidth() : 800;
+        double screenH = (owner != null && owner.getScene() != null) ? owner.getScene().getHeight() : 700;
+        double modalW = Math.min(840, Math.max(620, screenW * 0.85));
+        double modalH = Math.min(680, Math.max(520, screenH * 0.85));
+        ModalOverlay.showAndWait(anchor, root, modalW, modalH);
     }
 
     /**
@@ -241,6 +226,9 @@ public class UpdatesDialog {
         container.getChildren().clear();
 
         switch (version) {
+            case "v1.0.9":
+                renderV109(container);
+                break;
             case "v1.0.8":
                 renderV108(container);
                 break;
@@ -269,9 +257,34 @@ public class UpdatesDialog {
                 renderV100(container);
                 break;
             default:
-                renderV108(container);
+                renderV109(container);
                 break;
         }
+    }
+
+    private static void renderV109(VBox c) {
+        // Banner Card
+        VBox banner = createBannerCard(
+                "🚀 AcadsCatchUp v1.0.9 — Enrollment Alerts & Responsive Modal Polish",
+                "Release Date: September 2026 • Build: v1.0.9-PROD-F4TAL",
+                "CURRENT INSTALLED VERSION",
+                "#23a55a"
+        );
+
+        // Feature Sections
+        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+                "Student Enrollment Notifications: When an instructor or admin enrolls a student in a subject, the student immediately receives a live desktop tray notification and an official enrollment message delivered to their personal Inbox.",
+                "Enrolled Subjects Background Sync: LiveSync automatically detects subject enrollments and refreshes the student's Enrolled Subjects overview chips in real time.",
+                "Responsive Updates Modal: Completely redesigned the Updates & What's New dialog with dynamic resolution scaling and flexible wrapping version selector buttons.",
+                "Streamlined Updates Hub: Removed obsolete manual inbox sending button in favor of a clean, dedicated 1-click update experience."
+        });
+
+        VBox improvements = createSectionCard("⚡ Improvements & Synergy", new String[]{
+                "Adaptive Card Geometry: Dialog banners and badges now intelligently wrap and preserve fixed sizes across all display dimensions.",
+                "Robust Offline Delivery: Enrollment notices persist in the database so students receiving enrollments while offline receive desktop alerts immediately upon login."
+        });
+
+        c.getChildren().addAll(banner, features, improvements);
     }
 
     private static void renderV108(VBox c) {
@@ -279,8 +292,8 @@ public class UpdatesDialog {
         VBox banner = createBannerCard(
                 "🚀 AcadsCatchUp v1.0.8 — Student Reactive Search & Stat Card Synergy",
                 "Release Date: September 2026 • Build: v1.0.8-PROD-F4TAL",
-                "CURRENT INSTALLED VERSION",
-                "#23a55a"
+                "PREVIOUS RELEASE",
+                "#64748b"
         );
 
         // Feature Sections
@@ -497,16 +510,16 @@ public class UpdatesDialog {
                 "-fx-background-radius: 10;"
         );
 
-        HBox topRow = new HBox(8);
+        HBox topRow = new HBox(10);
         topRow.setAlignment(Pos.CENTER_LEFT);
 
         Label titleLbl = new Label(title);
-        titleLbl.setStyle("-fx-text-fill: #f8fafc; -fx-font-size: 15px; -fx-font-weight: 800;");
-
-        Region sp = new Region();
-        HBox.setHgrow(sp, Priority.ALWAYS);
+        titleLbl.setStyle("-fx-text-fill: #f8fafc; -fx-font-size: 14.5px; -fx-font-weight: 800;");
+        titleLbl.setWrapText(true);
+        HBox.setHgrow(titleLbl, Priority.ALWAYS);
 
         Label badge = new Label(badgeText);
+        badge.setMinWidth(Region.USE_PREF_SIZE);
         badge.setStyle(
                 "-fx-background-color: " + badgeColor + "22; " +
                 "-fx-text-fill: " + badgeColor + "; " +
@@ -519,10 +532,11 @@ public class UpdatesDialog {
                 "-fx-border-width: 1;"
         );
 
-        topRow.getChildren().addAll(titleLbl, sp, badge);
+        topRow.getChildren().addAll(titleLbl, badge);
 
         Label subLbl = new Label(subtitle);
         subLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
+        subLbl.setWrapText(true);
 
         banner.getChildren().addAll(topRow, subLbl);
         return banner;

@@ -83,6 +83,8 @@ public class UserInboxController {
                     badge.setStyle("-fx-background-color: rgba(239,68,68,0.22); -fx-text-fill: #f87171; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
                 } else if (t.contains("graded")) {
                     badge.setStyle("-fx-background-color: rgba(34,197,94,0.22); -fx-text-fill: #4ade80; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
+                } else if (t.contains("enroll")) {
+                    badge.setStyle("-fx-background-color: rgba(16,185,129,0.22); -fx-text-fill: #34d399; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
                 } else if (t.contains("submission")) {
                     badge.setStyle("-fx-background-color: rgba(59,130,246,0.22); -fx-text-fill: #60a5fa; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
                 } else if (t.contains("resolved") || t.contains("bug")) {

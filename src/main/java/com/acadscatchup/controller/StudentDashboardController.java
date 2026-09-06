@@ -187,6 +187,7 @@ public class StudentDashboardController {
                         String titleL = (m.getTitle() != null) ? m.getTitle().toLowerCase() : "";
                         String typeL = (m.getMsgType() != null) ? m.getMsgType().toLowerCase() : "";
                         if (titleL.contains("graded") || typeL.contains("graded") ||
+                            titleL.contains("enroll") || typeL.contains("enroll") ||
                             titleL.startsWith("missed") || typeL.startsWith("missed") ||
                             typeL.contains("resolved") || titleL.contains("resolved") ||
                             typeL.contains("update") || titleL.contains("update") ||
@@ -224,6 +225,8 @@ public class StudentDashboardController {
             final com.acadscatchup.model.InboxMessage notice = alertMessage;
             boolean isGraded = (notice.getTitle() != null && notice.getTitle().toLowerCase().contains("graded"))
                     || "GRADED".equalsIgnoreCase(notice.getMsgType());
+            boolean isEnrolled = (notice.getTitle() != null && (notice.getTitle().toLowerCase().contains("enrolled") || notice.getTitle().toLowerCase().contains("enrollment")))
+                    || "ENROLLMENT".equalsIgnoreCase(notice.getMsgType()) || "ENROLLED".equalsIgnoreCase(notice.getMsgType());
             boolean isResolved = (notice.getTitle() != null && notice.getTitle().toLowerCase().contains("resolved"))
                     || "REPORT_RESOLVED".equalsIgnoreCase(notice.getMsgType());
             boolean isUpdate = (notice.getTitle() != null && (notice.getTitle().toLowerCase().contains("update") || notice.getTitle().toLowerCase().contains("what's new")))
@@ -235,6 +238,9 @@ public class StudentDashboardController {
             if (isUpdate) {
                 toastTitle = "AcadsCatchUp • What's New Update 🚀";
                 toastBody = "Hi " + curr.getFullName() + "! " + notice.getTitle() + " has arrived in your Inbox. Click to view release notes!";
+            } else if (isEnrolled) {
+                toastTitle = "AcadsCatchUp • Subject Enrollment 🎓";
+                toastBody = "Hi " + curr.getFullName() + "! You have been enrolled in " + (notice.getSubjectCode() != null && !notice.getSubjectCode().isBlank() ? notice.getSubjectCode() : "a subject") + " by " + (notice.getSenderName() != null ? notice.getSenderName() : "your instructor") + ". Check your Inbox & Enrolled Subjects!";
             } else if (isResolved) {
                 toastTitle = "AcadsCatchUp • Bug Report Resolved ✔";
                 toastBody = "Hi " + curr.getFullName() + "! Your reported issue has been addressed and marked as RESOLVED by the System Administrator.";
@@ -249,9 +255,12 @@ public class StudentDashboardController {
             com.acadscatchup.util.WindowsNotificationUtil.showNotification(
                     toastTitle,
                     toastBody,
-                    (isResolved || isGraded || isUpdate) ? java.awt.TrayIcon.MessageType.INFO : java.awt.TrayIcon.MessageType.WARNING
+                    (isResolved || isGraded || isUpdate || isEnrolled) ? java.awt.TrayIcon.MessageType.INFO : java.awt.TrayIcon.MessageType.WARNING
             );
             loadItems(); // Automatically refresh table to show new items or updated status!
+            if (isEnrolled) {
+                loadEnrolledSubjects();
+            }
         }
 
         lastSeenUnreadCount = unread;

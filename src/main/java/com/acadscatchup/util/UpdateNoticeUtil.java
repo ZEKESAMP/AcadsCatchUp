@@ -19,6 +19,30 @@ public class UpdateNoticeUtil {
      * Returns the formatted release notes for the specified version.
      */
     public static String getWhatsNewText(String version) {
+        if ("1.0.9".equals(version) || "v1.0.9".equalsIgnoreCase(version)) {
+            return """
+                Hello {recipientName}!
+
+                Welcome to AcadsCatchUp v1.0.9! Here is what's new in this release:
+
+                🎓 REAL-TIME STUDENT ENROLLMENT NOTIFICATIONS
+                • When a professor or administrator enrolls you into a subject (or all curriculum subjects), you will immediately receive a live desktop notification.
+                • An official enrollment notice is delivered straight to your personal Inbox with instructor details and subject specifications.
+
+                ⚡ ENROLLED SUBJECTS LIVE SYNC
+                • Background LiveSync automatically detects newly assigned subjects within seconds and immediately refreshes your Enrolled Subjects cards without needing to reload or relogin.
+
+                🖥️ RESPONSIVE UPDATES & WHAT'S NEW MODAL
+                • Redesigned the Updates modal to dynamically scale to your monitor resolution.
+                • Replaced fixed-width bars with a smart wrapping FlowPane so version buttons and labels never clip or truncate with ellipsis.
+
+                ✨ STREAMLINED UPDATES HUB
+                • Removed the obsolete manual inbox delivery button for a cleaner, focused 1-click update experience.
+
+                Thank you for using AcadsCatchUp!
+                — Engineered with care by F4TAL""";
+        }
+
         if ("1.0.8".equals(version) || "v1.0.8".equalsIgnoreCase(version)) {
             return """
                 Hello {recipientName}!

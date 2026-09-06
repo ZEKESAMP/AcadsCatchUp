@@ -1,9 +1,11 @@
 package com.acadscatchup.controller;
 
+import com.acadscatchup.dao.InboxDAO;
 import com.acadscatchup.dao.SubjectDAO;
 import com.acadscatchup.model.Subject;
 import com.acadscatchup.model.User;
 import com.acadscatchup.util.CustomAlert;
+import com.acadscatchup.util.Session;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -47,6 +49,7 @@ public class EnrollStudentController {
     @FXML private Button btnUnenrollAllSubjects;
 
     private final SubjectDAO subjectDAO = new SubjectDAO();
+    private final InboxDAO inboxDAO = new InboxDAO();
     private final ObservableList<StudentRow> tableRows = FXCollections.observableArrayList();
 
     private double xOffset = 0;
@@ -217,6 +220,11 @@ public class EnrollStudentController {
         Subject sub = subjectCombo.getValue();
         if (sub == null) return;
 
+        User currUser = Session.getCurrentUser();
+        String senderName = currUser != null ? currUser.getFullName() : "Professor";
+        String senderRole = currUser != null ? currUser.getRole() : "PROFESSOR";
+        int senderId = currUser != null ? currUser.getId() : 0;
+
         int newlyEnrolled = 0;
         int newlyUnenrolled = 0;
 
@@ -227,6 +235,23 @@ public class EnrollStudentController {
             if (currentlySelected && !wasEnrolled) {
                 if (subjectDAO.enrollStudent(r.getUser().getId(), sub.getId())) {
                     newlyEnrolled++;
+
+                    // Send official enrollment notification message to the student's personal inbox
+                    String title = "🎓 Enrolled in " + sub.getCode() + " — " + sub.getName();
+                    String body = "Hello " + r.getUser().getFullName() + ",\n\n"
+                            + "You have been officially enrolled into the following subject:\n"
+                            + "📖 " + sub.getCode() + " - " + sub.getName() + "\n"
+                            + "👨‍🏫 Instructor: " + senderName + "\n\n"
+                            + "You can now view this subject in your Enrolled Subjects section on your dashboard, check for any missed activities or quizzes, and submit requirements directly.\n\n"
+                            + "— AcadsCatchUp Academic Management System";
+
+                    inboxDAO.sendMessage(
+                            senderId, senderName, senderRole,
+                            r.getUser().getId(), r.getUser().getFullName(),
+                            title, body,
+                            null, null, sub.getCode(),
+                            "ENROLLMENT"
+                    );
                 }
             } else if (!currentlySelected && wasEnrolled) {
                 if (subjectDAO.unenrollStudent(r.getUser().getId(), sub.getId())) {
@@ -262,6 +287,27 @@ public class EnrollStudentController {
 
         List<Integer> studentIds = selectedStudents.stream().map(r -> r.getUser().getId()).toList();
         int totalNew = subjectDAO.enrollStudentsInAllSubjects(studentIds);
+
+        User currUser = Session.getCurrentUser();
+        String senderName = currUser != null ? currUser.getFullName() : "Administrator / Professor";
+        String senderRole = currUser != null ? currUser.getRole() : "PROFESSOR";
+        int senderId = currUser != null ? currUser.getId() : 0;
+
+        for (StudentRow r : selectedStudents) {
+            String title = "🎓 Enrolled in All Curriculum Subjects";
+            String body = "Hello " + r.getUser().getFullName() + ",\n\n"
+                    + "You have been officially enrolled into all curriculum subjects by " + senderName + ".\n\n"
+                    + "You can now view your enrolled subjects overview on your dashboard and track all academic deadlines.\n\n"
+                    + "— AcadsCatchUp Academic Management System";
+
+            inboxDAO.sendMessage(
+                    senderId, senderName, senderRole,
+                    r.getUser().getId(), r.getUser().getFullName(),
+                    title, body,
+                    null, null, "ALL",
+                    "ENROLLMENT"
+            );
+        }
 
         enrolledSuccessfully = true;
         CustomAlert.showInfo(stage.getOwner(), "Enrolled in All Subjects 🎉",

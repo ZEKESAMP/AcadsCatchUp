@@ -120,6 +120,7 @@ public class InboxMessage {
         String mt = msgType.trim();
         if (mt.equalsIgnoreCase("SUBMISSION")) return "Submission";
         if (mt.equalsIgnoreCase("GRADED")) return "Graded";
+        if (mt.equalsIgnoreCase("ENROLLMENT") || mt.equalsIgnoreCase("ENROLLED")) return "Enrollment";
         if (mt.equalsIgnoreCase("REPORT_RESOLVED")) return "Bug Resolved";
         if (mt.equalsIgnoreCase("UPDATE") || mt.equalsIgnoreCase("SYSTEM_UPDATE")) return "Update";
         return mt;
