@@ -33,6 +33,7 @@
             <HBox alignment="CENTER_RIGHT" spacing="8" minWidth="-Infinity">
                 <Button fx:id="adminInboxBtn" text="📥 Bug Reports (0)" styleClass="btn-ghost" onAction="#handleOpenBugReports" minWidth="-Infinity" />
                 <Button fx:id="smtpConfigBtn" text="📧 SMTP Config" styleClass="btn-ghost" onAction="#handleOpenSmtpConfig" minWidth="-Infinity" />
+                <Button fx:id="updatesBtn" text="🚀 Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
                 <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
                 <Label fx:id="adminNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
                 <Button text="Logout" styleClass="btn-outline-sm" id="adminLogoutBtn" fx:id="adminLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />

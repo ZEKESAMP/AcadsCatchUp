@@ -34,6 +34,7 @@
                 <Button fx:id="adminInboxBtn" text="📥 Bug Reports (0)" styleClass="btn-submitted" onAction="#handleOpenAdminInbox" minWidth="-Infinity" />
                 <Button fx:id="profInboxBtn" text="📬 Submissions (0)" styleClass="btn-submitted" onAction="#handleOpenProfInbox" minWidth="-Infinity" />
                 <Button fx:id="helpBtn" text="💬 Help / Report Bug" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
+                <Button fx:id="updatesBtn" text="🚀 Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
                 <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
                 <Label fx:id="profNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
                 <Button text="Logout" styleClass="btn-outline-sm" id="profLogoutBtn" fx:id="profLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />

@@ -51,6 +51,7 @@ public class AdminDashboardController {
     @FXML private Label syncStatusLabel;
     @FXML private Button adminInboxBtn;
     @FXML private Button smtpConfigBtn;
+    @FXML private Button updatesBtn;
     @FXML private Button settingsBtn;
     @FXML private Label adminNameLabel;
     @FXML private Button adminLogoutBtn;
@@ -935,6 +936,11 @@ public class AdminDashboardController {
         root.getChildren().addAll(header, body, footer);
 
         ModalOverlay.showAndWait(usersTable, root, 520, 560);
+    }
+
+    @FXML
+    private void handleOpenUpdates() {
+        com.acadscatchup.util.UpdatesDialog.show(usersTable.getScene().getWindow());
     }
 
     @FXML

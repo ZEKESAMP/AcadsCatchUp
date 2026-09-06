@@ -38,6 +38,7 @@ public class StudentDashboardController {
     @FXML private Label syncStatusLabel;
     @FXML private Button inboxBtn;
     @FXML private Button helpBtn;
+    @FXML private Button updatesBtn;
     @FXML private Button settingsBtn;
     @FXML private Button studentLogoutBtn;
     @FXML private ScrollPane dashboardScrollPane;
@@ -478,6 +479,11 @@ public class StudentDashboardController {
             com.acadscatchup.util.CustomAlert.showError(studentNameLabel.getScene().getWindow(),
                     "Report Error", "Could not open Help Report: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleOpenUpdates() {
+        com.acadscatchup.util.UpdatesDialog.show(studentNameLabel.getScene().getWindow());
     }
 
     @FXML

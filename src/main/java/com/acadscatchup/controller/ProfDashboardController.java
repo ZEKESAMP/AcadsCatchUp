@@ -45,6 +45,7 @@ public class ProfDashboardController {
     @FXML private Button adminInboxBtn;
     @FXML private Button profInboxBtn;
     @FXML private Button helpBtn;
+    @FXML private Button updatesBtn;
     @FXML private Button settingsBtn;
     @FXML private Button profLogoutBtn;
 
@@ -918,6 +919,11 @@ public class ProfDashboardController {
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Could not open Help Report: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleOpenUpdates() {
+        com.acadscatchup.util.UpdatesDialog.show(profNameLabel.getScene().getWindow());
     }
 
     @FXML

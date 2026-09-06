@@ -32,6 +32,7 @@
             <HBox alignment="CENTER_RIGHT" spacing="10" minWidth="-Infinity">
                 <Button fx:id="inboxBtn" text="📬 Inbox (0)" styleClass="btn-submitted" onAction="#handleOpenInbox" minWidth="-Infinity" />
                 <Button fx:id="helpBtn" text="💬 Help / Bug Report" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
+                <Button fx:id="updatesBtn" text="🚀 Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
                 <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
                 <Label fx:id="studentNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
                 <Button text="Logout" styleClass="btn-outline-sm" id="studentLogoutBtn" fx:id="studentLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />

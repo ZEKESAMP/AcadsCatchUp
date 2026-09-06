@@ -37,7 +37,7 @@ public class UpdateSplash {
 
     public static final String DEVELOPER = "F4TAL";
 
-    public static final String CURRENT_VERSION = "1.0.2";
+    public static final String CURRENT_VERSION = "1.0.3";
     private static final String VERSION_URL =
             "https://raw.githubusercontent.com/ZEKESAMP/AcadsCatchUp/main/version.json";
 
