@@ -23,8 +23,13 @@ import java.util.regex.Pattern;
 
 /**
  * Discord-Style Startup Update Splash Screen for AcadsCatchUp.
- * Displays an elegant frameless dark card with logo, checks GitHub for updates
- * asynchronously with a strict timeout, and seamlessly transitions to Login.
+ *
+ * Algorithm:
+ * 1. Check if there is a new update from version manifest on GitHub.
+ * 2. If there is a new .jar, download it to the user's Downloads folder with live progress.
+ * 3. Find the "AcadsCatchUp-Portable" folder and copy/replace the old .jar with the new .jar.
+ * 4. After replacing the old .jar, NO restart is needed — seamlessly proceed to the Login phase.
+ * 5. If there is no update, inform the user "No update" and immediately proceed to Login.
  *
  * @author F4TAL (Stevenson James G. Gastanes)
  */
@@ -146,19 +151,19 @@ public class UpdateSplash {
                         // ── Update Available ──
                         Platform.runLater(() -> {
                             statusLabel.setText("⬇ Update found: v" + remoteVersion);
-                            detailLabel.setText("Preparing download...");
+                            detailLabel.setText("Downloading to Downloads folder...");
                             progressBar.setProgress(0);
                         });
 
-                        downloadAndApplyUpdate(downloadUrl, remoteVersion, progressBar, statusLabel, detailLabel);
+                        downloadAndApplyUpdate(downloadUrl, remoteVersion, progressBar, statusLabel, detailLabel, splashStage, primaryStage);
                         return;
                     } else {
-                        // ── Up to Date ──
+                        // ── No Update ──
                         Platform.runLater(() -> {
-                            statusLabel.setText("✔ You're up to date!");
-                            statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 12.5px; -fx-font-weight: bold;");
+                            statusLabel.setText("No update");
+                            statusLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 13px; -fx-font-weight: 600;");
                             progressBar.setProgress(1.0);
-                            progressBar.setStyle("-fx-accent: #23a55a;");
+                            progressBar.setStyle("-fx-accent: #5865f2;");
                             detailLabel.setText("Launching AcadsCatchUp...");
                         });
                         Thread.sleep(600);
@@ -188,30 +193,38 @@ public class UpdateSplash {
     private static void handleOfflineMode(Label statusLabel, Label detailLabel) {
         try {
             Platform.runLater(() -> {
-                statusLabel.setText("Offline mode • Starting...");
-                detailLabel.setText("No network connection detected.");
+                statusLabel.setText("No update");
+                statusLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 13px; -fx-font-weight: 600;");
+                detailLabel.setText("Offline mode • Launching AcadsCatchUp...");
             });
-            Thread.sleep(400);
+            Thread.sleep(500);
         } catch (InterruptedException ignored) {}
     }
 
     /**
-     * Downloads the updated JAR file with live progress tracking and triggers hand-off restart.
+     * Downloads the updated JAR file to Downloads folder, locates AcadsCatchUp-Portable,
+     * replaces the existing JAR(s), and immediately transitions to the Login screen without restarting.
      */
     private static void downloadAndApplyUpdate(String downloadUrl, String newVersion,
-                                              ProgressBar progressBar, Label statusLabel, Label detailLabel) {
+                                              ProgressBar progressBar, Label statusLabel, Label detailLabel,
+                                              Stage splashStage, Stage primaryStage) {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URI(downloadUrl).toURL().openConnection();
             conn.setConnectTimeout(8000);
-            conn.setReadTimeout(15000);
+            conn.setReadTimeout(20000);
             conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
 
             int contentLength = conn.getContentLength();
-            File tempJar = File.createTempFile("AcadsCatchUp-update-", ".jar");
-            tempJar.deleteOnExit();
+
+            // 1. Target in user's Downloads folder
+            File downloadsDir = new File(System.getProperty("user.home"), "Downloads");
+            if (!downloadsDir.exists()) {
+                downloadsDir.mkdirs();
+            }
+            File downloadedJar = new File(downloadsDir, "AcadsCatchUp.jar");
 
             try (InputStream in = new BufferedInputStream(conn.getInputStream());
-                 OutputStream out = new BufferedOutputStream(new FileOutputStream(tempJar))) {
+                 OutputStream out = new BufferedOutputStream(new FileOutputStream(downloadedJar))) {
 
                 byte[] buffer = new byte[8192];
                 int bytesRead;
@@ -235,71 +248,153 @@ public class UpdateSplash {
             }
 
             Platform.runLater(() -> {
-                statusLabel.setText("✔ Update ready! Restarting...");
-                statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 12.5px; -fx-font-weight: bold;");
-                detailLabel.setText("Applying v" + newVersion + "...");
-                progressBar.setProgress(1.0);
+                statusLabel.setText("Applying update to AcadsCatchUp-Portable...");
+                detailLabel.setText("Replacing old .jar file...");
             });
 
-            Thread.sleep(800);
-            applyUpdateAndRestart(tempJar);
+            // 2. Find AcadsCatchUp-Portable folder and copy/replace
+            File portableDir = findPortableDirectory();
+            if (portableDir != null && portableDir.exists()) {
+                copyJarToPortable(downloadedJar, portableDir);
+            }
+
+            // 3. User feedback: Update applied!
+            Platform.runLater(() -> {
+                statusLabel.setText("✔ Update applied!");
+                statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: bold;");
+                detailLabel.setText("Opening AcadsCatchUp...");
+                progressBar.setProgress(1.0);
+                progressBar.setStyle("-fx-accent: #23a55a;");
+            });
+
+            Thread.sleep(700);
 
         } catch (Exception e) {
-            System.err.println("[UpdateSplash] Download failed: " + e.getMessage());
+            System.err.println("[UpdateSplash] Download/update failed: " + e.getMessage());
             Platform.runLater(() -> {
-                statusLabel.setText("Download failed. Launching current version...");
-                detailLabel.setText("Error: " + e.getMessage());
+                statusLabel.setText("No update (Download failed)");
+                detailLabel.setText("Launching current version...");
             });
-            try { Thread.sleep(1200); } catch (InterruptedException ignored) {}
+            try { Thread.sleep(700); } catch (InterruptedException ignored) {}
         }
+
+        // 4. No restart needed — go automatically to Login Phase
+        Platform.runLater(() -> {
+            splashStage.close();
+            try {
+                Main.showLoginScreen(primaryStage);
+            } catch (Exception ex) {
+                System.err.println("[UpdateSplash] Error launching main login: " + ex.getMessage());
+            }
+        });
     }
 
     /**
-     * Executes detached hand-off script to safely overwrite the active JAR and restart.
+     * Locates the AcadsCatchUp-Portable folder by checking the execution environment
+     * and common filesystem locations.
      */
-    private static void applyUpdateAndRestart(File tempJar) {
+    public static File findPortableDirectory() {
+        // 1. Check running location from CodeSource
         try {
             File codeSourceJar = new File(UpdateSplash.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            File baseDir = codeSourceJar.getParentFile();
-            File portableDir = baseDir;
-            if (baseDir != null && baseDir.getName().equalsIgnoreCase("app")) {
-                portableDir = baseDir.getParentFile();
-            }
-
-            File rootJar = new File(portableDir, "AcadsCatchUp.jar");
-            File appJar1 = new File(portableDir, "app" + File.separator + "AcadsCatchUp.jar");
-            File appJar2 = new File(portableDir, "app" + File.separator + "acadscatchup-app.jar");
-            File exeFile = new File(portableDir, "AcadsCatchUp.exe");
-
-            File updaterBat = File.createTempFile("acadscatchup-update-", ".bat");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(updaterBat))) {
-                writer.write("@echo off\r\n");
-                writer.write("setlocal enabledelayedexpansion\r\n");
-                writer.write(":retry\r\n");
-                writer.write("ping 127.0.0.1 -n 2 > nul\r\n");
-                writer.write("copy /y \"" + tempJar.getAbsolutePath() + "\" \"" + rootJar.getAbsolutePath() + "\" > nul\r\n");
-                writer.write("if errorlevel 1 goto retry\r\n");
-
-                writer.write("if exist \"" + appJar1.getAbsolutePath() + "\" copy /y \"" + tempJar.getAbsolutePath() + "\" \"" + appJar1.getAbsolutePath() + "\" > nul\r\n");
-                writer.write("if exist \"" + appJar2.getAbsolutePath() + "\" copy /y \"" + tempJar.getAbsolutePath() + "\" \"" + appJar2.getAbsolutePath() + "\" > nul\r\n");
-
-                writer.write("del /f /q \"" + tempJar.getAbsolutePath() + "\" > nul\r\n");
-
-                if (exeFile.exists()) {
-                    writer.write("cd /d \"" + portableDir.getAbsolutePath() + "\"\r\n");
-                    writer.write("start \"\" \"" + exeFile.getAbsolutePath() + "\"\r\n");
-                } else {
-                    writer.write("cd /d \"" + portableDir.getAbsolutePath() + "\"\r\n");
-                    writer.write("start javaw -jar \"" + rootJar.getAbsolutePath() + "\"\r\n");
+            File current = codeSourceJar.getParentFile();
+            while (current != null) {
+                if (current.getName().equalsIgnoreCase("AcadsCatchUp-Portable")) {
+                    return current;
                 }
-                writer.write("del /f /q \"%~f0\" & exit\r\n");
+                current = current.getParentFile();
             }
 
-            new ProcessBuilder("cmd.exe", "/c", updaterBat.getAbsolutePath()).start();
-            System.exit(0);
+            File parent = codeSourceJar.getParentFile();
+            if (parent != null) {
+                if (parent.getName().equalsIgnoreCase("app")) {
+                    File potential = parent.getParentFile();
+                    if (potential != null && (potential.getName().equalsIgnoreCase("AcadsCatchUp-Portable")
+                            || new File(potential, "AcadsCatchUp.exe").exists()
+                            || new File(potential, "AcadsCatchUp.jar").exists())) {
+                        return potential;
+                    }
+                }
+                if (new File(parent, "AcadsCatchUp.exe").exists() || new File(parent, "AcadsCatchUp.jar").exists()) {
+                    return parent;
+                }
+            }
+        } catch (Exception ignored) {}
 
+        // 2. Search common locations
+        String userHome = System.getProperty("user.home");
+        String localAppData = System.getenv("LOCALAPPDATA");
+        File[] candidates = new File[] {
+            new File("."),
+            new File("./AcadsCatchUp-Portable"),
+            new File("./dist/AcadsCatchUp-Portable"),
+            new File(userHome, "Downloads/AcadsCatchUp-Portable"),
+            new File(userHome, "Desktop/AcadsCatchUp-Portable"),
+            new File(userHome, "Documents/AcadsCatchUp-Portable"),
+            new File(userHome, "Documents/AcadsCatchUp/dist/AcadsCatchUp-Portable"),
+            localAppData != null ? new File(localAppData, "AcadsCatchUp") : null
+        };
+
+        for (File candidate : candidates) {
+            if (candidate != null && candidate.exists() && candidate.isDirectory()) {
+                if (candidate.getName().equalsIgnoreCase("AcadsCatchUp-Portable")
+                        || new File(candidate, "AcadsCatchUp.exe").exists()
+                        || new File(candidate, "AcadsCatchUp.jar").exists()
+                        || new File(candidate, "app").exists()) {
+                    return candidate;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Copies the downloaded JAR to AcadsCatchUp-Portable root and app/ directory.
+     */
+    public static void copyJarToPortable(File sourceJar, File portableDir) {
+        if (sourceJar == null || !sourceJar.exists() || portableDir == null || !portableDir.exists()) {
+            return;
+        }
+
+        // Replace root AcadsCatchUp.jar
+        File rootJar = new File(portableDir, "AcadsCatchUp.jar");
+        safeCopy(sourceJar, rootJar);
+
+        // Replace app/AcadsCatchUp.jar and app/acadscatchup-app.jar if app directory exists
+        File appDir = new File(portableDir, "app");
+        if (appDir.exists() && appDir.isDirectory()) {
+            File appJar1 = new File(appDir, "AcadsCatchUp.jar");
+            safeCopy(sourceJar, appJar1);
+
+            File appJar2 = new File(appDir, "acadscatchup-app.jar");
+            if (appJar2.exists()) {
+                safeCopy(sourceJar, appJar2);
+            }
+        }
+    }
+
+    private static void safeCopy(File source, File destination) {
+        try {
+            java.nio.file.Files.copy(
+                    source.toPath(),
+                    destination.toPath(),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            );
+            System.out.println("[UpdateSplash] Replaced: " + destination.getAbsolutePath());
         } catch (Exception e) {
-            System.err.println("[UpdateSplash] Restart execution failed: " + e.getMessage());
+            System.err.println("[UpdateSplash] Warning: Files.copy failed for " + destination.getAbsolutePath() + ": " + e.getMessage());
+            try (InputStream in = new FileInputStream(source);
+                 OutputStream out = new FileOutputStream(destination)) {
+                byte[] buf = new byte[8192];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                System.out.println("[UpdateSplash] Stream copy succeeded for: " + destination.getAbsolutePath());
+            } catch (Exception streamEx) {
+                System.err.println("[UpdateSplash] Error copying to " + destination.getAbsolutePath() + ": " + streamEx.getMessage());
+            }
         }
     }
 
@@ -320,7 +415,9 @@ public class UpdateSplash {
                         String line;
                         while ((line = reader.readLine()) != null) sb.append(line);
                     }
-                    String remoteVersion = extractJsonField(sb.toString(), "version");
+                    String json = sb.toString();
+                    String remoteVersion = extractJsonField(json, "version");
+                    String downloadUrl = extractJsonField(json, "download_url");
 
                     if (remoteVersion != null && isNewerVersion(remoteVersion, CURRENT_VERSION)) {
                         Platform.runLater(() -> {
@@ -330,18 +427,52 @@ public class UpdateSplash {
                                     "A new version of AcadsCatchUp is available!\n\n" +
                                     "Current Version: v" + CURRENT_VERSION + "\n" +
                                     "Latest Version:  v" + remoteVersion + "\n\n" +
-                                    "Would you like to restart and apply this update now?"
+                                    "Download to Downloads and apply to AcadsCatchUp-Portable now?\n(No restart required)"
                             );
                             if (confirm) {
-                                Stage splash = new Stage();
-                                showAndCheck(splash);
+                                new Thread(() -> {
+                                    try {
+                                        File downloadsDir = new File(System.getProperty("user.home"), "Downloads");
+                                        if (!downloadsDir.exists()) downloadsDir.mkdirs();
+                                        File downloadedJar = new File(downloadsDir, "AcadsCatchUp.jar");
+
+                                        HttpURLConnection dlConn = (HttpURLConnection) new URI(downloadUrl).toURL().openConnection();
+                                        dlConn.setConnectTimeout(8000);
+                                        dlConn.setReadTimeout(20000);
+                                        try (InputStream in = new BufferedInputStream(dlConn.getInputStream());
+                                             OutputStream out = new BufferedOutputStream(new FileOutputStream(downloadedJar))) {
+                                            byte[] buf = new byte[8192];
+                                            int len;
+                                            while ((len = in.read(buf)) != -1) {
+                                                out.write(buf, 0, len);
+                                            }
+                                        }
+
+                                        File portable = findPortableDirectory();
+                                        if (portable != null && portable.exists()) {
+                                            copyJarToPortable(downloadedJar, portable);
+                                        }
+
+                                        Platform.runLater(() -> CustomAlert.showInfo(
+                                                owner,
+                                                "Update Applied",
+                                                "✔ Update v" + remoteVersion + " downloaded and applied to AcadsCatchUp-Portable!\nNo restart needed."
+                                        ));
+                                    } catch (Exception ex) {
+                                        Platform.runLater(() -> CustomAlert.showWarning(
+                                                owner,
+                                                "Update Failed",
+                                                "Failed to download update: " + ex.getMessage()
+                                        ));
+                                    }
+                                }, "Manual-Update-Downloader").start();
                             }
                         });
                     } else {
                         Platform.runLater(() -> CustomAlert.showInfo(
                                 owner,
-                                "Up to Date",
-                                "You are already using the latest version of AcadsCatchUp (v" + CURRENT_VERSION + ")."
+                                "No update",
+                                "No update • You are already using the latest version of AcadsCatchUp (v" + CURRENT_VERSION + ")."
                         ));
                     }
                 } else {
