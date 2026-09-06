@@ -578,35 +578,46 @@ public class StudentDashboardController {
 
             topRow.getChildren().addAll(codeLabel, nameLabel, spacer, badge);
 
-            // Bottom row: [👨‍🏫 Professor Name]
+            // Bottom row: [👨‍🏫 Professor Name] (spacer) [🎯 Filtered Badge]
             String profName = (s.getProfessorName() != null && !s.getProfessorName().isBlank())
                     ? s.getProfessorName()
                     : "No Assigned Professor";
             Label profLabel = new Label(com.acadscatchup.util.OSCompat.label("👨‍🏫 ") + profName);
             profLabel.getStyleClass().add("subject-chip-prof");
 
-            card.getChildren().addAll(topRow, profLabel);
+            Region bottomSpacer = new Region();
+            HBox.setHgrow(bottomSpacer, Priority.ALWAYS);
 
-            // Tooltip
-            Tooltip tooltip = new Tooltip(s.getCode() + " • " + s.getName() + "\nInstructor: " + profName +
-                    "\nStatus: " + (pending > 0 ? (pending + " pending deficiencies") : "All requirements cleared") +
-                    "\n👉 Click to filter your list");
+            Label filterIndicatorBadge = new Label("🎯 Selected in Filter");
+            filterIndicatorBadge.getStyleClass().add("subject-chip-filter-badge");
+            filterIndicatorBadge.setVisible(false);
+            filterIndicatorBadge.setManaged(false);
+
+            HBox bottomRow = new HBox(8);
+            bottomRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            bottomRow.getChildren().addAll(profLabel, bottomSpacer, filterIndicatorBadge);
+
+            card.getChildren().addAll(topRow, bottomRow);
+
+            // View-only cursor
+            card.setCursor(javafx.scene.Cursor.DEFAULT);
+
+            // Informational Tooltip (View-only, no click-to-filter instruction)
+            String baseTooltip = s.getCode() + " • " + s.getName() + "\nInstructor: " + profName +
+                    "\nStatus: " + (pending > 0 ? (pending + " pending deficiencies") : "All requirements cleared");
+            Tooltip tooltip = new Tooltip(baseTooltip);
             Tooltip.install(card, tooltip);
 
-            // Click behavior: toggle subject filter
-            card.setOnMouseClicked(e -> {
-                if (subjectFilterCombo != null) {
-                    String active = subjectFilterCombo.getValue();
-                    if (s.getCode().equalsIgnoreCase(active)) {
-                        subjectFilterCombo.setValue("ALL");
-                    } else {
-                        subjectFilterCombo.setValue(s.getCode());
-                    }
-                }
-            });
+            card.getProperties().put("filterBadge", filterIndicatorBadge);
+            card.getProperties().put("tooltip", tooltip);
+            card.getProperties().put("baseTooltip", baseTooltip);
 
+            // Active filter visual identifier if already filtered in ComboBox below
             if (s.getCode().equalsIgnoreCase(currentFilter)) {
                 card.getStyleClass().add("subject-card-chip-active");
+                filterIndicatorBadge.setVisible(true);
+                filterIndicatorBadge.setManaged(true);
+                tooltip.setText("🎯 Selected in filter below\n\n" + baseTooltip);
             }
 
             subjectCardMap.put(s.getCode().toUpperCase(), card);
@@ -618,12 +629,30 @@ public class StudentDashboardController {
         if (subjectCardMap.isEmpty()) return;
         for (Map.Entry<String, VBox> entry : subjectCardMap.entrySet()) {
             VBox card = entry.getValue();
+            Label filterBadge = (Label) card.getProperties().get("filterBadge");
+            Tooltip tooltip = (Tooltip) card.getProperties().get("tooltip");
+            String baseTooltip = (String) card.getProperties().get("baseTooltip");
+
             if (entry.getKey().equalsIgnoreCase(selectedSubjectCode)) {
                 if (!card.getStyleClass().contains("subject-card-chip-active")) {
                     card.getStyleClass().add("subject-card-chip-active");
                 }
+                if (filterBadge != null) {
+                    filterBadge.setVisible(true);
+                    filterBadge.setManaged(true);
+                }
+                if (tooltip != null && baseTooltip != null) {
+                    tooltip.setText("🎯 Selected in filter below\n\n" + baseTooltip);
+                }
             } else {
                 card.getStyleClass().remove("subject-card-chip-active");
+                if (filterBadge != null) {
+                    filterBadge.setVisible(false);
+                    filterBadge.setManaged(false);
+                }
+                if (tooltip != null && baseTooltip != null) {
+                    tooltip.setText(baseTooltip);
+                }
             }
         }
     }

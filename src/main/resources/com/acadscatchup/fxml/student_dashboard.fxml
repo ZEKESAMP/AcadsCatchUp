@@ -70,7 +70,7 @@
                         <Label text="📚 Enrolled Subjects" styleClass="section-title-sm" />
                         <Label fx:id="enrolledCountBadge" text="0 Enrolled" styleClass="badge-enrolled-count" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label text="💡 Click any subject badge to filter your tasks" styleClass="enrolled-hint" />
+                        <Label text="ℹ️ Enrolled subjects overview" styleClass="enrolled-hint" />
                     </HBox>
                     <FlowPane fx:id="enrolledSubjectsBox" hgap="10" vgap="8" styleClass="enrolled-flow-box">
                         <!-- Populated dynamically with subject cards -->
