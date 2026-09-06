@@ -9,8 +9,11 @@ import com.acadscatchup.util.LiveSyncService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -44,6 +47,11 @@ public class StudentDashboardController {
     @FXML private ScrollPane dashboardScrollPane;
     @FXML private HBox statsRow;
 
+    @FXML private VBox cardTotal;
+    @FXML private VBox cardPending;
+    @FXML private VBox cardSubmitted;
+    @FXML private VBox cardGraded;
+
     @FXML private Label totalCount;
     @FXML private Label pendingCount;
     @FXML private Label submittedCount;
@@ -52,8 +60,10 @@ public class StudentDashboardController {
     @FXML private Label enrolledCountBadge;
     @FXML private FlowPane enrolledSubjectsBox;
 
+    @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilterCombo;
     @FXML private ComboBox<String> subjectFilterCombo;
+    @FXML private Button exportCsvBtn;
 
     private final Map<String, VBox> subjectCardMap = new HashMap<>();
 
@@ -72,6 +82,7 @@ public class StudentDashboardController {
     private final com.acadscatchup.dao.InboxDAO inboxDAO = new com.acadscatchup.dao.InboxDAO();
 
     private ObservableList<MissedItem> tableData = FXCollections.observableArrayList();
+    private FilteredList<MissedItem> filteredData;
     private com.acadscatchup.util.LoadingOverlay loadingOverlay;
     private boolean notifiedThisSession = false;
 
@@ -101,6 +112,7 @@ public class StudentDashboardController {
         );
 
         refreshInboxBadge();
+        setupStatCards();
         setupFilters();
         setupTable();
         loadItems();
@@ -245,6 +257,37 @@ public class StudentDashboardController {
         lastSeenUnreadCount = unread;
     }
 
+    private void setupStatCards() {
+        if (cardTotal != null) {
+            cardTotal.setCursor(Cursor.HAND);
+            Tooltip.install(cardTotal, new Tooltip("Click to filter by ALL items"));
+            cardTotal.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("ALL");
+            });
+        }
+        if (cardPending != null) {
+            cardPending.setCursor(Cursor.HAND);
+            Tooltip.install(cardPending, new Tooltip("Click to filter by PENDING items"));
+            cardPending.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("PENDING");
+            });
+        }
+        if (cardSubmitted != null) {
+            cardSubmitted.setCursor(Cursor.HAND);
+            Tooltip.install(cardSubmitted, new Tooltip("Click to filter by SUBMITTED items"));
+            cardSubmitted.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("SUBMITTED");
+            });
+        }
+        if (cardGraded != null) {
+            cardGraded.setCursor(Cursor.HAND);
+            Tooltip.install(cardGraded, new Tooltip("Click to filter by GRADED items"));
+            cardGraded.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("GRADED");
+            });
+        }
+    }
+
     private void setupFilters() {
         statusFilterCombo.setItems(FXCollections.observableArrayList(
                 "ALL", "PENDING", "SUBMITTED", "GRADED"));
@@ -309,22 +352,68 @@ public class StudentDashboardController {
             }
         });
 
-        // Row styling
-        itemsTable.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(MissedItem item, boolean empty) {
-                super.updateItem(item, empty);
-                getStyleClass().removeAll("row-pending","row-submitted","row-graded","row-overdue");
-                if (item != null && !empty) {
-                    if (item.isOverdue())                              getStyleClass().add("row-overdue");
-                    else if ("SUBMITTED".equals(item.getStatus()))     getStyleClass().add("row-submitted");
-                    else if ("GRADED".equals(item.getStatus()))        getStyleClass().add("row-graded");
-                    else                                               getStyleClass().add("row-pending");
+        // Row styling + double-click row shortcut
+        itemsTable.setRowFactory(tv -> {
+            TableRow<MissedItem> row = new TableRow<>() {
+                @Override
+                protected void updateItem(MissedItem item, boolean empty) {
+                    super.updateItem(item, empty);
+                    getStyleClass().removeAll("row-pending","row-submitted","row-graded","row-overdue");
+                    if (item != null && !empty) {
+                        if (item.isOverdue())                              getStyleClass().add("row-overdue");
+                        else if ("SUBMITTED".equals(item.getStatus()))     getStyleClass().add("row-submitted");
+                        else if ("GRADED".equals(item.getStatus()))        getStyleClass().add("row-graded");
+                        else                                               getStyleClass().add("row-pending");
+                    }
                 }
-            }
+            };
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    handleMarkSubmitted();
+                }
+            });
+            return row;
         });
 
-        itemsTable.setItems(tableData);
+        filteredData = new FilteredList<>(tableData, p -> true);
+        SortedList<MissedItem> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(itemsTable.comparatorProperty());
+        itemsTable.setItems(sortedData);
+
+        if (searchField != null) {
+            searchField.textProperty().addListener((obs, o, n) -> updateSearchFilter(n));
+        }
+    }
+
+    private void updateSearchFilter(String query) {
+        if (filteredData == null) return;
+        if (query == null || query.isBlank()) {
+            filteredData.setPredicate(item -> true);
+            return;
+        }
+        String q = query.trim().toLowerCase();
+        filteredData.setPredicate(item -> {
+            if (item == null) return false;
+            String itemName = item.getItemName() != null ? item.getItemName().toLowerCase() : "";
+            String subjCode = item.getSubjectCode() != null ? item.getSubjectCode().toLowerCase() : "";
+            String subjName = item.getSubjectName() != null ? item.getSubjectName().toLowerCase() : "";
+            String profName = item.getProfName() != null ? item.getProfName().toLowerCase() : "";
+            String itemType = item.getItemType() != null ? item.getItemType().toLowerCase() : "";
+            String status   = item.getStatus() != null ? item.getStatus().toLowerCase() : "";
+            String notes    = item.getNotes() != null ? item.getNotes().toLowerCase() : "";
+            String dateMiss = item.getDateMissed() != null ? item.getDateMissed().toString().toLowerCase() : "";
+            String deadline = item.getDeadline() != null ? item.getDeadline().toString().toLowerCase() : "";
+
+            return itemName.contains(q)
+                    || subjCode.contains(q)
+                    || subjName.contains(q)
+                    || profName.contains(q)
+                    || itemType.contains(q)
+                    || status.contains(q)
+                    || notes.contains(q)
+                    || dateMiss.contains(q)
+                    || deadline.contains(q);
+        });
     }
 
     private void loadItems() {
@@ -390,10 +479,36 @@ public class StudentDashboardController {
     @FXML private void applyFilters() { loadItemsAsync(true); }
 
     @FXML private void clearFilters() {
+        if (searchField != null) searchField.clear();
         statusFilterCombo.setValue("ALL");
         subjectFilterCombo.setValue("ALL");
         updateSelectedSubjectCards("ALL");
         loadItemsAsync(true);
+    }
+
+    @FXML
+    private void handleExportCSV() {
+        if (tableData.isEmpty()) {
+            com.acadscatchup.util.CustomAlert.showWarning(studentNameLabel.getScene().getWindow(),
+                    "Export CSV", "No missed items to export.");
+            return;
+        }
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("Export My Missed Items to CSV");
+        String defaultName = "My_Missed_Items_" + java.time.LocalDate.now() + ".csv";
+        fileChooser.setInitialFileName(defaultName);
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
+        java.io.File file = fileChooser.showSaveDialog(studentNameLabel.getScene().getWindow());
+        if (file != null) {
+            boolean ok = com.acadscatchup.util.CSVExporter.export(tableData, file);
+            if (ok) {
+                com.acadscatchup.util.CustomAlert.showInfo(studentNameLabel.getScene().getWindow(),
+                        "Export Successful", "Checklist exported successfully to:\n" + file.getAbsolutePath());
+            } else {
+                com.acadscatchup.util.CustomAlert.showError(studentNameLabel.getScene().getWindow(),
+                        "Export Failed", "Failed to write CSV file. Please check file permissions.");
+            }
+        }
     }
 
     @FXML

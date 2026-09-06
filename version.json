@@ -1,5 +1,5 @@
 {
-  "version": "1.0.7",
-  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.7/AcadsCatchUp.jar",
-  "release_notes": "AcadsCatchUp Release v1.0.7: Fixed Admin Dashboard filtering logic, added real-time reactive search filtering, enabled interactive dashboard stat cards, enhanced row selection and double-click editing."
+  "version": "1.0.8",
+  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.8/AcadsCatchUp.jar",
+  "release_notes": "AcadsCatchUp Release v1.0.8: Student real-time reactive search, interactive stat card filters across Student & Professor dashboards, table double-click action shortcut, student CSV deficiency checklist export, enhanced CSV with professor assignment info, and robust seamless auto-update engine."
 }

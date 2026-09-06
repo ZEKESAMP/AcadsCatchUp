@@ -77,7 +77,7 @@
                     <Label text="●" style="-fx-text-fill: #10b981; -fx-font-size: 12px;" />
                     <Label text="Database Online" style="-fx-text-fill: #e2e8f0; -fx-font-size: 11px;" />
                 </HBox>
-                <Label text="AcadsCatchUp v1.0.7 • F4TAL" style="-fx-text-fill: #64748b; -fx-font-size: 10px;" />
+                <Label text="AcadsCatchUp v1.0.8 • F4TAL" style="-fx-text-fill: #64748b; -fx-font-size: 10px;" />
             </VBox>
         </VBox>
     </left>

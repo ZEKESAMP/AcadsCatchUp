@@ -19,6 +19,36 @@ public class UpdateNoticeUtil {
      * Returns the formatted release notes for the specified version.
      */
     public static String getWhatsNewText(String version) {
+        if ("1.0.8".equals(version) || "v1.0.8".equalsIgnoreCase(version)) {
+            return """
+                Hello {recipientName}!
+
+                Welcome to AcadsCatchUp v1.0.8! Here is what's new in this release:
+
+                🔍 STUDENT REAL-TIME REACTIVE SEARCH
+                • Introduced a powerful, zero-latency instant search bar on the Student Dashboard.
+                • Type any keyword to instantly filter items by Subject Code, Subject Name, Professor Name, Item Name, Type, Status, Date Missed, Deadline, or Notes without reload delays.
+
+                📊 INTERACTIVE DASHBOARD STAT CARDS
+                • Total, Pending, Submitted, and Graded stat cards on both Student and Professor dashboards are now interactive!
+                • Hover to see helpful tooltips and click any card to instantly filter your deficiency table by that status.
+
+                ⚡ TABLE DOUBLE-CLICK ACTION SHORTCUT
+                • Double-click any row in the Student deficiency table to quickly open the submission dialog directly.
+
+                📥 STUDENT CHECKLIST EXPORT TO CSV
+                • Students can now export their personalized deficiency checklist and missed item history directly to CSV for offline tracking or submission records.
+
+                👨‍🏫 ENHANCED CSV EXPORT WITH PROFESSOR INFO
+                • Exported CSV files now include the assigned Professor Name for every deficiency record across all roles.
+
+                🚀 SEAMLESS HANDOFF AUTO-UPDATER
+                • Completely rebuilt background update handoff engine with PID tracking and retry loop for 100% reliable in-app updates on Windows.
+
+                Thank you for using AcadsCatchUp!
+                — Engineered with care by F4TAL""";
+        }
+
         if ("1.0.7".equals(version) || "v1.0.7".equalsIgnoreCase(version)) {
             return """
                 Hello {recipientName}!

@@ -102,12 +102,12 @@ public class UpdatesDialog {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         // Version definitions
-        String[] versions = new String[] { "v1.0.7", "v1.0.6", "v1.0.5", "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
-        final String[] currentSelectedVersion = new String[] { "v1.0.7" };
+        String[] versions = new String[] { "v1.0.8", "v1.0.7", "v1.0.6", "v1.0.5", "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
+        final String[] currentSelectedVersion = new String[] { "v1.0.8" };
         Map<String, Button> versionButtons = new HashMap<>();
 
         for (String v : versions) {
-            String labelText = v.equals("v1.0.7") ? "✨ v1.0.7 (Latest)" : v;
+            String labelText = v.equals("v1.0.8") ? "✨ v1.0.8 (Latest)" : v;
             Button vBtn = new Button(labelText);
             vBtn.setStyle(
                     "-fx-background-color: #242840; " +
@@ -160,8 +160,8 @@ public class UpdatesDialog {
             versionBar.getChildren().add(vBtn);
         }
 
-        // Default to v1.0.7
-        Button defaultBtn = versionButtons.get("v1.0.7");
+        // Default to v1.0.8
+        Button defaultBtn = versionButtons.get("v1.0.8");
         if (defaultBtn != null) {
             defaultBtn.setStyle(
                     "-fx-background-color: #5865f2; " +
@@ -175,7 +175,7 @@ public class UpdatesDialog {
                     "-fx-border-width: 1; " +
                     "-fx-cursor: hand;"
             );
-            renderVersionNotes(contentBox, "v1.0.7");
+            renderVersionNotes(contentBox, "v1.0.8");
         }
 
         // ── 3. FOOTER ────────────────────────────────────────────────────────
@@ -241,6 +241,9 @@ public class UpdatesDialog {
         container.getChildren().clear();
 
         switch (version) {
+            case "v1.0.8":
+                renderV108(container);
+                break;
             case "v1.0.7":
                 renderV107(container);
                 break;
@@ -266,9 +269,37 @@ public class UpdatesDialog {
                 renderV100(container);
                 break;
             default:
-                renderV107(container);
+                renderV108(container);
                 break;
         }
+    }
+
+    private static void renderV108(VBox c) {
+        // Banner Card
+        VBox banner = createBannerCard(
+                "🚀 AcadsCatchUp v1.0.8 — Student Reactive Search & Stat Card Synergy",
+                "Release Date: September 2026 • Build: v1.0.8-PROD-F4TAL",
+                "CURRENT INSTALLED VERSION",
+                "#23a55a"
+        );
+
+        // Feature Sections
+        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+                "Student Real-Time Reactive Search: Instant zero-latency search filtering directly on the Student Dashboard. Search through item names, subject codes, professors, deadlines, notes, and statuses as you type.",
+                "Interactive Dashboard Stat Cards: Stat cards on both Student Dashboard and Professor Dashboard now feature hand cursors and 1-click status filtering (Total, Pending, Submitted, Graded).",
+                "Student Double-Click Row Shortcut: Double-click any row in your deficiency checklist to immediately open the submission dialog.",
+                "Export Deficiency Checklist to CSV: Students can now export their personalized missed item checklist to CSV for offline reference and submission records.",
+                "Enhanced CSV Export with Professor Info: Exported deficiency CSV records now include the assigned Professor Name for comprehensive academic tracking.",
+                "Seamless Windows Auto-Updater Overhaul: Completely revamped file-locking handoff with PID process termination and retry copy loop for 100% reliable in-app updates."
+        });
+
+        VBox improvements = createSectionCard("⚡ Improvements & Fixes", new String[]{
+                "Zero-Latency FilteredList Architecture: In-memory reactive filtering eliminates database overhead on every keystroke.",
+                "OpenCSV Export Robustness: Clean formatting, null-safe string mappings, and direct FileChooser integration.",
+                "Cross-Platform UI Polish: Hand cursor tooltips and smooth responsive auto-scaling across diverse screen resolutions."
+        });
+
+        c.getChildren().addAll(banner, features, improvements);
     }
 
     private static void renderV107(VBox c) {
@@ -276,8 +307,8 @@ public class UpdatesDialog {
         VBox banner = createBannerCard(
                 "🚀 AcadsCatchUp v1.0.7 — Admin Dashboard Fixes & Reactive Filtering",
                 "Release Date: September 2026 • Build: v1.0.7-PROD-F4TAL",
-                "CURRENT INSTALLED VERSION",
-                "#23a55a"
+                "PREVIOUS RELEASE",
+                "#64748b"
         );
 
         // Feature Sections

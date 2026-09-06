@@ -47,19 +47,19 @@
 
                 <!-- Stats Cards -->
                 <HBox fx:id="statsRow" styleClass="stats-row" spacing="16">
-                    <VBox styleClass="stat-card stat-total"     HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <VBox fx:id="cardTotal" styleClass="stat-card stat-total"     HBox.hgrow="ALWAYS" alignment="CENTER">
                         <Label fx:id="totalCount"     text="0" styleClass="stat-number" />
                         <Label text="Total"     styleClass="stat-label" />
                     </VBox>
-                    <VBox styleClass="stat-card stat-pending"   HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <VBox fx:id="cardPending" styleClass="stat-card stat-pending"   HBox.hgrow="ALWAYS" alignment="CENTER">
                         <Label fx:id="pendingCount"   text="0" styleClass="stat-number" />
                         <Label text="Pending"   styleClass="stat-label" />
                     </VBox>
-                    <VBox styleClass="stat-card stat-submitted" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <VBox fx:id="cardSubmitted" styleClass="stat-card stat-submitted" HBox.hgrow="ALWAYS" alignment="CENTER">
                         <Label fx:id="submittedCount" text="0" styleClass="stat-number" />
                         <Label text="Submitted" styleClass="stat-label" />
                     </VBox>
-                    <VBox styleClass="stat-card stat-graded"    HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <VBox fx:id="cardGraded" styleClass="stat-card stat-graded"    HBox.hgrow="ALWAYS" alignment="CENTER">
                         <Label fx:id="gradedCount"    text="0" styleClass="stat-number" />
                         <Label text="Graded"    styleClass="stat-label" />
                     </VBox>
@@ -81,13 +81,15 @@
                 <!-- Filter + Action Bar (Auto-arranging FlowPane) -->
                 <FlowPane hgap="10" vgap="8" alignment="CENTER_LEFT" styleClass="action-bar-flow">
                     <Label text="My Missed Items" styleClass="section-title" minWidth="-Infinity" />
-                    <Region prefWidth="10" />
+                    <Region prefWidth="6" />
+                    <TextField fx:id="searchField" promptText="🔍 Search items, subject, prof..." prefWidth="210" styleClass="search-box" />
                     <Label text="Status:" styleClass="filter-label-inline" />
                     <ComboBox fx:id="statusFilterCombo" id="studentStatusFilter" />
                     <Label text="Subject:" styleClass="filter-label-inline" />
                     <ComboBox fx:id="subjectFilterCombo" id="studentSubjectFilter" />
                     <Button text="Apply" styleClass="btn-secondary" onAction="#applyFilters" />
                     <Button text="Clear" styleClass="btn-ghost" onAction="#clearFilters" />
+                    <Button fx:id="exportCsvBtn" text="📥 Export CSV" styleClass="btn-outline-sm" onAction="#handleExportCSV" />
                     <Separator orientation="VERTICAL" />
                     <Button fx:id="markSubmittedBtn" text="📤 Submit to Professor"
                             styleClass="btn-primary" id="studentMarkSubmittedBtn"

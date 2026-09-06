@@ -16,25 +16,35 @@ public class CSVExporter {
     public static final String DEVELOPER = "F4TAL";
 
     public static boolean export(List<MissedItem> items, String filePath) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+        return export(items, new java.io.File(filePath));
+    }
+
+    public static boolean export(List<MissedItem> items, java.io.File file) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(file))) {
 
             // Header row
             writer.writeNext(new String[]{
-                    "ID", "Student", "Subject", "Type", "Item Name",
+                    "ID", "Student", "Subject", "Prof Name", "Type", "Item Name",
                     "Date Missed", "Deadline", "Status", "Notes"
             });
 
             // Data rows
             for (MissedItem item : items) {
+                String subjectDisplay = item.getSubjectCode() != null
+                        ? (item.getSubjectName() != null && !item.getSubjectName().isBlank()
+                            ? item.getSubjectCode() + " - " + item.getSubjectName()
+                            : item.getSubjectCode())
+                        : "";
                 writer.writeNext(new String[]{
                         String.valueOf(item.getId()),
-                        item.getStudentName(),
-                        item.getSubjectCode() + " - " + item.getSubjectName(),
-                        item.getItemType(),
-                        item.getItemName(),
+                        item.getStudentName() != null ? item.getStudentName() : "",
+                        subjectDisplay,
+                        item.getProfName() != null ? item.getProfName() : "",
+                        item.getItemType() != null ? item.getItemType() : "",
+                        item.getItemName() != null ? item.getItemName() : "",
                         item.getDateMissed() != null ? item.getDateMissed().toString() : "",
                         item.getDeadline()   != null ? item.getDeadline().toString()   : "",
-                        item.getStatus(),
+                        item.getStatus() != null ? item.getStatus() : "",
                         item.getNotes() != null ? item.getNotes() : ""
                 });
             }

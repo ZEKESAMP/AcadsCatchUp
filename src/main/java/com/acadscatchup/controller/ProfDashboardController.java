@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -65,6 +66,10 @@ public class ProfDashboardController {
     @FXML private ComboBox<String>  typeFilterCombo;
 
     // ── Stats cards ──────────────────────────────────────────────────────
+    @FXML private VBox  statTotal;
+    @FXML private VBox  statPending;
+    @FXML private VBox  statSubmitted;
+    @FXML private VBox  statGraded;
     @FXML private Label totalCount;
     @FXML private Label pendingCount;
     @FXML private Label submittedCount;
@@ -169,9 +174,11 @@ public class ProfDashboardController {
 
         setupStudentScope();
         setupFilters();
+        setupStatCards();
         setupTable();
         loadStudentList();
         loadAllSubjectsIntoFilter();
+        subjectFilterCombo.valueProperty().addListener((obs, o, n) -> loadItems());
         loadItems();
 
         // Filter items when a student is selected in the sidebar
@@ -281,10 +288,43 @@ public class ProfDashboardController {
         statusFilterCombo.setItems(FXCollections.observableArrayList(
                 "ALL", "PENDING", "SUBMITTED", "GRADED"));
         statusFilterCombo.setValue("ALL");
+        statusFilterCombo.valueProperty().addListener((obs, o, n) -> loadItems());
 
         typeFilterCombo.setItems(FXCollections.observableArrayList(
                 "ALL", "ACTIVITY", "QUIZ", "EXAM", "ASSIGNMENT"));
         typeFilterCombo.setValue("ALL");
+        typeFilterCombo.valueProperty().addListener((obs, o, n) -> loadItems());
+    }
+
+    private void setupStatCards() {
+        if (statTotal != null) {
+            statTotal.setCursor(Cursor.HAND);
+            Tooltip.install(statTotal, new Tooltip("Click to filter by ALL items"));
+            statTotal.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("ALL");
+            });
+        }
+        if (statPending != null) {
+            statPending.setCursor(Cursor.HAND);
+            Tooltip.install(statPending, new Tooltip("Click to filter by PENDING items"));
+            statPending.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("PENDING");
+            });
+        }
+        if (statSubmitted != null) {
+            statSubmitted.setCursor(Cursor.HAND);
+            Tooltip.install(statSubmitted, new Tooltip("Click to filter by SUBMITTED items"));
+            statSubmitted.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("SUBMITTED");
+            });
+        }
+        if (statGraded != null) {
+            statGraded.setCursor(Cursor.HAND);
+            Tooltip.install(statGraded, new Tooltip("Click to filter by GRADED items"));
+            statGraded.setOnMouseClicked(e -> {
+                if (statusFilterCombo != null) statusFilterCombo.setValue("GRADED");
+            });
+        }
     }
 
     private void setupTable() {
