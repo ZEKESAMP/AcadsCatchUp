@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
-  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.1/AcadsCatchUp.jar",
-  "release_notes": "AcadsCatchUp Production Release v1.0.1 with Discord-style updater and standalone runtime support."
+  "version": "1.0.2",
+  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.2/AcadsCatchUp.jar",
+  "release_notes": "AcadsCatchUp Release v1.0.2: Enrolled subjects view-only with active filter identifier, Discord-style startup splash updater, and standalone runtime support."
 }

@@ -15,7 +15,7 @@ public class Main extends Application {
     public static final String DEVELOPER     = "F4TAL";
     public static final String CREATOR       = "Stevenson James G. Gastanes (F4TAL)";
     public static final String APP_NAME       = "AcadsCatchUp";
-    public static final String BUILD_VERSION  = "1.0.1-PROD-F4TAL";
+    public static final String BUILD_VERSION  = "1.0.2-PROD-F4TAL";
     public static final String SIGNATURE      = "AcadsCatchUp • Engineered by F4TAL";
 
     @Override
