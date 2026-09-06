@@ -299,7 +299,8 @@ public class UpdateSplash {
             File codeSourceJar = new File(UpdateSplash.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             File current = codeSourceJar.getParentFile();
             while (current != null) {
-                if (current.getName().equalsIgnoreCase("AcadsCatchUp-Portable")) {
+                if (current.getName().equalsIgnoreCase("AcadsCatchUp-Portable")
+                        || current.getName().equalsIgnoreCase("AcadsCatchUp")) {
                     return current;
                 }
                 current = current.getParentFile();
@@ -310,6 +311,7 @@ public class UpdateSplash {
                 if (parent.getName().equalsIgnoreCase("app")) {
                     File potential = parent.getParentFile();
                     if (potential != null && (potential.getName().equalsIgnoreCase("AcadsCatchUp-Portable")
+                            || potential.getName().equalsIgnoreCase("AcadsCatchUp")
                             || new File(potential, "AcadsCatchUp.exe").exists()
                             || new File(potential, "AcadsCatchUp.jar").exists())) {
                         return potential;
@@ -327,17 +329,24 @@ public class UpdateSplash {
         File[] candidates = new File[] {
             new File("."),
             new File("./AcadsCatchUp-Portable"),
+            new File("./AcadsCatchUp"),
             new File("./dist/AcadsCatchUp-Portable"),
+            new File("./dist/AcadsCatchUp"),
             new File(userHome, "Downloads/AcadsCatchUp-Portable"),
+            new File(userHome, "Downloads/AcadsCatchUp"),
             new File(userHome, "Desktop/AcadsCatchUp-Portable"),
+            new File(userHome, "Desktop/AcadsCatchUp"),
             new File(userHome, "Documents/AcadsCatchUp-Portable"),
+            new File(userHome, "Documents/AcadsCatchUp"),
             new File(userHome, "Documents/AcadsCatchUp/dist/AcadsCatchUp-Portable"),
-            localAppData != null ? new File(localAppData, "AcadsCatchUp") : null
+            localAppData != null ? new File(localAppData, "AcadsCatchUp") : null,
+            localAppData != null ? new File(localAppData, "AcadsCatchUp-Portable") : null
         };
 
         for (File candidate : candidates) {
             if (candidate != null && candidate.exists() && candidate.isDirectory()) {
                 if (candidate.getName().equalsIgnoreCase("AcadsCatchUp-Portable")
+                        || candidate.getName().equalsIgnoreCase("AcadsCatchUp")
                         || new File(candidate, "AcadsCatchUp.exe").exists()
                         || new File(candidate, "AcadsCatchUp.jar").exists()
                         || new File(candidate, "app").exists()) {
