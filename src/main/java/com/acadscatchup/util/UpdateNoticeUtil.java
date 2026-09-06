@@ -19,6 +19,32 @@ public class UpdateNoticeUtil {
      * Returns the formatted release notes for the specified version.
      */
     public static String getWhatsNewText(String version) {
+        if ("1.1.0".equals(version) || "v1.1.0".equalsIgnoreCase(version)) {
+            return """
+                Hello {recipientName}!
+
+                Welcome to AcadsCatchUp v1.1.0 (Final Release)! Here is what's new in this milestone:
+
+                PROFESSIONAL ENTERPRISE DASHBOARD REWORK
+                • Complete visual overhaul across Student, Professor, and Admin dashboards and modals.
+                • Stripped all informal symbols and emojis in favor of sleek, enterprise-grade typography and responsive layouts.
+
+                REAL-TIME STUDENT ENROLLMENT NOTIFICATIONS
+                • Instant live desktop notification and official personal Inbox delivery whenever enrolled by an instructor or administrator.
+
+                ENROLLED SUBJECTS LIVE SYNC
+                • Background LiveSync automatically detects subject enrollments and refreshes enrolled subject cards without reloading.
+
+                RESPONSIVE UPDATES & WHAT'S NEW MODAL
+                • Dynamically scales to any display resolution with smart auto-wrapping version selector chips.
+
+                STREAMLINED PERFORMANCE & CODE POLISH
+                • Trimmed obsolete code lines and redundant archives for optimized startup and lightweight memory footprint.
+
+                Thank you for using AcadsCatchUp!
+                — Engineered with care by F4TAL""";
+        }
+
         if ("1.0.9".equals(version) || "v1.0.9".equalsIgnoreCase(version)) {
             return """
                 Hello {recipientName}!

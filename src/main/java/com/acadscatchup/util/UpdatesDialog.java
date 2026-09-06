@@ -103,12 +103,12 @@ public class UpdatesDialog {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         // Version definitions
-        String[] versions = new String[] { "v1.0.9", "v1.0.8", "v1.0.7", "v1.0.6", "v1.0.5", "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
-        final String[] currentSelectedVersion = new String[] { "v1.0.9" };
+        String[] versions = new String[] { "v1.1.0", "v1.0.9", "v1.0.8", "v1.0.7", "v1.0.6", "v1.0.5", "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
+        final String[] currentSelectedVersion = new String[] { "v1.1.0" };
         Map<String, Button> versionButtons = new HashMap<>();
 
         for (String v : versions) {
-            String labelText = v.equals("v1.0.9") ? "v1.0.9 (Latest)" : v;
+            String labelText = v.equals("v1.1.0") ? "v1.1.0 (Latest)" : v;
             Button vBtn = new Button(labelText);
             vBtn.setMinWidth(Region.USE_PREF_SIZE);
             vBtn.setStyle(
@@ -162,8 +162,8 @@ public class UpdatesDialog {
             versionBar.getChildren().add(vBtn);
         }
 
-        // Default to v1.0.9
-        Button defaultBtn = versionButtons.get("v1.0.9");
+        // Default to v1.1.0
+        Button defaultBtn = versionButtons.get("v1.1.0");
         if (defaultBtn != null) {
             defaultBtn.setStyle(
                     "-fx-background-color: #5865f2; " +
@@ -177,7 +177,7 @@ public class UpdatesDialog {
                     "-fx-border-width: 1; " +
                     "-fx-cursor: hand;"
             );
-            renderVersionNotes(contentBox, "v1.0.9");
+            renderVersionNotes(contentBox, "v1.1.0");
         }
 
         // ── 3. FOOTER ────────────────────────────────────────────────────────
@@ -223,6 +223,9 @@ public class UpdatesDialog {
         container.getChildren().clear();
 
         switch (version) {
+            case "v1.1.0":
+                renderV110(container);
+                break;
             case "v1.0.9":
                 renderV109(container);
                 break;
@@ -254,9 +257,35 @@ public class UpdatesDialog {
                 renderV100(container);
                 break;
             default:
-                renderV109(container);
+                renderV110(container);
                 break;
         }
+    }
+
+    private static void renderV110(VBox c) {
+        // Banner Card
+        VBox banner = createBannerCard(
+                "AcadsCatchUp v1.1.0 — Final Polish & Dashboard Overhaul",
+                "Release Date: September 2026 • Build: v1.1.0-PROD-F4TAL",
+                "CURRENT INSTALLED VERSION",
+                "#23a55a"
+        );
+
+        // Feature Sections
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
+                "Professional Enterprise Dashboard Overhaul: Complete redesign of Student, Professor, and Admin dashboards with all emojis and informal symbols removed in favor of clean, enterprise-grade typography.",
+                "Responsive Layout Breakpoints: Dynamic resizing without icon substitutions, ensuring crystal-clear labels and self-explanatory buttons across all monitor resolutions.",
+                "Real-Time Student Enrollment Notifications: Direct inbox delivery and live desktop toast alerts for subject enrollments.",
+                "Enrolled Subjects Background LiveSync: Instant live synchronization that automatically updates enrolled subject overview chips without page reloads.",
+                "Performance & Footprint Optimization: Cleaned dead code and eliminated redundant archives for faster startup and minimal storage footprint."
+        });
+
+        VBox improvements = createSectionCard("Improvements & Synergy", new String[]{
+                "Universal DeveloperGuard Compliance: 100% verified across all 50 application classes.",
+                "Streamlined Modal Architecture: Dialogs and popups feature modern wrapping geometry and resolution scaling."
+        });
+
+        c.getChildren().addAll(banner, features, improvements);
     }
 
     private static void renderV109(VBox c) {
@@ -264,8 +293,8 @@ public class UpdatesDialog {
         VBox banner = createBannerCard(
                 "AcadsCatchUp v1.0.9 — Enrollment Alerts & Responsive Modal Polish",
                 "Release Date: September 2026 • Build: v1.0.9-PROD-F4TAL",
-                "CURRENT INSTALLED VERSION",
-                "#23a55a"
+                "PREVIOUS RELEASE",
+                "#64748b"
         );
 
         // Feature Sections
