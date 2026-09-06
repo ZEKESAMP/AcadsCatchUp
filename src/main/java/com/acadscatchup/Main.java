@@ -35,9 +35,17 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
+        // Discord-style startup splash & update checker
+        com.acadscatchup.util.UpdateSplash.showAndCheck(primaryStage);
+    }
+
+    /**
+     * Called by UpdateSplash once update check completes or in offline mode.
+     */
+    public static void showLoginScreen(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/acadscatchup/fxml/login.fxml"));
+                Main.class.getResource("/com/acadscatchup/fxml/login.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
@@ -45,7 +53,7 @@ public class Main extends Application {
         primaryStage.setTitle("AcadsCatchUp — Login");
         try {
             primaryStage.getIcons().add(new javafx.scene.image.Image(
-                    getClass().getResourceAsStream("/com/acadscatchup/img/book_icon_blue.png")));
+                    Main.class.getResourceAsStream("/com/acadscatchup/img/book_icon_blue.png")));
         } catch (Exception ignored) {}
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(480);
