@@ -288,18 +288,13 @@ public class AccountSettingsDialog {
         footer.setAlignment(Pos.CENTER_RIGHT);
         footer.setStyle("-fx-background-color: #151825; -fx-padding: 12 22; -fx-background-radius: 0 0 12 12; -fx-border-color: #2d3255; -fx-border-width: 1 0 0 0;");
 
-        Button btnCheckUpdate = new Button("🔄 Check for Updates (v" + UpdateSplash.CURRENT_VERSION + ")");
-        btnCheckUpdate.getStyleClass().add("btn-ghost");
-        btnCheckUpdate.setStyle("-fx-font-size: 11.5px; -fx-text-fill: #949ba4;");
-        btnCheckUpdate.setOnAction(e -> UpdateSplash.checkManual(owner));
-
         Region footerSpacer = new Region();
         HBox.setHgrow(footerSpacer, Priority.ALWAYS);
 
         Button doneBtn = new Button("Close");
         doneBtn.getStyleClass().add("btn-primary");
         doneBtn.setOnAction(e -> ModalOverlay.close(doneBtn));
-        footer.getChildren().addAll(btnCheckUpdate, footerSpacer, doneBtn);
+        footer.getChildren().addAll(footerSpacer, doneBtn);
 
         root.getChildren().addAll(header, scrollPane, footer);
 

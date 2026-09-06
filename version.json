@@ -1,5 +1,5 @@
 {
-  "version": "1.0.4",
-  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.4/AcadsCatchUp.jar",
-  "release_notes": "AcadsCatchUp Release v1.0.4: Anchor-based portable folder detection, synchronized app/ JAR replacement, and seamless direct-to-login updater."
+  "version": "1.0.7",
+  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.7/AcadsCatchUp.jar",
+  "release_notes": "AcadsCatchUp Release v1.0.7: Fixed Admin Dashboard filtering logic, added real-time reactive search filtering, enabled interactive dashboard stat cards, enhanced row selection and double-click editing."
 }

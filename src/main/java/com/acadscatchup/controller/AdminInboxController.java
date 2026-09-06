@@ -160,6 +160,17 @@ public class AdminInboxController {
     }
 
     @FXML
+    private void handleOpenPersonalInbox() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/acadscatchup/fxml/user_inbox.fxml"));
+            javafx.scene.Parent root = loader.load();
+            com.acadscatchup.util.ModalOverlay.showAndWait(reportsTable, root, 860, 640);
+        } catch (java.io.IOException e) {
+            com.acadscatchup.util.CustomAlert.showError(reportsTable.getScene().getWindow(), "Error", "Could not open Personal Inbox: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleClose() {
         com.acadscatchup.util.ModalOverlay.close(reportsTable);
     }

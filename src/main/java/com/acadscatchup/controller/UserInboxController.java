@@ -87,8 +87,10 @@ public class UserInboxController {
                     badge.setStyle("-fx-background-color: rgba(59,130,246,0.22); -fx-text-fill: #60a5fa; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
                 } else if (t.contains("resolved") || t.contains("bug")) {
                     badge.setStyle("-fx-background-color: rgba(16,185,129,0.22); -fx-text-fill: #34d399; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
+                } else if (t.contains("update") || t.contains("what's new") || t.contains("system")) {
+                    badge.setStyle("-fx-background-color: rgba(168,85,247,0.25); -fx-text-fill: #c084fc; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-weight: bold; -fx-font-size: 11px;");
                 } else {
-                    badge.setStyle("-fx-background-color: rgba(168,85,247,0.22); -fx-text-fill: #c084fc; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-size: 11px;");
+                    badge.setStyle("-fx-background-color: rgba(148,163,184,0.22); -fx-text-fill: #94a3b8; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-size: 11px;");
                 }
                 setGraphic(badge);
                 setText(null);

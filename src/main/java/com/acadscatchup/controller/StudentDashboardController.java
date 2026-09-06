@@ -105,6 +105,7 @@ public class StudentDashboardController {
         setupTable();
         loadItems();
         loadEnrolledSubjects();
+        com.acadscatchup.util.UpdateSplash.checkAndBadgeUpdatesButton(updatesBtn);
 
         // Live real-time background sync engine (checks cloud fingerprint every 3.5s)
         if (curr != null) {
@@ -175,7 +176,9 @@ public class StudentDashboardController {
                         String typeL = (m.getMsgType() != null) ? m.getMsgType().toLowerCase() : "";
                         if (titleL.contains("graded") || typeL.contains("graded") ||
                             titleL.startsWith("missed") || typeL.startsWith("missed") ||
-                            typeL.contains("resolved") || titleL.contains("resolved")) {
+                            typeL.contains("resolved") || titleL.contains("resolved") ||
+                            typeL.contains("update") || titleL.contains("update") ||
+                            titleL.contains("what's new")) {
                             alertMessage = m;
                             break;
                         }
@@ -211,11 +214,16 @@ public class StudentDashboardController {
                     || "GRADED".equalsIgnoreCase(notice.getMsgType());
             boolean isResolved = (notice.getTitle() != null && notice.getTitle().toLowerCase().contains("resolved"))
                     || "REPORT_RESOLVED".equalsIgnoreCase(notice.getMsgType());
+            boolean isUpdate = (notice.getTitle() != null && (notice.getTitle().toLowerCase().contains("update") || notice.getTitle().toLowerCase().contains("what's new")))
+                    || "UPDATE".equalsIgnoreCase(notice.getMsgType()) || "SYSTEM_UPDATE".equalsIgnoreCase(notice.getMsgType());
 
             String toastTitle;
             String toastBody;
 
-            if (isResolved) {
+            if (isUpdate) {
+                toastTitle = "AcadsCatchUp • What's New Update 🚀";
+                toastBody = "Hi " + curr.getFullName() + "! " + notice.getTitle() + " has arrived in your Inbox. Click to view release notes!";
+            } else if (isResolved) {
                 toastTitle = "AcadsCatchUp • Bug Report Resolved ✔";
                 toastBody = "Hi " + curr.getFullName() + "! Your reported issue has been addressed and marked as RESOLVED by the System Administrator.";
             } else if (isGraded) {
@@ -229,7 +237,7 @@ public class StudentDashboardController {
             com.acadscatchup.util.WindowsNotificationUtil.showNotification(
                     toastTitle,
                     toastBody,
-                    (isResolved || isGraded) ? java.awt.TrayIcon.MessageType.INFO : java.awt.TrayIcon.MessageType.WARNING
+                    (isResolved || isGraded || isUpdate) ? java.awt.TrayIcon.MessageType.INFO : java.awt.TrayIcon.MessageType.WARNING
             );
             loadItems(); // Automatically refresh table to show new items or updated status!
         }

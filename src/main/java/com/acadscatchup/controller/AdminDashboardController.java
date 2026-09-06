@@ -62,6 +62,11 @@ public class AdminDashboardController {
 
     @FXML private ScrollPane dashboardScrollPane;
     @FXML private HBox statsRow;
+    @FXML private VBox statTotalUsers;
+    @FXML private VBox statStudents;
+    @FXML private VBox statProfessors;
+    @FXML private VBox statSubjects;
+    @FXML private VBox statReports;
     @FXML private Label totalUsersCount;
     @FXML private Label studentsCount;
     @FXML private Label professorsCount;
@@ -84,6 +89,8 @@ public class AdminDashboardController {
     private final UserDAO userDAO = new UserDAO();
     private final SubjectDAO subjectDAO = new SubjectDAO();
     private final HelpReportDAO reportDAO = new HelpReportDAO();
+    private final com.acadscatchup.dao.InboxDAO inboxDAO = new com.acadscatchup.dao.InboxDAO();
+    private boolean notifiedAdminSession = false;
 
     private final ObservableList<User> masterUsersList = FXCollections.observableArrayList();
     private FilteredList<User> filteredUsers;
@@ -110,6 +117,55 @@ public class AdminDashboardController {
         setupFilters();
         setupTable();
         loadData();
+        com.acadscatchup.util.UpdateSplash.checkAndBadgeUpdatesButton(updatesBtn);
+        checkAdminInboxNotices();
+
+        // Real-time reactive search filtering
+        if (searchField != null) {
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        }
+
+        // Table row double-click shortcut to edit user
+        usersTable.setRowFactory(tv -> {
+            TableRow<User> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    openUserDialog(row.getItem());
+                }
+            });
+            return row;
+        });
+
+        // Interactive stat cards with quick-filter shortcuts
+        if (statTotalUsers != null) {
+            statTotalUsers.setStyle(statTotalUsers.getStyle() + "; -fx-cursor: hand;");
+            statTotalUsers.setOnMouseClicked(e -> handleResetFilters());
+            Tooltip.install(statTotalUsers, new Tooltip("Click to show all user accounts"));
+        }
+        if (statStudents != null) {
+            statStudents.setStyle(statStudents.getStyle() + "; -fx-cursor: hand;");
+            statStudents.setOnMouseClicked(e -> {
+                if (roleFilterCombo != null) roleFilterCombo.setValue("STUDENT");
+            });
+            Tooltip.install(statStudents, new Tooltip("Click to filter by Students"));
+        }
+        if (statProfessors != null) {
+            statProfessors.setStyle(statProfessors.getStyle() + "; -fx-cursor: hand;");
+            statProfessors.setOnMouseClicked(e -> {
+                if (roleFilterCombo != null) roleFilterCombo.setValue("PROFESSOR");
+            });
+            Tooltip.install(statProfessors, new Tooltip("Click to filter by Professors"));
+        }
+        if (statSubjects != null) {
+            statSubjects.setStyle(statSubjects.getStyle() + "; -fx-cursor: hand;");
+            statSubjects.setOnMouseClicked(e -> handleManageSubjects());
+            Tooltip.install(statSubjects, new Tooltip("Click to manage academic subjects"));
+        }
+        if (statReports != null) {
+            statReports.setStyle(statReports.getStyle() + "; -fx-cursor: hand;");
+            statReports.setOnMouseClicked(e -> handleOpenBugReports());
+            Tooltip.install(statReports, new Tooltip("Click to open bug and help reports"));
+        }
 
         // Responsive auto-scaling layout manager
         com.acadscatchup.util.ResponsiveLayoutUtil.installAdminResponsiveLayout(
@@ -131,7 +187,10 @@ public class AdminDashboardController {
             liveSyncService = LiveSyncService.forAdmin(curr.getId(), new LiveSyncService.SyncListener() {
                 @Override
                 public void onDataChanged() {
-                    Platform.runLater(() -> loadDataSilently());
+                    Platform.runLater(() -> {
+                        loadDataSilently();
+                        checkAdminInboxNotices();
+                    });
                 }
 
                 @Override
@@ -166,15 +225,38 @@ public class AdminDashboardController {
     private void setupFilters() {
         roleFilterCombo.setItems(FXCollections.observableArrayList("ALL", "STUDENT", "PROFESSOR", "ADMIN"));
         roleFilterCombo.setValue("ALL");
-        roleFilterCombo.setOnAction(e -> applyFilters());
+        roleFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if ("ADMIN".equalsIgnoreCase(newVal)) {
+                if (programFilterCombo != null) {
+                    programFilterCombo.setValue("ALL");
+                    programFilterCombo.setDisable(true);
+                }
+                if (yearFilterCombo != null) {
+                    yearFilterCombo.setValue("ALL");
+                    yearFilterCombo.setDisable(true);
+                }
+            } else if ("PROFESSOR".equalsIgnoreCase(newVal)) {
+                if (programFilterCombo != null) {
+                    programFilterCombo.setValue("ALL");
+                    programFilterCombo.setDisable(true);
+                }
+                if (yearFilterCombo != null) {
+                    yearFilterCombo.setDisable(false);
+                }
+            } else {
+                if (programFilterCombo != null) programFilterCombo.setDisable(false);
+                if (yearFilterCombo != null) yearFilterCombo.setDisable(false);
+            }
+            applyFilters();
+        });
 
         programFilterCombo.setItems(FXCollections.observableArrayList(PROGRAMS));
         programFilterCombo.setValue("ALL");
-        programFilterCombo.setOnAction(e -> applyFilters());
+        programFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
 
         yearFilterCombo.setItems(FXCollections.observableArrayList(YEAR_LEVELS));
         yearFilterCombo.setValue("ALL");
-        yearFilterCombo.setOnAction(e -> applyFilters());
+        yearFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
 
     private void setupTable() {
@@ -189,7 +271,9 @@ public class AdminDashboardController {
                     selectedUserIds.add(u.getId());
                 }
             } else {
-                selectedUserIds.clear();
+                for (User u : filteredUsers) {
+                    selectedUserIds.remove(u.getId());
+                }
             }
             usersTable.refresh();
             updateSelectionState();
@@ -345,7 +429,9 @@ public class AdminDashboardController {
             selectionCountLabel.setText(count > 0 ? count + " account(s) selected" : "");
         }
         if (headerSelectAll != null && filteredUsers != null) {
-            headerSelectAll.setSelected(!filteredUsers.isEmpty() && selectedUserIds.containsAll(
+            boolean hasItems = !filteredUsers.isEmpty();
+            headerSelectAll.setDisable(!hasItems);
+            headerSelectAll.setSelected(hasItems && selectedUserIds.containsAll(
                     filteredUsers.stream().map(User::getId).toList()
             ));
         }
@@ -370,28 +456,31 @@ public class AdminDashboardController {
                 if (!role.equalsIgnoreCase(u.getRole())) return false;
             }
 
-            // Program filter
+            // Program filter: Only students belong to academic programs. Non-students or other programs are excluded.
             if (program != null && !"ALL".equalsIgnoreCase(program)) {
-                if (u.isStudent() && (u.getProgram() == null || !u.getProgram().equalsIgnoreCase(program))) {
+                if (!u.isStudent() || u.getProgram() == null || !u.getProgram().equalsIgnoreCase(program)) {
                     return false;
                 }
             }
 
-            // Year filter
+            // Year filter: Match student year level or professor teaching year; exclude non-matching accounts.
             if (year != null && !"ALL".equalsIgnoreCase(year)) {
-                if (u.isStudent() && (u.getYearDisplay() == null || !u.getYearDisplay().equalsIgnoreCase(year))) {
+                String userYear = u.getYearDisplay();
+                if (userYear == null || !userYear.equalsIgnoreCase(year)) {
                     return false;
                 }
             }
 
-            // Text search
+            // Real-time multi-attribute text search
             if (!query.isEmpty()) {
                 boolean matchUser = u.getUsername() != null && u.getUsername().toLowerCase().contains(query);
                 boolean matchName = u.getFullName() != null && u.getFullName().toLowerCase().contains(query);
                 boolean matchEmail = u.getEmail() != null && u.getEmail().toLowerCase().contains(query);
                 boolean matchProg = u.getProgram() != null && u.getProgram().toLowerCase().contains(query);
+                boolean matchRole = u.getRole() != null && u.getRole().toLowerCase().contains(query);
+                boolean matchYear = u.getYearDisplay() != null && u.getYearDisplay().toLowerCase().contains(query);
                 String profSubs = profSubjectsMap.getOrDefault(u.getId(), "").toLowerCase();
-                return matchUser || matchName || matchEmail || matchProg || profSubs.contains(query);
+                return matchUser || matchName || matchEmail || matchProg || matchRole || matchYear || profSubs.contains(query);
             }
 
             return true;
@@ -404,8 +493,14 @@ public class AdminDashboardController {
     private void handleResetFilters() {
         if (searchField != null) searchField.clear();
         if (roleFilterCombo != null) roleFilterCombo.setValue("ALL");
-        if (programFilterCombo != null) programFilterCombo.setValue("ALL");
-        if (yearFilterCombo != null) yearFilterCombo.setValue("ALL");
+        if (programFilterCombo != null) {
+            programFilterCombo.setDisable(false);
+            programFilterCombo.setValue("ALL");
+        }
+        if (yearFilterCombo != null) {
+            yearFilterCombo.setDisable(false);
+            yearFilterCombo.setValue("ALL");
+        }
         applyFilters();
     }
 
@@ -463,12 +558,57 @@ public class AdminDashboardController {
                 if (adminInboxBtn != null) {
                     adminInboxBtn.setText(com.acadscatchup.util.OSCompat.label("📥 ") + "Bug Reports (" + finalReports + ")");
                 }
+                checkAdminInboxNotices();
             });
         }, "AdminDashboard-DataLoader").start();
     }
 
     private void loadDataSilently() {
         loadData();
+    }
+
+    private void checkAdminInboxNotices() {
+        new Thread(() -> {
+            try {
+                User curr = Session.getCurrentUser();
+                if (curr == null) return;
+                int unread = inboxDAO.getUnreadCount(curr.getId());
+                if (unread > 0) {
+                    List<com.acadscatchup.model.InboxMessage> msgs = inboxDAO.getMessagesForRecipient(curr.getId());
+                    com.acadscatchup.model.InboxMessage updateMsg = null;
+                    for (com.acadscatchup.model.InboxMessage m : msgs) {
+                        if (!m.isRead()) {
+                            String typeL = m.getMsgType() != null ? m.getMsgType().toLowerCase() : "";
+                            String titleL = m.getTitle() != null ? m.getTitle().toLowerCase() : "";
+                            if (typeL.contains("update") || titleL.contains("update") || titleL.contains("what's new")) {
+                                updateMsg = m;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (updateMsg != null) {
+                        final com.acadscatchup.model.InboxMessage finalMsg = updateMsg;
+                        Platform.runLater(() -> {
+                            if (adminInboxBtn != null) {
+                                adminInboxBtn.setStyle("-fx-background-color: rgba(59,130,246,0.3); -fx-text-fill: #93c5fd; -fx-font-weight: bold;");
+                                adminInboxBtn.setTooltip(new Tooltip("Unread Update Notice: " + finalMsg.getTitle()));
+                            }
+                            if (!notifiedAdminSession) {
+                                notifiedAdminSession = true;
+                                com.acadscatchup.util.WindowsNotificationUtil.showNotification(
+                                        "AcadsCatchUp • What's New Update 🚀",
+                                        "Hi " + curr.getFullName() + "! " + finalMsg.getTitle() + " has arrived. Click Updates to view release notes!",
+                                        java.awt.TrayIcon.MessageType.INFO
+                                );
+                            }
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("[AdminInbox] Notice check error: " + e.getMessage());
+            }
+        }, "Admin-InboxNotice-Check").start();
     }
 
     // ── Add / Edit User (Strictly NO Gmail Editing) ──────────────────────────
@@ -481,8 +621,15 @@ public class AdminDashboardController {
     @FXML
     private void handleEditUser() {
         User selected = usersTable.getSelectionModel().getSelectedItem();
+        if (selected == null && selectedUserIds.size() == 1) {
+            int id = selectedUserIds.iterator().next();
+            selected = masterUsersList.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+        }
         if (selected == null) {
-            CustomAlert.showWarning(usersTable.getScene().getWindow(), "No Selection", "Please select a user account to edit.");
+            CustomAlert.showWarning(usersTable.getScene().getWindow(), "No Selection",
+                    selectedUserIds.size() > 1
+                            ? "Please select only one user account to edit."
+                            : "Please select a user account to edit.");
             return;
         }
         openUserDialog(selected);

@@ -198,4 +198,113 @@ public class InboxDAO {
             return false;
         }
     }
+
+    /**
+     * Broadcasts a System Update announcement to all registered users (Students, Professors, Admins)
+     * if they haven't received it yet for the specified version.
+     */
+    public int broadcastSystemUpdateNotice(String version, String title, String message) {
+        String matchTitle = "%v" + version + "%";
+        String checkSql = "SELECT COUNT(*) FROM inbox_messages WHERE recipient_id = ? AND (title LIKE ? OR message LIKE ?)";
+        String userSql = "SELECT id, full_name FROM users";
+        int sentCount = 0;
+
+        try (Connection conn = DBConnection.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(userSql)) {
+
+            List<int[]> userList = new ArrayList<>();
+            List<String> nameList = new ArrayList<>();
+            while (rs.next()) {
+                userList.add(new int[]{ rs.getInt("id") });
+                nameList.add(rs.getString("full_name"));
+            }
+
+            for (int i = 0; i < userList.size(); i++) {
+                int uId = userList.get(i)[0];
+                String uName = nameList.get(i);
+
+                try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+                    checkPs.setInt(1, uId);
+                    checkPs.setString(2, matchTitle);
+                    checkPs.setString(3, matchTitle);
+                    try (ResultSet crs = checkPs.executeQuery()) {
+                        if (crs.next() && crs.getInt(1) > 0) {
+                            continue; // Already delivered to this user
+                        }
+                    }
+                }
+
+                String personalizedMsg = message.replace("{recipientName}", uName != null ? uName : "User");
+                boolean ok = sendMessage(
+                        0,
+                        "AcadsCatchUp System",
+                        "SYSTEM",
+                        uId,
+                        uName != null ? uName : "User",
+                        title,
+                        personalizedMsg,
+                        null,
+                        null,
+                        null,
+                        "UPDATE",
+                        null,
+                        null,
+                        null
+                );
+                if (ok) sentCount++;
+            }
+        } catch (SQLException e) {
+            System.err.println("[InboxDAO] broadcastSystemUpdateNotice error: " + e.getMessage());
+        }
+        return sentCount;
+    }
+
+    /**
+     * Checks if the user has already received the update notice for the given version.
+     */
+    public boolean hasUserReceivedUpdate(int recipientId, String version) {
+        String cleanVer = version != null ? version.replace("v", "").trim() : "";
+        String matchTitle = "%v" + cleanVer + "%";
+        String checkSql = "SELECT COUNT(*) FROM inbox_messages WHERE recipient_id = ? AND (title LIKE ? OR message LIKE ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+            checkPs.setInt(1, recipientId);
+            checkPs.setString(2, matchTitle);
+            checkPs.setString(3, matchTitle);
+            try (ResultSet crs = checkPs.executeQuery()) {
+                return crs.next() && crs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("[InboxDAO] hasUserReceivedUpdate error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Ensures that the specified user has received the What's New update announcement in their inbox.
+     */
+    public boolean sendUpdateNoticeIfNew(int recipientId, String recipientName, String version, String title, String message) {
+        if (hasUserReceivedUpdate(recipientId, version)) {
+            return false; // Already delivered
+        }
+
+        String personalizedMsg = message.replace("{recipientName}", recipientName != null ? recipientName : "User");
+        return sendMessage(
+                0,
+                "AcadsCatchUp System",
+                "SYSTEM",
+                recipientId,
+                recipientName != null ? recipientName : "User",
+                title,
+                personalizedMsg,
+                null,
+                null,
+                null,
+                "UPDATE",
+                null,
+                null,
+                null
+        );
+    }
 }

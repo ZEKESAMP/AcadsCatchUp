@@ -44,12 +44,17 @@ Copy-Item -Path "$ClassesDir\*" -Destination $StagingDir -Recurse -Force
 
 Write-Host "  -> Unpacking all dependencies and cross-platform native libraries (Windows, Linux, macOS)..."
 $jars = Get-ChildItem -Path "$LibsDir\*.jar"
+$hasTar = (Get-Command tar -ErrorAction SilentlyContinue) -ne $null
 foreach ($jar in $jars) {
-    Push-Location $StagingDir
-    try {
-        & $JarExe -J-Xmx384m -xf $jar.FullName
-    } finally {
-        Pop-Location
+    if ($hasTar) {
+        tar -xf $jar.FullName -C $StagingDir
+    } else {
+        Push-Location $StagingDir
+        try {
+            & $JarExe -J-Xmx384m -xf $jar.FullName
+        } finally {
+            Pop-Location
+        }
     }
 }
 

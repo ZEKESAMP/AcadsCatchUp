@@ -24,6 +24,8 @@
             <Label text="System Administrator Inbox — Messages reported by Professors and Students" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
         </VBox>
         <Region HBox.hgrow="ALWAYS" />
+        <Button text="📬 My Personal Inbox" styleClass="btn-ghost" onAction="#handleOpenPersonalInbox"
+                style="-fx-font-size: 11px; -fx-padding: 4 10; -fx-background-color: rgba(59,130,246,0.15); -fx-text-fill: #93c5fd; -fx-border-color: #3b82f6; -fx-border-radius: 6; -fx-background-radius: 6;" />
         <Label fx:id="openCountBadge" text="0 Open"
                style="-fx-background-color: rgba(239,68,68,0.2); -fx-text-fill: #f87171; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 12px;" />
     </HBox>

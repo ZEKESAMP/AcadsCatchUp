@@ -121,6 +121,7 @@ public class InboxMessage {
         if (mt.equalsIgnoreCase("SUBMISSION")) return "Submission";
         if (mt.equalsIgnoreCase("GRADED")) return "Graded";
         if (mt.equalsIgnoreCase("REPORT_RESOLVED")) return "Bug Resolved";
+        if (mt.equalsIgnoreCase("UPDATE") || mt.equalsIgnoreCase("SYSTEM_UPDATE")) return "Update";
         return mt;
     }
 }

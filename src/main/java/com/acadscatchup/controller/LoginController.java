@@ -172,6 +172,7 @@ public class LoginController {
                     }
 
                     Session.setCurrentUser(user);
+                    com.acadscatchup.util.UpdateNoticeUtil.ensureUserUpdateNotice(user);
                     navigateToDashboard(user);
                 }
         );

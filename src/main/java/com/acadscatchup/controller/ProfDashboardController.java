@@ -214,6 +214,8 @@ public class ProfDashboardController {
             liveSyncService.start();
         }
 
+        com.acadscatchup.util.UpdateSplash.checkAndBadgeUpdatesButton(updatesBtn);
+
         // Register custom FAQ-style close confirmation dialog
         javafx.application.Platform.runLater(() -> {
             if (profNameLabel.getScene() != null && profNameLabel.getScene().getWindow() instanceof Stage s) {
@@ -871,15 +873,20 @@ public class ProfDashboardController {
 
             if (shouldNotify && alertMessage != null) {
                 notifiedProfSession = true;
+                boolean isUpdate = "UPDATE".equalsIgnoreCase(alertMessage.getMsgType())
+                        || "SYSTEM_UPDATE".equalsIgnoreCase(alertMessage.getMsgType())
+                        || (alertMessage.getTitle() != null && (alertMessage.getTitle().toLowerCase().contains("update") || alertMessage.getTitle().toLowerCase().contains("what's new")));
                 boolean isResolved = "REPORT_RESOLVED".equalsIgnoreCase(alertMessage.getMsgType())
                         || (alertMessage.getTitle() != null && alertMessage.getTitle().toLowerCase().contains("resolved"));
 
-                String toastTitle = isResolved
-                        ? "AcadsCatchUp • Bug Report Resolved ✔"
-                        : "AcadsCatchUp! Student Submissions";
-                String toastBody = isResolved
+                String toastTitle = isUpdate
+                        ? "AcadsCatchUp • What's New Update 🚀"
+                        : (isResolved ? "AcadsCatchUp • Bug Report Resolved ✔" : "AcadsCatchUp! Student Submissions");
+                String toastBody = isUpdate
+                        ? ("Hi " + curr.getFullName() + "! " + alertMessage.getTitle() + " has arrived in your Inbox. Check to view release notes!")
+                        : (isResolved
                         ? ("Hi " + curr.getFullName() + "! Your reported issue has been addressed and marked as RESOLVED by the System Administrator.")
-                        : ("You have " + unread + " student deficiency submission(s) awaiting your review.");
+                        : ("You have " + unread + " student deficiency submission(s) awaiting your review."));
 
                 com.acadscatchup.util.WindowsNotificationUtil.showNotification(
                         toastTitle,

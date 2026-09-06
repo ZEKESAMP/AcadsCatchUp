@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
@@ -37,7 +38,7 @@ public class UpdateSplash {
 
     public static final String DEVELOPER = "F4TAL";
 
-    public static final String CURRENT_VERSION = "1.0.4";
+    public static final String CURRENT_VERSION = "1.0.7";
     private static final String VERSION_URL =
             "https://raw.githubusercontent.com/ZEKESAMP/AcadsCatchUp/main/version.json";
 
@@ -145,10 +146,10 @@ public class UpdateSplash {
                     } else {
                         // ── No Update (Already Up to Date) ──
                         Platform.runLater(() -> {
-                            statusLabel.setText("No update");
-                            statusLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 13px; -fx-font-weight: 600;");
+                            statusLabel.setText("✔ v" + CURRENT_VERSION + " is up to date");
+                            statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: 700;");
                             progressBar.setProgress(1.0);
-                            progressBar.setStyle("-fx-accent: #5865f2;");
+                            progressBar.setStyle("-fx-accent: #23a55a;");
                             detailLabel.setText("Launching AcadsCatchUp...");
                         });
                         Thread.sleep(600);
@@ -178,40 +179,36 @@ public class UpdateSplash {
     private static void handleOfflineMode(Label statusLabel, Label detailLabel) {
         try {
             Platform.runLater(() -> {
-                statusLabel.setText("No update");
-                statusLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 13px; -fx-font-weight: 600;");
-                detailLabel.setText("Offline mode • Launching AcadsCatchUp...");
+                statusLabel.setText("⚠️ Offline — Skipping update check");
+                statusLabel.setStyle("-fx-text-fill: #f0a500; -fx-font-size: 12.5px; -fx-font-weight: 700;");
+                detailLabel.setText("No internet detected • Starting v" + CURRENT_VERSION + "...");
             });
-            Thread.sleep(500);
+            Thread.sleep(700);
         } catch (InterruptedException ignored) {}
     }
 
     /**
-     * Downloads the updated JAR file to Downloads folder, locates AcadsCatchUp-Portable,
-     * replaces the existing JAR(s), and immediately transitions to the Login screen without restarting.
+     * Downloads the updated JAR file to a staging file, verifies integrity,
+     * and executes a detached restart handoff to replace active application files cleanly.
      */
     private static void downloadAndApplyUpdate(String downloadUrl, String newVersion,
                                               ProgressBar progressBar, Label statusLabel, Label detailLabel,
                                               Stage splashStage, Stage primaryStage) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URI(downloadUrl).toURL().openConnection();
-            conn.setConnectTimeout(8000);
-            conn.setReadTimeout(20000);
-            conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
+            File portableDir = findPortableDirectory();
+            if (portableDir == null || !portableDir.exists()) {
+                portableDir = new File(".").getAbsoluteFile();
+            }
 
+            File stagingJar = new File(portableDir, "update_staging.jar");
+
+            HttpURLConnection conn = openFollowRedirects(downloadUrl);
             int contentLength = conn.getContentLength();
 
-            // 1. Target in user's Downloads folder
-            File downloadsDir = new File(System.getProperty("user.home"), "Downloads");
-            if (!downloadsDir.exists()) {
-                downloadsDir.mkdirs();
-            }
-            File downloadedJar = new File(downloadsDir, "AcadsCatchUp.jar");
+            try (InputStream in = new BufferedInputStream(conn.getInputStream(), 32768);
+                 OutputStream out = new BufferedOutputStream(new FileOutputStream(stagingJar), 32768)) {
 
-            try (InputStream in = new BufferedInputStream(conn.getInputStream());
-                 OutputStream out = new BufferedOutputStream(new FileOutputStream(downloadedJar))) {
-
-                byte[] buffer = new byte[8192];
+                byte[] buffer = new byte[32768];
                 int bytesRead;
                 long totalRead = 0;
 
@@ -232,72 +229,35 @@ public class UpdateSplash {
                 }
             }
 
+            // ── Integrity Guard: reject partial/corrupt downloads ──────────────
+            if ((contentLength > 0 && stagingJar.length() < contentLength * 0.95) || stagingJar.length() < 1000000) {
+                System.err.println("[UpdateSplash] Downloaded JAR size mismatch — expected ~" + contentLength + " bytes, got " + stagingJar.length() + ". Aborting update.");
+                if (stagingJar.exists()) stagingJar.delete();
+                Platform.runLater(() -> {
+                    statusLabel.setText("⚠️ Download incomplete — skipping update");
+                    statusLabel.setStyle("-fx-text-fill: #f0a500; -fx-font-size: 12.5px; -fx-font-weight: 700;");
+                    detailLabel.setText("File may be corrupted. Launching current version...");
+                });
+                Thread.sleep(1000);
+                Platform.runLater(() -> {
+                    splashStage.close();
+                    try { Main.showLoginScreen(primaryStage); } catch (Exception ex) {
+                        System.err.println("[UpdateSplash] Error launching main login: " + ex.getMessage());
+                    }
+                });
+                return;
+            }
+
             Platform.runLater(() -> {
-                statusLabel.setText("Applying update to AcadsCatchUp-Portable...");
-                detailLabel.setText("Replacing old .jar file...");
+                statusLabel.setText("✔ Update downloaded!");
+                statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: bold;");
+                detailLabel.setText("Restarting AcadsCatchUp to apply v" + newVersion + "...");
+                progressBar.setProgress(1.0);
+                progressBar.setStyle("-fx-accent: #23a55a;");
             });
 
-            // 2. Find AcadsCatchUp-Portable folder and copy/replace
-            File portableDir = findPortableDirectory();
-            boolean directCopySuccess = false;
-            if (portableDir != null && portableDir.exists()) {
-                directCopySuccess = copyJarToPortable(downloadedJar, portableDir);
-            }
-
-            if (directCopySuccess) {
-                // Direct file replacement succeeded (no active JVM locks)
-                Platform.runLater(() -> {
-                    statusLabel.setText("✔ Update applied!");
-                    statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: bold;");
-                    detailLabel.setText("Opening AcadsCatchUp...");
-                    progressBar.setProgress(1.0);
-                    progressBar.setStyle("-fx-accent: #23a55a;");
-                });
-
-                Thread.sleep(700);
-
-                // No restart needed — go automatically to Login Phase
-                Platform.runLater(() -> {
-                    splashStage.close();
-                    try {
-                        Main.showLoginScreen(primaryStage);
-                    } catch (Exception ex) {
-                        System.err.println("[UpdateSplash] Error launching main login: " + ex.getMessage());
-                    }
-                });
-            } else if (portableDir != null && portableDir.exists()) {
-                // JVM holds active lock on app/AcadsCatchUp.jar on Windows!
-                // Execute sub-second detached handoff: releases file lock, copies new JARs,
-                // and relaunches AcadsCatchUp.exe with --direct-login flag
-                Platform.runLater(() -> {
-                    statusLabel.setText("✔ Update downloaded!");
-                    statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: bold;");
-                    detailLabel.setText("Finalizing update and opening login...");
-                    progressBar.setProgress(1.0);
-                    progressBar.setStyle("-fx-accent: #23a55a;");
-                });
-
-                Thread.sleep(600);
-                executeDetachedHandoff(downloadedJar, portableDir);
-            } else {
-                // Portable dir wasn't found, but JAR was downloaded to user's Downloads folder
-                Platform.runLater(() -> {
-                    statusLabel.setText("✔ Downloaded to Downloads folder");
-                    statusLabel.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: bold;");
-                    detailLabel.setText("Launching AcadsCatchUp...");
-                    progressBar.setProgress(1.0);
-                });
-
-                Thread.sleep(700);
-                Platform.runLater(() -> {
-                    splashStage.close();
-                    try {
-                        Main.showLoginScreen(primaryStage);
-                    } catch (Exception ex) {
-                        System.err.println("[UpdateSplash] Error launching main login: " + ex.getMessage());
-                    }
-                });
-            }
+            Thread.sleep(800);
+            executeDetachedHandoff(stagingJar, portableDir);
 
         } catch (Exception e) {
             System.err.println("[UpdateSplash] Download/update failed: " + e.getMessage());
@@ -515,25 +475,124 @@ public class UpdateSplash {
     }
 
     /**
-     * Executes a sub-second detached batch script on Windows to bypass active JVM file locks.
-     * The script waits ~1s for this process to exit, synchronizes all target JARs in portableDir,
-     * immediately starts AcadsCatchUp.exe with --direct-login, and self-deletes.
+     * Opens an HttpURLConnection, following HTTP and HTTPS redirects (301, 302, 303, 307, 308)
+     * across different hosts and protocols (e.g. GitHub Releases to AWS S3/Azure Blob).
+     */
+    private static HttpURLConnection openFollowRedirects(String initialUrl) throws Exception {
+        String currentUrl = initialUrl;
+        int redirects = 0;
+        while (redirects < 7) {
+            HttpURLConnection conn = (HttpURLConnection) new URI(currentUrl).toURL().openConnection();
+            conn.setConnectTimeout(12000);
+            conn.setReadTimeout(90000);
+            conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
+            conn.setRequestProperty("Cache-Control", "no-cache");
+            conn.setInstanceFollowRedirects(false);
+
+            int status = conn.getResponseCode();
+            if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                    || status == HttpURLConnection.HTTP_MOVED_PERM
+                    || status == HttpURLConnection.HTTP_SEE_OTHER
+                    || status == 307
+                    || status == 308) {
+                String newUrl = conn.getHeaderField("Location");
+                if (newUrl != null && !newUrl.isEmpty()) {
+                    currentUrl = newUrl;
+                    redirects++;
+                    continue;
+                }
+            }
+            return conn;
+        }
+        throw new IOException("Too many redirects connecting to: " + initialUrl);
+    }
+
+    /**
+     * Executes a verified detached batch script on Windows to bypass active JVM file locks.
+     * The script terminates the running JVM process by PID, synchronizes all target JARs in portableDir
+     * and app/ subfolder with retry verification, copies to Downloads, relaunches AcadsCatchUp.exe, and self-deletes.
      */
     public static void executeDetachedHandoff(File sourceJar, File portableDir) {
         try {
+            if (portableDir == null || !portableDir.exists()) {
+                portableDir = findPortableDirectory();
+            }
+            if (portableDir == null || !portableDir.exists()) {
+                portableDir = new File(".").getAbsoluteFile();
+            }
+
+            long currentPid = ProcessHandle.current().pid();
             File batFile = new File(portableDir, "update_handoff.bat");
             String batContent =
                     "@echo off\r\n" +
                     "chcp 65001 >nul 2>&1\r\n" +
-                    "timeout /t 1 /nobreak >nul\r\n" +
-                    "copy /y \"%~1\" \"%~dp0AcadsCatchUp.jar\" >nul 2>&1\r\n" +
-                    "copy /y \"%~1\" \"%~dp0app\\AcadsCatchUp.jar\" >nul 2>&1\r\n" +
-                    "copy /y \"%~1\" \"%~dp0app\\acadscatchup-app.jar\" >nul 2>&1\r\n" +
-                    "if exist \"%~dp0AcadsCatchUp.exe\" (\r\n" +
-                    "    start \"\" \"%~dp0AcadsCatchUp.exe\" --direct-login\r\n" +
-                    ") else (\r\n" +
-                    "    start \"\" javaw -jar \"%~dp0AcadsCatchUp.jar\" --direct-login\r\n" +
+                    "setlocal enabledelayedexpansion\r\n" +
+                    "set \"SRC=%~1\"\r\n" +
+                    "set \"DEST=%~dp0\"\r\n" +
+                    "set \"OLD_PID=%~2\"\r\n" +
+                    "\r\n" +
+                    ":: 1. Wait for parent Java process to exit and release file handles\r\n" +
+                    "if not \"%OLD_PID%\"==\"\" (\r\n" +
+                    "    set /a pcount=0\r\n" +
+                    "    :wait_pid_loop\r\n" +
+                    "    tasklist /fi \"PID eq %OLD_PID%\" 2>nul | findstr /i \"%OLD_PID%\" >nul\r\n" +
+                    "    if !ERRORLEVEL! equ 0 (\r\n" +
+                    "        set /a pcount+=1\r\n" +
+                    "        if !pcount! geq 6 (\r\n" +
+                    "            taskkill /F /PID %OLD_PID% /T >nul 2>&1\r\n" +
+                    "        ) else (\r\n" +
+                    "            ping 127.0.0.1 -n 2 >nul 2>&1\r\n" +
+                    "            goto wait_pid_loop\r\n" +
+                    "        )\r\n" +
+                    "    )\r\n" +
                     ")\r\n" +
+                    ":: Extra buffer to ensure OS releases all file handles\r\n" +
+                    "ping 127.0.0.1 -n 2 >nul 2>&1\r\n" +
+                    "\r\n" +
+                    ":: 2. Synchronize new JAR across all target locations with retry loop\r\n" +
+                    "set /a ccount=0\r\n" +
+                    ":copy_retry\r\n" +
+                    "set /a ccount+=1\r\n" +
+                    "set \"FAIL=0\"\r\n" +
+                    "\r\n" +
+                    "copy /y \"%SRC%\" \"%DEST%AcadsCatchUp.jar\" >nul 2>&1\r\n" +
+                    "if !ERRORLEVEL! neq 0 set \"FAIL=1\"\r\n" +
+                    "\r\n" +
+                    "if exist \"%DEST%app\" (\r\n" +
+                    "    copy /y \"%SRC%\" \"%DEST%app\\AcadsCatchUp.jar\" >nul 2>&1\r\n" +
+                    "    if !ERRORLEVEL! neq 0 set \"FAIL=1\"\r\n" +
+                    "    copy /y \"%SRC%\" \"%DEST%app\\acadscatchup-app.jar\" >nul 2>&1\r\n" +
+                    "    if !ERRORLEVEL! neq 0 set \"FAIL=1\"\r\n" +
+                    ")\r\n" +
+                    "\r\n" +
+                    "if \"!FAIL!\"==\"1\" (\r\n" +
+                    "    if !ccount! lss 10 (\r\n" +
+                    "        ping 127.0.0.1 -n 2 >nul 2>&1\r\n" +
+                    "        goto copy_retry\r\n" +
+                    "    )\r\n" +
+                    ")\r\n" +
+                    "\r\n" +
+                    ":: 3. Also synchronize to user's Downloads folder if it exists\r\n" +
+                    "if exist \"%USERPROFILE%\\Downloads\" (\r\n" +
+                    "    copy /y \"%SRC%\" \"%USERPROFILE%\\Downloads\\AcadsCatchUp.jar\" >nul 2>&1\r\n" +
+                    ")\r\n" +
+                    "\r\n" +
+                    ":: 4. Clean up temporary staging file\r\n" +
+                    "if exist \"%SRC%\" (\r\n" +
+                    "    echo \"%SRC%\" | findstr /i \"update_staging\" >nul 2>&1\r\n" +
+                    "    if !ERRORLEVEL! equ 0 del /q /f \"%SRC%\" >nul 2>&1\r\n" +
+                    ")\r\n" +
+                    "\r\n" +
+                    ":: 5. Relaunch application\r\n" +
+                    "if exist \"%DEST%AcadsCatchUp.exe\" (\r\n" +
+                    "    start \"\" \"%DEST%AcadsCatchUp.exe\"\r\n" +
+                    ") else if exist \"%DEST%runtime\\bin\\javaw.exe\" (\r\n" +
+                    "    start \"\" \"%DEST%runtime\\bin\\javaw.exe\" -jar \"%DEST%AcadsCatchUp.jar\"\r\n" +
+                    ") else (\r\n" +
+                    "    start \"\" javaw -jar \"%DEST%AcadsCatchUp.jar\"\r\n" +
+                    ")\r\n" +
+                    "\r\n" +
+                    ":: 6. Self-delete this script\r\n" +
                     "(goto) 2>nul & del \"%~f0\"\r\n";
 
             try (FileWriter writer = new FileWriter(batFile)) {
@@ -541,12 +600,15 @@ public class UpdateSplash {
             }
 
             ProcessBuilder pb = new ProcessBuilder(
-                    "cmd.exe", "/c", "start", "/min", batFile.getAbsolutePath(), sourceJar.getAbsolutePath()
+                    "cmd.exe", "/c", "start", "\"AcadsCatchUp-Update\"", "/min",
+                    batFile.getAbsolutePath(),
+                    sourceJar.getAbsolutePath(),
+                    String.valueOf(currentPid)
             );
             pb.directory(portableDir);
             pb.start();
 
-            System.out.println("[UpdateSplash] Hand-off script launched. Exiting JVM to release file locks.");
+            System.out.println("[UpdateSplash] Detached update script launched. Shutting down JVM to release file locks.");
             System.exit(0);
         } catch (Exception e) {
             System.err.println("[UpdateSplash] Error executing detached handoff: " + e.getMessage());
@@ -572,8 +634,8 @@ public class UpdateSplash {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URI("https://api.github.com/repos/ZEKESAMP/AcadsCatchUp/releases/latest").toURL().openConnection();
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(3500);
-            conn.setReadTimeout(3500);
+            conn.setConnectTimeout(6000);
+            conn.setReadTimeout(6000);
             conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
             conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
 
@@ -615,8 +677,8 @@ public class UpdateSplash {
             String noCacheUrl = VERSION_URL + "?nocache=" + System.currentTimeMillis();
             HttpURLConnection conn = (HttpURLConnection) new URI(noCacheUrl).toURL().openConnection();
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(3500);
-            conn.setReadTimeout(3500);
+            conn.setConnectTimeout(6000);
+            conn.setReadTimeout(6000);
             conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
             conn.setRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
             conn.setRequestProperty("Pragma", "no-cache");
@@ -658,66 +720,105 @@ public class UpdateSplash {
                                     "A new version of AcadsCatchUp is available!\n\n" +
                                     "Current Version: v" + CURRENT_VERSION + "\n" +
                                     "Latest Version:  v" + updateInfo.version + "\n\n" +
-                                    "Download to Downloads and apply to AcadsCatchUp-Portable now?\n(No restart required)"
+                                    "Download and apply update now?\n(AcadsCatchUp will restart automatically to apply the update)"
                             );
                             if (confirm) {
+                                Stage[] dlStage = new Stage[1];
+                                ProgressBar dlBar = new ProgressBar(0);
+                                Label dlStatus = new Label("Downloading AcadsCatchUp v" + updateInfo.version + "...");
+                                Label dlDetail = new Label("Connecting to server...");
+
+                                dlBar.setMaxWidth(Double.MAX_VALUE);
+                                dlBar.setPrefHeight(10);
+                                dlBar.setStyle("-fx-accent: #3b82f6;");
+
+                                dlStatus.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: bold;");
+                                dlDetail.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+
+                                VBox box = new VBox(12, dlStatus, dlBar, dlDetail);
+                                box.setPadding(new Insets(24, 28, 24, 28));
+                                box.setStyle("-fx-background-color: #1a1d2e; -fx-background-radius: 12; " +
+                                             "-fx-border-color: #3b82f6; -fx-border-width: 1.5; -fx-border-radius: 12;");
+                                box.setPrefWidth(380);
+
+                                Scene scene = new Scene(box);
+                                scene.setFill(Color.TRANSPARENT);
+                                Stage stage = new Stage();
+                                stage.initStyle(StageStyle.TRANSPARENT);
+                                if (owner != null) stage.initOwner(owner);
+                                stage.initModality(Modality.APPLICATION_MODAL);
+                                stage.setScene(scene);
+                                stage.centerOnScreen();
+                                stage.show();
+                                dlStage[0] = stage;
+
                                 new Thread(() -> {
                                     try {
-                                        File downloadsDir = new File(System.getProperty("user.home"), "Downloads");
-                                        if (!downloadsDir.exists()) downloadsDir.mkdirs();
-                                        File downloadedJar = new File(downloadsDir, "AcadsCatchUp.jar");
+                                        File portable = findPortableDirectory();
+                                        if (portable == null || !portable.exists()) {
+                                            portable = new File(".").getAbsoluteFile();
+                                        }
+                                        File downloadedJar = new File(portable, "update_staging.jar");
 
-                                        HttpURLConnection dlConn = (HttpURLConnection) new URI(updateInfo.downloadUrl).toURL().openConnection();
-                                        dlConn.setConnectTimeout(8000);
-                                        dlConn.setReadTimeout(20000);
-                                        try (InputStream in = new BufferedInputStream(dlConn.getInputStream());
-                                             OutputStream out = new BufferedOutputStream(new FileOutputStream(downloadedJar))) {
-                                            byte[] buf = new byte[8192];
+                                        HttpURLConnection dlConn = openFollowRedirects(updateInfo.downloadUrl);
+                                        int totalBytes = dlConn.getContentLength();
+
+                                        if (totalBytes > 0) {
+                                            Platform.runLater(() -> dlBar.setProgress(0));
+                                        }
+
+                                        try (InputStream in = new BufferedInputStream(dlConn.getInputStream(), 32768);
+                                             OutputStream out = new BufferedOutputStream(new FileOutputStream(downloadedJar), 32768)) {
+                                            byte[] buf = new byte[32768];
                                             int len;
+                                            long downloaded = 0;
                                             while ((len = in.read(buf)) != -1) {
                                                 out.write(buf, 0, len);
+                                                downloaded += len;
+                                                long finalDownloaded = downloaded;
+                                                if (totalBytes > 0) {
+                                                    double pct = (double) downloaded / totalBytes;
+                                                    Platform.runLater(() -> {
+                                                        dlBar.setProgress(pct);
+                                                        dlDetail.setText(String.format("%.1f MB / %.1f MB  (%.0f%%)",
+                                                                finalDownloaded / 1048576.0, totalBytes / 1048576.0, pct * 100));
+                                                    });
+                                                }
                                             }
                                         }
 
-                                        File portable = findPortableDirectory();
-                                        boolean directCopied = false;
-                                        if (portable != null && portable.exists()) {
-                                            directCopied = copyJarToPortable(downloadedJar, portable);
+                                        // ── Integrity guard ─────────────────────────────────────
+                                        if ((totalBytes > 0 && downloadedJar.length() < totalBytes * 0.95) || downloadedJar.length() < 1000000) {
+                                            if (downloadedJar.exists()) downloadedJar.delete();
+                                            Platform.runLater(() -> {
+                                                if (dlStage[0] != null) dlStage[0].close();
+                                                CustomAlert.showWarning(owner, "Download Incomplete",
+                                                        "⚠️ The download appears incomplete or corrupted.\nExpected ~" +
+                                                        String.format("%.1f", totalBytes / 1048576.0) + " MB, got " +
+                                                        String.format("%.1f", downloadedJar.length() / 1048576.0) + " MB.\n\nPlease try again.");
+                                            });
+                                            return;
                                         }
 
-                                        if (directCopied) {
-                                            Platform.runLater(() -> CustomAlert.showInfo(
-                                                    owner,
-                                                    "Update Applied",
-                                                    "✔ Update v" + updateInfo.version + " downloaded and applied to AcadsCatchUp-Portable!\nNo restart needed."
-                                            ));
-                                        } else if (portable != null && portable.exists()) {
-                                            Platform.runLater(() -> {
-                                                boolean finalizeNow = CustomAlert.showConfirmation(
-                                                        owner,
-                                                        "Update Downloaded",
-                                                        "✔ Update v" + updateInfo.version + " downloaded to your Downloads folder!\n\n" +
-                                                        "To complete replacing active application files, AcadsCatchUp will refresh directly into the Login screen.\n\n" +
-                                                        "Proceed now?"
-                                                );
-                                                if (finalizeNow) {
-                                                    executeDetachedHandoff(downloadedJar, portable);
-                                                }
-                                            });
-                                        } else {
-                                            Platform.runLater(() -> CustomAlert.showInfo(
-                                                    owner,
-                                                    "Update Downloaded",
-                                                    "✔ Update v" + updateInfo.version + " downloaded to your Downloads folder:\n" +
-                                                    downloadedJar.getAbsolutePath()
-                                            ));
-                                        }
+                                        Platform.runLater(() -> {
+                                            dlStatus.setText("✔ Download complete!");
+                                            dlStatus.setStyle("-fx-text-fill: #23a55a; -fx-font-size: 13px; -fx-font-weight: bold;");
+                                            dlBar.setProgress(1.0);
+                                            dlBar.setStyle("-fx-accent: #23a55a;");
+                                            dlDetail.setText("Restarting AcadsCatchUp to apply update...");
+                                        });
+                                        Thread.sleep(800);
+
+                                        final File finalPortable = portable;
+                                        Platform.runLater(() -> {
+                                            if (dlStage[0] != null) dlStage[0].close();
+                                            executeDetachedHandoff(downloadedJar, finalPortable);
+                                        });
                                     } catch (Exception ex) {
-                                        Platform.runLater(() -> CustomAlert.showWarning(
-                                                owner,
-                                                "Update Failed",
-                                                "Failed to download update: " + ex.getMessage()
-                                        ));
+                                        Platform.runLater(() -> {
+                                            if (dlStage[0] != null) dlStage[0].close();
+                                            CustomAlert.showWarning(owner, "Update Failed", "Failed to download update: " + ex.getMessage());
+                                        });
                                     }
                                 }, "Manual-Update-Downloader").start();
                             }
@@ -725,8 +826,8 @@ public class UpdateSplash {
                     } else {
                         Platform.runLater(() -> CustomAlert.showInfo(
                                 owner,
-                                "No update",
-                                "No update • You are already using the latest version of AcadsCatchUp (v" + CURRENT_VERSION + ")."
+                                "✔ Up to Date",
+                                "You are already using the latest version of AcadsCatchUp.\n\nInstalled: v" + CURRENT_VERSION
                         ));
                     }
                 } else {
@@ -764,5 +865,45 @@ public class UpdateSplash {
             if (r < c) return false;
         }
         return false;
+    }
+
+    /**
+     * Silently checks GitHub in a background daemon thread.
+     * If a newer version is found, updates the given updatesBtn with a yellow
+     * "🔄 Updates (New!)" badge so the user knows to click it.
+     * Call this from dashboard initialize() methods.
+     *
+     * @param updatesBtn the Button to badge if an update is available
+     */
+    public static void checkAndBadgeUpdatesButton(javafx.scene.control.Button updatesBtn) {
+        if (updatesBtn == null) return;
+        Thread t = new Thread(() -> {
+            try {
+                RemoteUpdateInfo info = fetchLatestUpdate();
+                if (info != null && info.version != null && isNewerVersion(info.version, CURRENT_VERSION)) {
+                    Platform.runLater(() -> {
+                        updatesBtn.setText("\uD83D\uDD04 Updates (New!)");
+                        updatesBtn.setStyle(
+                                "-fx-background-color: rgba(240, 165, 0, 0.25); " +
+                                "-fx-text-fill: #fbbf24; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-border-color: #f0a500; " +
+                                "-fx-border-radius: 6; " +
+                                "-fx-border-width: 1; " +
+                                "-fx-background-radius: 6;"
+                        );
+                        updatesBtn.setTooltip(new javafx.scene.control.Tooltip(
+                                "AcadsCatchUp v" + info.version + " is available! Click to update."
+                        ));
+                        System.out.println("[UpdateSplash] Badge: newer version v" + info.version + " detected.");
+                    });
+                }
+            } catch (Exception e) {
+                // Silent fail — badge is optional, never block dashboard startup
+                System.err.println("[UpdateSplash] Badge check error: " + e.getMessage());
+            }
+        }, "UpdateBadge-Check");
+        t.setDaemon(true);
+        t.start();
     }
 }
