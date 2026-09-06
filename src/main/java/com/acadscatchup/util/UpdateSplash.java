@@ -128,37 +128,22 @@ public class UpdateSplash {
                 // Short initial delay for smooth entrance animation
                 Thread.sleep(300);
 
-                HttpURLConnection conn = (HttpURLConnection) new URI(VERSION_URL).toURL().openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(2500); // 2.5s connect timeout
-                conn.setReadTimeout(2500);    // 2.5s read timeout
-                conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
+                RemoteUpdateInfo updateInfo = fetchLatestUpdate();
+                if (updateInfo != null && updateInfo.version != null) {
+                    System.out.println("[UpdateSplash] Current: v" + CURRENT_VERSION + " | Remote: v" + updateInfo.version);
 
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 200) {
-                    StringBuilder sb = new StringBuilder();
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            sb.append(line);
-                        }
-                    }
-                    String json = sb.toString();
-                    String remoteVersion = extractJsonField(json, "version");
-                    String downloadUrl = extractJsonField(json, "download_url");
-
-                    if (remoteVersion != null && isNewerVersion(remoteVersion, CURRENT_VERSION)) {
+                    if (isNewerVersion(updateInfo.version, CURRENT_VERSION)) {
                         // ── Update Available ──
                         Platform.runLater(() -> {
-                            statusLabel.setText("⬇ Update found: v" + remoteVersion);
+                            statusLabel.setText("⬇ Update found: v" + updateInfo.version);
                             detailLabel.setText("Downloading to Downloads folder...");
                             progressBar.setProgress(0);
                         });
 
-                        downloadAndApplyUpdate(downloadUrl, remoteVersion, progressBar, statusLabel, detailLabel, splashStage, primaryStage);
+                        downloadAndApplyUpdate(updateInfo.downloadUrl, updateInfo.version, progressBar, statusLabel, detailLabel, splashStage, primaryStage);
                         return;
                     } else {
-                        // ── No Update ──
+                        // ── No Update (Already Up to Date) ──
                         Platform.runLater(() -> {
                             statusLabel.setText("No update");
                             statusLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 13px; -fx-font-weight: 600;");
@@ -407,35 +392,111 @@ public class UpdateSplash {
         }
     }
 
+    private static class RemoteUpdateInfo {
+        final String version;
+        final String downloadUrl;
+
+        RemoteUpdateInfo(String version, String downloadUrl) {
+            this.version = version;
+            this.downloadUrl = downloadUrl;
+        }
+    }
+
     /**
-     * Manual update check method for Account Settings dialog.
+     * Fetches latest update info by checking direct GitHub Releases API first,
+     * falling back to version.json with anti-cache query headers.
+     */
+    private static RemoteUpdateInfo fetchLatestUpdate() {
+        // 1. Direct GitHub Releases API (real-time, zero CDN caching)
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URI("https://api.github.com/repos/ZEKESAMP/AcadsCatchUp/releases/latest").toURL().openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(3500);
+            conn.setReadTimeout(3500);
+            conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
+            conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
+
+            if (conn.getResponseCode() == 200) {
+                StringBuilder sb = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) sb.append(line);
+                }
+                String json = sb.toString();
+                String tagName = extractJsonField(json, "tag_name");
+                if (tagName != null) {
+                    String version = tagName.replace("v", "").trim();
+                    // Extract .jar download url from release assets
+                    Pattern p = Pattern.compile("\"browser_download_url\"\\s*:\\s*\"([^\"]+\\.jar)\"");
+                    Matcher m = p.matcher(json);
+                    String downloadUrl = null;
+                    while (m.find()) {
+                        String url = m.group(1);
+                        if (url.endsWith("AcadsCatchUp.jar")) {
+                            downloadUrl = url;
+                            break;
+                        } else if (downloadUrl == null) {
+                            downloadUrl = url;
+                        }
+                    }
+                    if (downloadUrl == null) {
+                        downloadUrl = "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/" + tagName + "/AcadsCatchUp.jar";
+                    }
+                    return new RemoteUpdateInfo(version, downloadUrl);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[UpdateSplash] GitHub Releases API check failed: " + e.getMessage());
+        }
+
+        // 2. Fallback to raw version.json with anti-cache timestamp
+        try {
+            String noCacheUrl = VERSION_URL + "?nocache=" + System.currentTimeMillis();
+            HttpURLConnection conn = (HttpURLConnection) new URI(noCacheUrl).toURL().openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(3500);
+            conn.setReadTimeout(3500);
+            conn.setRequestProperty("User-Agent", "AcadsCatchUp-Client/" + CURRENT_VERSION);
+            conn.setRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
+            conn.setRequestProperty("Pragma", "no-cache");
+
+            if (conn.getResponseCode() == 200) {
+                StringBuilder sb = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) sb.append(line);
+                }
+                String json = sb.toString();
+                String remoteVersion = extractJsonField(json, "version");
+                String downloadUrl = extractJsonField(json, "download_url");
+                if (remoteVersion != null) {
+                    return new RemoteUpdateInfo(remoteVersion, downloadUrl);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[UpdateSplash] version.json check failed: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Manual update check method for Account Settings and Updates dialog.
      */
     public static void checkManual(Window owner) {
         new Thread(() -> {
             try {
-                HttpURLConnection conn = (HttpURLConnection) new URI(VERSION_URL).toURL().openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(3000);
-                conn.setReadTimeout(3000);
+                RemoteUpdateInfo updateInfo = fetchLatestUpdate();
 
-                if (conn.getResponseCode() == 200) {
-                    StringBuilder sb = new StringBuilder();
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                        String line;
-                        while ((line = reader.readLine()) != null) sb.append(line);
-                    }
-                    String json = sb.toString();
-                    String remoteVersion = extractJsonField(json, "version");
-                    String downloadUrl = extractJsonField(json, "download_url");
-
-                    if (remoteVersion != null && isNewerVersion(remoteVersion, CURRENT_VERSION)) {
+                if (updateInfo != null && updateInfo.version != null) {
+                    if (isNewerVersion(updateInfo.version, CURRENT_VERSION)) {
                         Platform.runLater(() -> {
                             boolean confirm = CustomAlert.showConfirmation(
                                     owner,
                                     "Update Available",
                                     "A new version of AcadsCatchUp is available!\n\n" +
                                     "Current Version: v" + CURRENT_VERSION + "\n" +
-                                    "Latest Version:  v" + remoteVersion + "\n\n" +
+                                    "Latest Version:  v" + updateInfo.version + "\n\n" +
                                     "Download to Downloads and apply to AcadsCatchUp-Portable now?\n(No restart required)"
                             );
                             if (confirm) {
@@ -445,7 +506,7 @@ public class UpdateSplash {
                                         if (!downloadsDir.exists()) downloadsDir.mkdirs();
                                         File downloadedJar = new File(downloadsDir, "AcadsCatchUp.jar");
 
-                                        HttpURLConnection dlConn = (HttpURLConnection) new URI(downloadUrl).toURL().openConnection();
+                                        HttpURLConnection dlConn = (HttpURLConnection) new URI(updateInfo.downloadUrl).toURL().openConnection();
                                         dlConn.setConnectTimeout(8000);
                                         dlConn.setReadTimeout(20000);
                                         try (InputStream in = new BufferedInputStream(dlConn.getInputStream());
@@ -465,7 +526,7 @@ public class UpdateSplash {
                                         Platform.runLater(() -> CustomAlert.showInfo(
                                                 owner,
                                                 "Update Applied",
-                                                "✔ Update v" + remoteVersion + " downloaded and applied to AcadsCatchUp-Portable!\nNo restart needed."
+                                                "✔ Update v" + updateInfo.version + " downloaded and applied to AcadsCatchUp-Portable!\nNo restart needed."
                                         ));
                                     } catch (Exception ex) {
                                         Platform.runLater(() -> CustomAlert.showWarning(
