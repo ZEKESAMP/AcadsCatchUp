@@ -15,7 +15,7 @@ public class Main extends Application {
     public static final String DEVELOPER     = "F4TAL";
     public static final String CREATOR       = "Stevenson James G. Gastanes (F4TAL)";
     public static final String APP_NAME       = "AcadsCatchUp";
-    public static final String BUILD_VERSION  = "1.0.3-PROD-F4TAL";
+    public static final String BUILD_VERSION  = "1.0.4-PROD-F4TAL";
     public static final String SIGNATURE      = "AcadsCatchUp • Engineered by F4TAL";
 
     @Override
@@ -36,6 +36,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        boolean directLogin = getParameters() != null && getParameters().getRaw().contains("--direct-login");
+        if (directLogin) {
+            try {
+                showLoginScreen(primaryStage);
+                return;
+            } catch (Exception e) {
+                System.err.println("[Main] Failed to open direct login: " + e.getMessage());
+            }
+        }
         // Discord-style startup splash & update checker
         com.acadscatchup.util.UpdateSplash.showAndCheck(primaryStage);
     }

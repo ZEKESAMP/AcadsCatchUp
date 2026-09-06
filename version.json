@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
-  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.3/AcadsCatchUp.jar",
-  "release_notes": "AcadsCatchUp Release v1.0.3: In-app Updates Hub with version changelog modal, seamless auto-updater with zero restarts, and enrolled subjects active filter badges."
+  "version": "1.0.4",
+  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.0.4/AcadsCatchUp.jar",
+  "release_notes": "AcadsCatchUp Release v1.0.4: Anchor-based portable folder detection, synchronized app/ JAR replacement, and seamless direct-to-login updater."
 }

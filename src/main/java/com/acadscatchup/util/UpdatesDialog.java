@@ -102,11 +102,11 @@ public class UpdatesDialog {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         // Version definitions
-        String[] versions = new String[] { "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
+        String[] versions = new String[] { "v1.0.4", "v1.0.3", "v1.0.2", "v1.0.1", "v1.0.0" };
         Map<String, Button> versionButtons = new HashMap<>();
 
         for (String v : versions) {
-            String labelText = v.equals("v1.0.3") ? "✨ v1.0.3 (Latest)" : v;
+            String labelText = v.equals("v1.0.4") ? "✨ v1.0.4 (Latest)" : v;
             Button vBtn = new Button(labelText);
             vBtn.setStyle(
                     "-fx-background-color: #242840; " +
@@ -158,8 +158,8 @@ public class UpdatesDialog {
             versionBar.getChildren().add(vBtn);
         }
 
-        // Default to v1.0.3
-        Button defaultBtn = versionButtons.get("v1.0.3");
+        // Default to v1.0.4
+        Button defaultBtn = versionButtons.get("v1.0.4");
         if (defaultBtn != null) {
             defaultBtn.setStyle(
                     "-fx-background-color: #5865f2; " +
@@ -173,7 +173,7 @@ public class UpdatesDialog {
                     "-fx-border-width: 1; " +
                     "-fx-cursor: hand;"
             );
-            renderVersionNotes(contentBox, "v1.0.3");
+            renderVersionNotes(contentBox, "v1.0.4");
         }
 
         // ── 3. FOOTER ────────────────────────────────────────────────────────
@@ -215,6 +215,9 @@ public class UpdatesDialog {
         container.getChildren().clear();
 
         switch (version) {
+            case "v1.0.4":
+                renderV104(container);
+                break;
             case "v1.0.3":
                 renderV103(container);
                 break;
@@ -228,18 +231,44 @@ public class UpdatesDialog {
                 renderV100(container);
                 break;
             default:
-                renderV103(container);
+                renderV104(container);
                 break;
         }
+    }
+
+    private static void renderV104(VBox c) {
+        // Banner Card
+        VBox banner = createBannerCard(
+                "🚀 AcadsCatchUp v1.0.4 — Anchor Detection & Dual-Path Sync",
+                "Release Date: September 2026 • Build: v1.0.4-PROD-F4TAL",
+                "CURRENT INSTALLED VERSION",
+                "#23a55a"
+        );
+
+        // Feature Sections
+        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+                "Anchor-Based Portable Folder Detection: Smart directory resolver inspects folder contents (AcadsCatchUp.exe, app/AcadsCatchUp.cfg, runtime/) to locate the portable environment accurately, even when renamed or moved.",
+                "Dual-Path Execution Sync: Synchronizes both the root AcadsCatchUp.jar and app/AcadsCatchUp.jar / acadscatchup-app.jar to guarantee native jpackage launcher (AcadsCatchUp.exe) always loads the latest update.",
+                "Direct-to-Login Handoff: Auto-updater transitions directly into the Login screen upon update without showing duplicate splash screens or restart dialogs.",
+                "Resilient Windows File-Lock Handoff: Sub-second background handoff script safely replaces locked binaries on Windows without access-denied errors on active processes."
+        });
+
+        VBox improvements = createSectionCard("⚡ Improvements & Optimization", new String[]{
+                "Zero-Restart User Experience: Seamlessly finishes binary synchronization and opens the login workspace directly.",
+                "Multi-Drive Workspace Resolver: Searches local runtime, current directory, Downloads, Desktop, and OneDrive locations.",
+                "DeveloperGuard 100% Compliant: Full signature integrity verified across all project classes."
+        });
+
+        c.getChildren().addAll(banner, features, improvements);
     }
 
     private static void renderV103(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "🚀 AcadsCatchUp v1.0.3 — What's New",
+                "📦 AcadsCatchUp v1.0.3 — Updates Hub & Auto-Update Engine",
                 "Release Date: September 2026 • Build: v1.0.3-PROD-F4TAL",
-                "CURRENT INSTALLED VERSION",
-                "#23a55a"
+                "ARCHIVED RELEASE",
+                "#6366f1"
         );
 
         // Feature Sections
