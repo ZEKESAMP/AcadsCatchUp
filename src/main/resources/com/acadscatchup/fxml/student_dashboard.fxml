@@ -23,17 +23,17 @@
                 </ImageView>
                 <Label fx:id="appTitleLabel" text="AcadsCatchUp" styleClass="app-title" minWidth="-Infinity" />
                 <Label fx:id="roleBadge" text="Student View" styleClass="dash-role-label-student" minWidth="-Infinity" />
-                <Label fx:id="syncStatusLabel" text="🟢 Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
+                <Label fx:id="syncStatusLabel" text="Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
             </HBox>
 
             <Region HBox.hgrow="ALWAYS" minWidth="8" />
 
             <!-- Right Controls Cluster: Cleanly grouped, user name truncated, logout always visible -->
             <HBox alignment="CENTER_RIGHT" spacing="10" minWidth="-Infinity">
-                <Button fx:id="inboxBtn" text="📬 Inbox (0)" styleClass="btn-submitted" onAction="#handleOpenInbox" minWidth="-Infinity" />
-                <Button fx:id="helpBtn" text="💬 Help / Bug Report" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
-                <Button fx:id="updatesBtn" text="🚀 Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
-                <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
+                <Button fx:id="inboxBtn" text="Inbox (0)" styleClass="btn-submitted" onAction="#handleOpenInbox" minWidth="-Infinity" />
+                <Button fx:id="helpBtn" text="Help / Bug Report" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
+                <Button fx:id="updatesBtn" text="Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
+                <Button fx:id="settingsBtn" text="Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
                 <Label fx:id="studentNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
                 <Button text="Logout" styleClass="btn-outline-sm" id="studentLogoutBtn" fx:id="studentLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />
             </HBox>
@@ -68,10 +68,10 @@
                 <!-- Enrolled Subjects Section -->
                 <VBox styleClass="enrolled-section" spacing="8">
                     <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Label text="📚 Enrolled Subjects" styleClass="section-title-sm" />
+                        <Label text="Enrolled Subjects" styleClass="section-title-sm" />
                         <Label fx:id="enrolledCountBadge" text="0 Enrolled" styleClass="badge-enrolled-count" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label text="ℹ️ Enrolled subjects overview" styleClass="enrolled-hint" />
+                        <Label text="Enrolled subjects overview" styleClass="enrolled-hint" />
                     </HBox>
                     <FlowPane fx:id="enrolledSubjectsBox" hgap="10" vgap="8" styleClass="enrolled-flow-box">
                         <!-- Populated dynamically with subject cards -->
@@ -82,16 +82,16 @@
                 <FlowPane hgap="10" vgap="8" alignment="CENTER_LEFT" styleClass="action-bar-flow">
                     <Label text="My Missed Items" styleClass="section-title" minWidth="-Infinity" />
                     <Region prefWidth="6" />
-                    <TextField fx:id="searchField" promptText="🔍 Search items, subject, prof..." prefWidth="210" styleClass="search-box" />
+                    <TextField fx:id="searchField" promptText="Search items, subject, prof..." prefWidth="210" styleClass="search-box" />
                     <Label text="Status:" styleClass="filter-label-inline" />
                     <ComboBox fx:id="statusFilterCombo" id="studentStatusFilter" />
                     <Label text="Subject:" styleClass="filter-label-inline" />
                     <ComboBox fx:id="subjectFilterCombo" id="studentSubjectFilter" />
                     <Button text="Apply" styleClass="btn-secondary" onAction="#applyFilters" />
                     <Button text="Clear" styleClass="btn-ghost" onAction="#clearFilters" />
-                    <Button fx:id="exportCsvBtn" text="📥 Export CSV" styleClass="btn-outline-sm" onAction="#handleExportCSV" />
+                    <Button fx:id="exportCsvBtn" text="Export CSV" styleClass="btn-outline-sm" onAction="#handleExportCSV" />
                     <Separator orientation="VERTICAL" />
-                    <Button fx:id="markSubmittedBtn" text="📤 Submit to Professor"
+                    <Button fx:id="markSubmittedBtn" text="Submit to Professor"
                             styleClass="btn-primary" id="studentMarkSubmittedBtn"
                             minWidth="-Infinity"
                             onAction="#handleMarkSubmitted" />
@@ -113,7 +113,7 @@
                         <TableColumn fx:id="colNotes"      text="Notes"       prefWidth="160" minWidth="60" />
                     </columns>
                     <placeholder>
-                        <Label text="You have no missed items! Great job 🎉" styleClass="table-placeholder" />
+                        <Label text="You have no missed items! Great job" styleClass="table-placeholder" />
                     </placeholder>
                 </TableView>
 

@@ -63,8 +63,8 @@ public class AccountSettingsDialog {
         profileCard.setAlignment(Pos.CENTER_LEFT);
         profileCard.setStyle("-fx-background-color: #121520; -fx-padding: 12 16; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        Label avatar = new Label(currentUser.isProfessor() ? "👨‍🏫" : (currentUser.isAdmin() ? "🛡️" : "🎓"));
-        avatar.setStyle("-fx-font-size: 24px;");
+        Label avatar = new Label(currentUser.isProfessor() ? "[PROF]" : (currentUser.isAdmin() ? "[ADMIN]" : "[STUDENT]"));
+        avatar.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #60a5fa; -fx-background-color: rgba(96,165,250,0.15); -fx-padding: 4 8; -fx-background-radius: 6;");
 
         VBox profileInfo = new VBox(3);
         Label nameLbl = new Label(currentUser.getFullName() + " (@" + currentUser.getUsername() + ")");
@@ -150,7 +150,7 @@ public class AccountSettingsDialog {
                     currentUser.setEmail(newEmail);
                     refreshEmailStatus.run();
                     tfEmail.clear();
-                    emailMsg.setText("✔ Gmail verified and successfully linked to your account!");
+                    emailMsg.setText("Gmail verified and successfully linked to your account!");
                     emailMsg.setStyle("-fx-text-fill: #34d399; -fx-font-size: 11.5px; -fx-font-weight: bold;");
                     emailMsg.setVisible(true); emailMsg.setManaged(true);
                     CustomAlert.showInfo(owner, "Gmail Verified & Saved",
@@ -173,7 +173,7 @@ public class AccountSettingsDialog {
         VBox passSection = new VBox(10);
         passSection.setStyle("-fx-background-color: rgba(30, 41, 59, 0.4); -fx-padding: 14 16; -fx-border-color: #2d3255; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        Label passSecTitle = new Label("🔑 Change Password (OTP Protected)");
+        Label passSecTitle = new Label("Change Password (OTP Protected)");
         passSecTitle.setStyle("-fx-text-fill: #38bdf8; -fx-font-weight: bold; -fx-font-size: 13px;");
 
         Label passHint = new Label("A 6-digit OTP will be sent to your verified Gmail to authorize the password change.");
@@ -213,7 +213,7 @@ public class AccountSettingsDialog {
 
         HBox passBtnBox = new HBox();
         passBtnBox.setAlignment(Pos.CENTER_RIGHT);
-        Button btnChangePass = new Button("🔒 Verify OTP & Update Password");
+        Button btnChangePass = new Button("Verify OTP & Update Password");
         btnChangePass.getStyleClass().add("btn-primary");
         btnChangePass.setStyle("-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 7 14;");
         passBtnBox.getChildren().add(btnChangePass);
@@ -267,7 +267,7 @@ public class AccountSettingsDialog {
                 boolean ok = userDAO.updatePassword(currentUser.getId(), newP);
                 if (ok) {
                     pfCurr.clear(); pfNew.clear(); pfConf.clear();
-                    passMsg.setText("✔ Password updated successfully!");
+                    passMsg.setText("Password updated successfully!");
                     passMsg.setStyle("-fx-text-fill: #34d399; -fx-font-size: 11.5px; -fx-font-weight: bold;");
                     passMsg.setVisible(true); passMsg.setManaged(true);
                     CustomAlert.showInfo(owner, "Password Changed", "Your password has been successfully updated!");

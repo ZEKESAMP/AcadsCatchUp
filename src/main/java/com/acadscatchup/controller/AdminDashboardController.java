@@ -111,7 +111,7 @@ public class AdminDashboardController {
     public void initialize() {
         User curr = Session.getCurrentUser();
         String adminName = curr != null ? curr.getFullName() : "Administrator";
-        adminNameLabel.setText(com.acadscatchup.util.OSCompat.label("👤 ") + adminName);
+        adminNameLabel.setText(adminName);
         adminNameLabel.setTooltip(new Tooltip(adminName + " (Master Administrator)"));
 
         setupFilters();
@@ -556,7 +556,7 @@ public class AdminDashboardController {
                 openReportsCount.setText(String.valueOf(finalReports));
 
                 if (adminInboxBtn != null) {
-                    adminInboxBtn.setText(com.acadscatchup.util.OSCompat.label("📥 ") + "Bug Reports (" + finalReports + ")");
+                    adminInboxBtn.setText("Bug Reports (" + finalReports + ")");
                 }
                 checkAdminInboxNotices();
             });
@@ -597,7 +597,7 @@ public class AdminDashboardController {
                             if (!notifiedAdminSession) {
                                 notifiedAdminSession = true;
                                 com.acadscatchup.util.WindowsNotificationUtil.showNotification(
-                                        "AcadsCatchUp • What's New Update 🚀",
+                                        "AcadsCatchUp • What's New Update",
                                         "Hi " + curr.getFullName() + "! " + finalMsg.getTitle() + " has arrived. Click Updates to view release notes!",
                                         java.awt.TrayIcon.MessageType.INFO
                                 );

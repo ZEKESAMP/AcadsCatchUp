@@ -104,17 +104,17 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setManaged(false);
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢"));
+                syncBadge.setText("Live");
                 syncBadge.setTooltip(new Tooltip("Live Cloud Sync Active"));
             }
             if (helpBtn != null) {
-                helpBtn.setText(OSCompat.label("💬"));
+                helpBtn.setText("Help");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
-                logoutBtn.setText(OSCompat.label("🚪"));
+                logoutBtn.setText("Logout");
             }
             if (studentNameLabel != null) {
                 studentNameLabel.setMaxWidth(110);
@@ -133,14 +133,14 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setText("Student");
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢 Sync"));
+                syncBadge.setText("Sync");
                 syncBadge.setTooltip(new Tooltip("Live Real-Time Sync"));
             }
             if (helpBtn != null) {
-                helpBtn.setText(OSCompat.label("💬 Help"));
+                helpBtn.setText("Help");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
                 logoutBtn.setText("Logout");
@@ -162,13 +162,13 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setText("Student View");
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢 Live Sync"));
+                syncBadge.setText("Live Sync");
             }
             if (helpBtn != null) {
-                helpBtn.setText(OSCompat.label("💬 Help / Bug Report"));
+                helpBtn.setText("Help / Bug Report");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
                 logoutBtn.setText("Logout");
@@ -258,17 +258,17 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setManaged(false);
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢"));
+                syncBadge.setText("Live");
                 syncBadge.setTooltip(new Tooltip("Live Cloud Sync Active"));
             }
             if (helpBtn != null) {
-                helpBtn.setText(OSCompat.label("💬"));
+                helpBtn.setText("Help");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
-                logoutBtn.setText(OSCompat.label("🚪"));
+                logoutBtn.setText("Logout");
             }
             if (profNameLabel != null) {
                 profNameLabel.setMaxWidth(110);
@@ -287,14 +287,14 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setText("Professor");
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢 Sync"));
+                syncBadge.setText("Sync");
                 syncBadge.setTooltip(new Tooltip("Live Real-Time Sync"));
             }
             if (helpBtn != null) {
-                helpBtn.setText(OSCompat.label("💬 Help"));
+                helpBtn.setText("Help");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
                 logoutBtn.setText("Logout");
@@ -316,13 +316,13 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setText("Professor Dashboard");
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢 Live Sync"));
+                syncBadge.setText("Live Sync");
             }
             if (helpBtn != null) {
-                helpBtn.setText(OSCompat.label("💬 Help / Report Bug"));
+                helpBtn.setText("Help / Report Bug");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
                 logoutBtn.setText("Logout");
@@ -413,22 +413,22 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setManaged(false);
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢"));
+                syncBadge.setText("Live");
                 syncBadge.setTooltip(new Tooltip("Live Cloud Sync Active"));
             }
             if (adminInboxBtn != null) {
                 String t = adminInboxBtn.getText();
                 int idx = t != null ? t.indexOf('(') : -1;
-                adminInboxBtn.setText(idx != -1 ? OSCompat.label("📥 ") + t.substring(idx) : OSCompat.label("📥"));
+                adminInboxBtn.setText(idx != -1 ? "Reports " + t.substring(idx) : "Reports");
             }
             if (smtpConfigBtn != null) {
-                smtpConfigBtn.setText(OSCompat.label("📧"));
+                smtpConfigBtn.setText("SMTP");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
-                logoutBtn.setText(OSCompat.label("🚪"));
+                logoutBtn.setText("Logout");
             }
             if (adminNameLabel != null) {
                 adminNameLabel.setMaxWidth(110);
@@ -447,19 +447,19 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setText("Admin");
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢 Sync"));
+                syncBadge.setText("Sync");
                 syncBadge.setTooltip(new Tooltip("Live Real-Time Sync"));
             }
             if (adminInboxBtn != null) {
                 String t = adminInboxBtn.getText();
                 int idx = t != null ? t.indexOf('(') : -1;
-                adminInboxBtn.setText(idx != -1 ? OSCompat.label("📥 Reports ") + t.substring(idx) : OSCompat.label("📥 Reports"));
+                adminInboxBtn.setText(idx != -1 ? "Reports " + t.substring(idx) : "Reports");
             }
             if (smtpConfigBtn != null) {
-                smtpConfigBtn.setText(OSCompat.label("📧 SMTP"));
+                smtpConfigBtn.setText("SMTP");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
                 logoutBtn.setText("Logout");
@@ -481,18 +481,18 @@ public class ResponsiveLayoutUtil {
                 roleBadge.setText("Admin Dashboard");
             }
             if (syncBadge != null) {
-                syncBadge.setText(OSCompat.label("🟢 Live Sync"));
+                syncBadge.setText("Live Sync");
             }
             if (adminInboxBtn != null) {
                 String t = adminInboxBtn.getText();
                 int idx = t != null ? t.indexOf('(') : -1;
-                adminInboxBtn.setText(idx != -1 ? OSCompat.label("📥 Bug Reports ") + t.substring(idx) : OSCompat.label("📥 Bug Reports (0)"));
+                adminInboxBtn.setText(idx != -1 ? "Bug Reports " + t.substring(idx) : "Bug Reports (0)");
             }
             if (smtpConfigBtn != null) {
-                smtpConfigBtn.setText(OSCompat.label("📧 SMTP Config"));
+                smtpConfigBtn.setText("SMTP Config");
             }
             if (settingsBtn != null) {
-                settingsBtn.setText(OSCompat.label("⚙ Settings"));
+                settingsBtn.setText("Settings");
             }
             if (logoutBtn != null) {
                 logoutBtn.setText("Logout");

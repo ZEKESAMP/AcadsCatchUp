@@ -109,7 +109,7 @@ public class ProfDashboardController {
     @FXML
     private void initialize() {
         boolean isAdmin = Session.getCurrentUser() != null && Session.getCurrentUser().isAdmin();
-        String profFullName = com.acadscatchup.util.OSCompat.label("👤 ") + (Session.getCurrentUser() != null ? Session.getCurrentUser().getFullName() : "") + 
+        String profFullName = (Session.getCurrentUser() != null ? Session.getCurrentUser().getFullName() : "") + 
                               (isAdmin ? " [ADMIN]" : "");
         profNameLabel.setText(profFullName);
         profNameLabel.setTooltip(new Tooltip(profFullName));
@@ -834,7 +834,7 @@ public class ProfDashboardController {
             // Refresh open reports badge count
             if (adminInboxBtn != null) {
                 int openCount = new com.acadscatchup.dao.HelpReportDAO().getOpenCount();
-                adminInboxBtn.setText(com.acadscatchup.util.OSCompat.label("📥 ") + "Bug Reports (" + openCount + ")");
+                adminInboxBtn.setText("Bug Reports (" + openCount + ")");
             }
             if (liveSyncService != null) {
                 liveSyncService.triggerImmediateSync();
@@ -864,7 +864,7 @@ public class ProfDashboardController {
                 int openCount = new com.acadscatchup.dao.HelpReportDAO().getOpenCount();
                 javafx.application.Platform.runLater(() -> {
                     if (adminInboxBtn != null) {
-                        adminInboxBtn.setText(com.acadscatchup.util.OSCompat.label("📥 ") + "Bug Reports (" + openCount + ")");
+                        adminInboxBtn.setText("Bug Reports (" + openCount + ")");
                     }
                 });
             } catch (Exception ignored) {}
@@ -905,7 +905,7 @@ public class ProfDashboardController {
 
     private void processProfInboxUpdate(User curr, int unread, com.acadscatchup.model.InboxMessage alertMessage) {
         if (profInboxBtn == null) return;
-        profInboxBtn.setText(com.acadscatchup.util.OSCompat.label("📬 ") + "Submissions (" + unread + ")");
+        profInboxBtn.setText("Submissions (" + unread + ")");
         if (unread > 0) {
             profInboxBtn.setStyle("-fx-background-color: rgba(59,130,246,0.3); -fx-text-fill: #93c5fd; -fx-font-weight: bold;");
             boolean shouldNotify = (!notifiedProfSession && alertMessage != null) ||
@@ -920,8 +920,8 @@ public class ProfDashboardController {
                         || (alertMessage.getTitle() != null && alertMessage.getTitle().toLowerCase().contains("resolved"));
 
                 String toastTitle = isUpdate
-                        ? "AcadsCatchUp • What's New Update 🚀"
-                        : (isResolved ? "AcadsCatchUp • Bug Report Resolved ✔" : "AcadsCatchUp! Student Submissions");
+                        ? "AcadsCatchUp • What's New Update"
+                        : (isResolved ? "AcadsCatchUp • Bug Report Resolved" : "AcadsCatchUp! Student Submissions");
                 String toastBody = isUpdate
                         ? ("Hi " + curr.getFullName() + "! " + alertMessage.getTitle() + " has arrived in your Inbox. Check to view release notes!")
                         : (isResolved

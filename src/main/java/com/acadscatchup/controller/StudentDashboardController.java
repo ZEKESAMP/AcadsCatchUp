@@ -92,7 +92,7 @@ public class StudentDashboardController {
         String tag = (curr != null && curr.getProgram() != null && !curr.getProgram().isBlank())
                 ? " (" + curr.getProgram() + (curr.getYearLevel() > 0 ? " • " + curr.getYearDisplay() : "") + ")"
                 : "";
-        String fullDisplayName = com.acadscatchup.util.OSCompat.label("\uD83D\uDC64 ") + (curr != null ? curr.getFullName() : "") + tag;
+        String fullDisplayName = (curr != null ? curr.getFullName() : "") + tag;
         studentNameLabel.setText(fullDisplayName);
         studentNameLabel.setTooltip(new Tooltip(fullDisplayName));
 
@@ -209,7 +209,7 @@ public class StudentDashboardController {
 
     private void processInboxUpdate(com.acadscatchup.model.User curr, int unread, com.acadscatchup.model.InboxMessage alertMessage) {
         if (inboxBtn == null) return;
-        inboxBtn.setText(com.acadscatchup.util.OSCompat.label("📬 ") + "Inbox (" + unread + ")");
+        inboxBtn.setText("Inbox (" + unread + ")");
         if (unread > 0) {
             inboxBtn.setStyle("-fx-background-color: rgba(59,130,246,0.3); -fx-text-fill: #93c5fd; -fx-font-weight: bold;");
         } else {
@@ -236,19 +236,19 @@ public class StudentDashboardController {
             String toastBody;
 
             if (isUpdate) {
-                toastTitle = "AcadsCatchUp • What's New Update 🚀";
+                toastTitle = "AcadsCatchUp • What's New Update";
                 toastBody = "Hi " + curr.getFullName() + "! " + notice.getTitle() + " has arrived in your Inbox. Click to view release notes!";
             } else if (isEnrolled) {
-                toastTitle = "AcadsCatchUp • Subject Enrollment 🎓";
+                toastTitle = "AcadsCatchUp • Subject Enrollment";
                 toastBody = "Hi " + curr.getFullName() + "! You have been enrolled in " + (notice.getSubjectCode() != null && !notice.getSubjectCode().isBlank() ? notice.getSubjectCode() : "a subject") + " by " + (notice.getSenderName() != null ? notice.getSenderName() : "your instructor") + ". Check your Inbox & Enrolled Subjects!";
             } else if (isResolved) {
-                toastTitle = "AcadsCatchUp • Bug Report Resolved ✔";
+                toastTitle = "AcadsCatchUp • Bug Report Resolved";
                 toastBody = "Hi " + curr.getFullName() + "! Your reported issue has been addressed and marked as RESOLVED by the System Administrator.";
             } else if (isGraded) {
-                toastTitle = "AcadsCatchUp • Submission Graded 🎉";
+                toastTitle = "AcadsCatchUp • Submission Graded";
                 toastBody = "Hi " + curr.getFullName() + "! " + notice.getTitle() + " has been marked as GRADED by your professor!";
             } else {
-                toastTitle = "AcadsCatchUp • " + notice.getTypeBadge() + " ⚠️";
+                toastTitle = "AcadsCatchUp • " + notice.getTypeBadge();
                 toastBody = "Hi " + curr.getFullName() + "! New deficiency recorded: " + notice.getTitle() + ". Check your Inbox.";
             }
 
@@ -681,7 +681,7 @@ public class StudentDashboardController {
             emptyBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             emptyBox.getStyleClass().add("enrolled-empty-box");
 
-            Label emptyLbl = new Label(com.acadscatchup.util.OSCompat.label("ℹ ") + "You are not currently enrolled in any subjects. Contact your instructor or administrator.");
+            Label emptyLbl = new Label("You are not currently enrolled in any subjects. Contact your instructor or administrator.");
             emptyLbl.getStyleClass().add("enrolled-empty-text");
             emptyBox.getChildren().add(emptyLbl);
 
@@ -698,11 +698,11 @@ public class StudentDashboardController {
             VBox card = new VBox(5);
             card.getStyleClass().add("subject-card-chip");
 
-            // Top row: [📖 CODE] [Subject Name] (spacer) [Deficiency Badge]
+            // Top row: [CODE] [Subject Name] (spacer) [Deficiency Badge]
             HBox topRow = new HBox(8);
             topRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-            Label codeLabel = new Label(com.acadscatchup.util.OSCompat.label("📖 ") + s.getCode());
+            Label codeLabel = new Label(s.getCode());
             codeLabel.getStyleClass().add("subject-chip-code");
 
             Label nameLabel = new Label(s.getName() != null ? s.getName() : "");
@@ -711,22 +711,22 @@ public class StudentDashboardController {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            Label badge = new Label(pending > 0 ? (com.acadscatchup.util.OSCompat.label("⚡ ") + pending + " Pending") : (com.acadscatchup.util.OSCompat.label("✔ ") + "Up to date"));
+            Label badge = new Label(pending > 0 ? (pending + " Pending") : "Up to date");
             badge.getStyleClass().add(pending > 0 ? "subject-chip-badge-pending" : "subject-chip-badge-clean");
 
             topRow.getChildren().addAll(codeLabel, nameLabel, spacer, badge);
 
-            // Bottom row: [👨‍🏫 Professor Name] (spacer) [🎯 Filtered Badge]
+            // Bottom row: [Professor Name] (spacer) [Filtered Badge]
             String profName = (s.getProfessorName() != null && !s.getProfessorName().isBlank())
                     ? s.getProfessorName()
                     : "No Assigned Professor";
-            Label profLabel = new Label(com.acadscatchup.util.OSCompat.label("👨‍🏫 ") + profName);
+            Label profLabel = new Label(profName);
             profLabel.getStyleClass().add("subject-chip-prof");
 
             Region bottomSpacer = new Region();
             HBox.setHgrow(bottomSpacer, Priority.ALWAYS);
 
-            Label filterIndicatorBadge = new Label("🎯 Selected in Filter");
+            Label filterIndicatorBadge = new Label("Selected in Filter");
             filterIndicatorBadge.getStyleClass().add("subject-chip-filter-badge");
             filterIndicatorBadge.setVisible(false);
             filterIndicatorBadge.setManaged(false);
@@ -755,7 +755,7 @@ public class StudentDashboardController {
                 card.getStyleClass().add("subject-card-chip-active");
                 filterIndicatorBadge.setVisible(true);
                 filterIndicatorBadge.setManaged(true);
-                tooltip.setText("🎯 Selected in filter below\n\n" + baseTooltip);
+                tooltip.setText("Selected in filter below\n\n" + baseTooltip);
             }
 
             subjectCardMap.put(s.getCode().toUpperCase(), card);
@@ -780,7 +780,7 @@ public class StudentDashboardController {
                     filterBadge.setManaged(true);
                 }
                 if (tooltip != null && baseTooltip != null) {
-                    tooltip.setText("🎯 Selected in filter below\n\n" + baseTooltip);
+                    tooltip.setText("Selected in filter below\n\n" + baseTooltip);
                 }
             } else {
                 card.getStyleClass().remove("subject-card-chip-active");

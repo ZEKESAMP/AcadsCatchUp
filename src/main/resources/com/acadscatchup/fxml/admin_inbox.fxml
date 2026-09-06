@@ -24,7 +24,7 @@
             <Label text="System Administrator Inbox — Messages reported by Professors and Students" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
         </VBox>
         <Region HBox.hgrow="ALWAYS" />
-        <Button text="📬 My Personal Inbox" styleClass="btn-ghost" onAction="#handleOpenPersonalInbox"
+        <Button text="My Personal Inbox" styleClass="btn-ghost" onAction="#handleOpenPersonalInbox"
                 style="-fx-font-size: 11px; -fx-padding: 4 10; -fx-background-color: rgba(59,130,246,0.15); -fx-text-fill: #93c5fd; -fx-border-color: #3b82f6; -fx-border-radius: 6; -fx-background-radius: 6;" />
         <Label fx:id="openCountBadge" text="0 Open"
                style="-fx-background-color: rgba(239,68,68,0.2); -fx-text-fill: #f87171; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 12px;" />
@@ -47,7 +47,7 @@
                 <TableColumn fx:id="colStatus" text="Status"    prefWidth="100" minWidth="80"  maxWidth="120" />
             </columns>
             <placeholder>
-                <Label text="No help reports or bug submissions in inbox! 🎉" styleClass="table-placeholder" />
+                <Label text="No help reports or bug submissions in inbox." styleClass="table-placeholder" />
             </placeholder>
         </TableView>
 
@@ -58,8 +58,8 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <Label text="MESSAGE DETAILS" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnResolve" text="✔ Mark as Resolved" styleClass="btn-submitted" minWidth="-Infinity" onAction="#handleToggleStatus" />
-                <Button text="🗑 Delete" styleClass="btn-danger" minWidth="-Infinity" onAction="#handleDeleteReport" />
+                <Button fx:id="btnResolve" text="Mark as Resolved" styleClass="btn-submitted" minWidth="-Infinity" onAction="#handleToggleStatus" />
+                <Button text="Delete" styleClass="btn-danger" minWidth="-Infinity" onAction="#handleDeleteReport" />
             </HBox>
 
             <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-padding: 4 0;">

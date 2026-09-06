@@ -48,9 +48,6 @@ public class UpdatesDialog {
                 "-fx-border-width: 0 0 1 0;"
         );
 
-        Label iconLbl = new Label("🚀");
-        iconLbl.setStyle("-fx-font-size: 26px;");
-
         VBox titleBox = new VBox(2);
         Label titleLbl = new Label("Updates & What's New");
         titleLbl.setStyle("-fx-text-fill: #f8fafc; -fx-font-size: 16.5px; -fx-font-weight: 800; -fx-font-family: 'Segoe UI', sans-serif;");
@@ -62,7 +59,7 @@ public class UpdatesDialog {
         Region headerSpacer = new Region();
         HBox.setHgrow(headerSpacer, Priority.ALWAYS);
 
-        Label currentBadge = new Label("🟢 v" + UpdateSplash.CURRENT_VERSION + " Installed");
+        Label currentBadge = new Label("v" + UpdateSplash.CURRENT_VERSION + " Installed");
         currentBadge.setMinWidth(Region.USE_PREF_SIZE);
         currentBadge.setStyle(
                 "-fx-background-color: rgba(35, 165, 90, 0.15); " +
@@ -76,7 +73,7 @@ public class UpdatesDialog {
                 "-fx-border-width: 1;"
         );
 
-        header.getChildren().addAll(iconLbl, titleBox, headerSpacer, currentBadge);
+        header.getChildren().addAll(titleBox, headerSpacer, currentBadge);
 
         // ── 2. VERSION SELECTOR BAR (FlowPane with wrap & fixed pref size) ──
         FlowPane versionBar = new FlowPane();
@@ -111,7 +108,7 @@ public class UpdatesDialog {
         Map<String, Button> versionButtons = new HashMap<>();
 
         for (String v : versions) {
-            String labelText = v.equals("v1.0.9") ? "✨ v1.0.9 (Latest)" : v;
+            String labelText = v.equals("v1.0.9") ? "v1.0.9 (Latest)" : v;
             Button vBtn = new Button(labelText);
             vBtn.setMinWidth(Region.USE_PREF_SIZE);
             vBtn.setStyle(
@@ -194,7 +191,7 @@ public class UpdatesDialog {
                 "-fx-border-width: 1 0 0 0;"
         );
 
-        Button btnCheckUpdate = new Button("🔄 Check for Updates");
+        Button btnCheckUpdate = new Button("Check for Updates");
         btnCheckUpdate.getStyleClass().add("btn-ghost");
         btnCheckUpdate.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 14;");
         btnCheckUpdate.setOnAction(e -> UpdateSplash.checkManual(owner));
@@ -265,21 +262,21 @@ public class UpdatesDialog {
     private static void renderV109(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "🚀 AcadsCatchUp v1.0.9 — Enrollment Alerts & Responsive Modal Polish",
+                "AcadsCatchUp v1.0.9 — Enrollment Alerts & Responsive Modal Polish",
                 "Release Date: September 2026 • Build: v1.0.9-PROD-F4TAL",
                 "CURRENT INSTALLED VERSION",
                 "#23a55a"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "Student Enrollment Notifications: When an instructor or admin enrolls a student in a subject, the student immediately receives a live desktop tray notification and an official enrollment message delivered to their personal Inbox.",
                 "Enrolled Subjects Background Sync: LiveSync automatically detects subject enrollments and refreshes the student's Enrolled Subjects overview chips in real time.",
                 "Responsive Updates Modal: Completely redesigned the Updates & What's New dialog with dynamic resolution scaling and flexible wrapping version selector buttons.",
                 "Streamlined Updates Hub: Removed obsolete manual inbox sending button in favor of a clean, dedicated 1-click update experience."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Synergy", new String[]{
+        VBox improvements = createSectionCard("Improvements & Synergy", new String[]{
                 "Adaptive Card Geometry: Dialog banners and badges now intelligently wrap and preserve fixed sizes across all display dimensions.",
                 "Robust Offline Delivery: Enrollment notices persist in the database so students receiving enrollments while offline receive desktop alerts immediately upon login."
         });
@@ -290,14 +287,14 @@ public class UpdatesDialog {
     private static void renderV108(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "🚀 AcadsCatchUp v1.0.8 — Student Reactive Search & Stat Card Synergy",
+                "AcadsCatchUp v1.0.8 — Student Reactive Search & Stat Card Synergy",
                 "Release Date: September 2026 • Build: v1.0.8-PROD-F4TAL",
                 "PREVIOUS RELEASE",
                 "#64748b"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "Student Real-Time Reactive Search: Instant zero-latency search filtering directly on the Student Dashboard. Search through item names, subject codes, professors, deadlines, notes, and statuses as you type.",
                 "Interactive Dashboard Stat Cards: Stat cards on both Student Dashboard and Professor Dashboard now feature hand cursors and 1-click status filtering (Total, Pending, Submitted, Graded).",
                 "Student Double-Click Row Shortcut: Double-click any row in your deficiency checklist to immediately open the submission dialog.",
@@ -306,7 +303,7 @@ public class UpdatesDialog {
                 "Seamless Windows Auto-Updater Overhaul: Completely revamped file-locking handoff with PID process termination and retry copy loop for 100% reliable in-app updates."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Fixes", new String[]{
+        VBox improvements = createSectionCard("Improvements & Fixes", new String[]{
                 "Zero-Latency FilteredList Architecture: In-memory reactive filtering eliminates database overhead on every keystroke.",
                 "OpenCSV Export Robustness: Clean formatting, null-safe string mappings, and direct FileChooser integration.",
                 "Cross-Platform UI Polish: Hand cursor tooltips and smooth responsive auto-scaling across diverse screen resolutions."
@@ -318,14 +315,14 @@ public class UpdatesDialog {
     private static void renderV107(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "🚀 AcadsCatchUp v1.0.7 — Admin Dashboard Fixes & Reactive Filtering",
+                "AcadsCatchUp v1.0.7 — Admin Dashboard Fixes & Reactive Filtering",
                 "Release Date: September 2026 • Build: v1.0.7-PROD-F4TAL",
                 "PREVIOUS RELEASE",
                 "#64748b"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "Admin Dashboard Filter Engine Overhaul: Fixed predicate logic where non-student accounts previously bypassed program and year filters. Selecting any program or year level now accurately isolates student accounts.",
                 "Real-Time Reactive Search: Instant filtering as you type, paste, or clear text in the search box, with multi-attribute matching across username, full name, email, program, role, year level, and professor assigned subjects.",
                 "Interactive Dashboard Stat Cards: Added hand pointer cursors and 1-click shortcut navigation directly from Total Users, Students, Professors, Subjects, and Reports cards.",
@@ -333,7 +330,7 @@ public class UpdatesDialog {
                 "Header Select-All Polish: Deselects only visible filtered rows and disables automatically when results are empty."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Synergy", new String[]{
+        VBox improvements = createSectionCard("Improvements & Synergy", new String[]{
                 "Smart Filter Synergy: Coordinated Role, Program, and Year filters that disable irrelevant inputs when Admin or Professor roles are active.",
                 "Seamless LiveSync Compatibility: Live updates and silent refresh preserve active user filters, selections, and search queries.",
                 "Robust UI Synchronization: Dynamic stat label badge tooltips and responsive desktop layout adjustments across all resolutions."
@@ -345,22 +342,22 @@ public class UpdatesDialog {
     private static void renderV106(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "🚀 AcadsCatchUp v1.0.6 — Clean Settings & Centralized Updates",
+                "AcadsCatchUp v1.0.6 — Clean Settings & Centralized Updates",
                 "Release Date: September 2026 • Build: v1.0.6-PROD-F4TAL",
                 "PREVIOUS RELEASE",
                 "#64748b"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "Streamlined Settings Experience: Removed redundant manual update check button from Account & Security Settings, cleanly centralizing all update operations inside the dedicated Updates Hub.",
-                "Live Updates Version Badging: Automatic background checks alert you on the dashboard with an amber '🔄 Updates (New!)' badge when a new GitHub release is available.",
+                "Live Updates Version Badging: Automatic background checks alert you on the dashboard with an amber 'Updates (New!)' badge when a new GitHub release is available.",
                 "Live Download Progress Dialog: Manual updates now display real-time MB transfer counts, percentage completion, and status in a dedicated modal.",
                 "Download Integrity Verification: Automated 95%+ size integrity check protects your application from partial or corrupt binary downloads.",
                 "Admin Inbox & Update Notifications: System Administrators now receive update release notices and can open their personal Inbox with 1 click from Bug Reports."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Optimization", new String[]{
+        VBox improvements = createSectionCard("Improvements & Optimization", new String[]{
                 "Extended Network Timeouts: GitHub API timeout increased to 6.0s and download timeout to 90.0s for maximum stability on all network speeds.",
                 "Duplicate Release Note Protection: Enhanced 'Send to My Inbox' guard prevents duplicate release notes from cluttering your personal inbox.",
                 "Anti-Cache Manifest Retrieval: Direct-to-GitHub query parameters ensure zero CDN stale caching for instant release discovery."
@@ -372,21 +369,21 @@ public class UpdatesDialog {
     private static void renderV105(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "📦 AcadsCatchUp v1.0.5 — Inbox What's New & Release Delivery",
+                "AcadsCatchUp v1.0.5 — Inbox What's New & Release Delivery",
                 "Release Date: September 2026 • Build: v1.0.5-PROD-F4TAL",
                 "ARCHIVED RELEASE",
                 "#6366f1"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "Inbox 'What's New' Notifications: Official update announcements and changelogs are now pushed straight to your personal Inbox, complete with unread count badges and desktop notifications.",
                 "Anchor-Based Portable Detection: Smart directory resolver uses structural file anchors (AcadsCatchUp.exe, app/AcadsCatchUp.cfg, runtime/) to locate portable folders anywhere on your drives.",
                 "Dual-Path Execution Sync: Synchronizes both root and internal app/ JARs (AcadsCatchUp.jar & acadscatchup-app.jar) to guarantee AcadsCatchUp.exe always loads the latest update.",
                 "Resilient Direct-to-Login Updater: Sub-second background process release bypasses Windows JVM open-file locks and immediately opens your Login workspace with '--direct-login'."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Optimization", new String[]{
+        VBox improvements = createSectionCard("Improvements & Optimization", new String[]{
                 "On-Demand Inbox Delivery: Send any version's changelog directly to your personal Inbox using the new 'Send to My Inbox' button.",
                 "Cross-Platform System Tray & Badging: Instant tray toast notifications and unread badges across Student and Professor dashboards.",
                 "DeveloperGuard 100% Compliant: Full signature integrity verified across all project classes."
@@ -398,21 +395,21 @@ public class UpdatesDialog {
     private static void renderV104(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "📦 AcadsCatchUp v1.0.4 — Anchor Detection & Dual-Path Sync",
+                "AcadsCatchUp v1.0.4 — Anchor Detection & Dual-Path Sync",
                 "Release Date: September 2026 • Build: v1.0.4-PROD-F4TAL",
                 "ARCHIVED RELEASE",
                 "#6366f1"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "Anchor-Based Portable Folder Detection: Smart directory resolver inspects folder contents (AcadsCatchUp.exe, app/AcadsCatchUp.cfg, runtime/) to locate the portable environment accurately, even when renamed or moved.",
                 "Dual-Path Execution Sync: Synchronizes both the root AcadsCatchUp.jar and app/AcadsCatchUp.jar / acadscatchup-app.jar to guarantee native jpackage launcher (AcadsCatchUp.exe) always loads the latest update.",
                 "Direct-to-Login Handoff: Auto-updater transitions directly into the Login screen upon update without showing duplicate splash screens or restart dialogs.",
                 "Resilient Windows File-Lock Handoff: Sub-second background handoff script safely replaces locked binaries on Windows without access-denied errors on active processes."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Optimization", new String[]{
+        VBox improvements = createSectionCard("Improvements & Optimization", new String[]{
                 "Zero-Restart User Experience: Seamlessly finishes binary synchronization and opens the login workspace directly.",
                 "Multi-Drive Workspace Resolver: Searches local runtime, current directory, Downloads, Desktop, and OneDrive locations.",
                 "DeveloperGuard 100% Compliant: Full signature integrity verified across all project classes."
@@ -424,21 +421,21 @@ public class UpdatesDialog {
     private static void renderV103(VBox c) {
         // Banner Card
         VBox banner = createBannerCard(
-                "📦 AcadsCatchUp v1.0.3 — Updates Hub & Auto-Update Engine",
+                "AcadsCatchUp v1.0.3 — Updates Hub & Auto-Update Engine",
                 "Release Date: September 2026 • Build: v1.0.3-PROD-F4TAL",
                 "ARCHIVED RELEASE",
                 "#6366f1"
         );
 
         // Feature Sections
-        VBox features = createSectionCard("✨ Highlights & New Features", new String[]{
+        VBox features = createSectionCard("Highlights & New Features", new String[]{
                 "In-App Updates Hub: View what's new, release notes, and version history directly from Student, Professor, and Admin dashboards via the new 'Updates' button.",
                 "Seamless Auto-Updater (Zero Restart): Downloads new .jar files directly into your Downloads folder, automatically updates AcadsCatchUp-Portable, and opens the Login phase instantly without restarting.",
-                "Enrolled Subjects Active Filter Badge: Student dashboard enrolled subjects now feature an interactive '🎯 Selected in Filter' badge and cyan border glow when selected in the filter dropdown below.",
+                "Enrolled Subjects Active Filter Badge: Student dashboard enrolled subjects now feature an interactive 'Selected in Filter' badge and cyan border glow when selected in the filter dropdown below.",
                 "One-Click Manual Check: Check and apply new updates directly from the Updates modal or Account Settings without restarting your session."
         });
 
-        VBox improvements = createSectionCard("⚡ Improvements & Optimization", new String[]{
+        VBox improvements = createSectionCard("Improvements & Optimization", new String[]{
                 "Windows File-Lock Elimination: Streamlined the update hand-off so active processes are never forcibly terminated by external batch loops.",
                 "Instant Offline Fallback: If no internet connection is detected, the app displays 'No update' and loads immediately with zero hang.",
                 "Refined Dashboard Top Bar: 'Updates' button placed alongside 'Settings' across all role views for effortless navigation.",
@@ -450,13 +447,13 @@ public class UpdatesDialog {
 
     private static void renderV102(VBox c) {
         VBox banner = createBannerCard(
-                "📦 AcadsCatchUp v1.0.2 — Splash Updater & Portable Release",
+                "AcadsCatchUp v1.0.2 — Splash Updater & Portable Release",
                 "Release Date: September 2026 • Build: v1.0.2-PROD-F4TAL",
                 "ARCHIVED RELEASE",
                 "#6366f1"
         );
 
-        VBox features = createSectionCard("✨ Key Additions", new String[]{
+        VBox features = createSectionCard("Key Additions", new String[]{
                 "Discord-Style Frameless Splash Screen: Modern startup splash with live download percentage and MB progress indicator.",
                 "View-Only Enrolled Subjects: Made enrolled subject badges on Student Dashboard view-only to prevent unintended filter toggles.",
                 "Standalone Portable Architecture: Integrated self-contained JRE packaging in AcadsCatchUp-Portable folder."
@@ -467,15 +464,15 @@ public class UpdatesDialog {
 
     private static void renderV101(VBox c) {
         VBox banner = createBannerCard(
-                "🔧 AcadsCatchUp v1.0.1 — Cross-Platform OS & Cloud Sync",
+                "AcadsCatchUp v1.0.1 — Cross-Platform OS & Cloud Sync",
                 "Release Date: September 2026 • Build: v1.0.1-PROD-F4TAL",
                 "ARCHIVED RELEASE",
                 "#64748b"
         );
 
-        VBox features = createSectionCard("✨ Key Additions", new String[]{
+        VBox features = createSectionCard("Key Additions", new String[]{
                 "Cross-Platform OS Compatibility: Native emoji rendering on Windows and Segoe UI modern typography fallback.",
-                "SQLite Cloud Live Sync: Real-time background sync indicators ('🟢 Live Sync') on all headers.",
+                "SQLite Cloud Live Sync: Real-time background sync indicators ('Live Sync') on all headers.",
                 "Discord-Style System Tray: Minimizes to system tray with quick-action context menu."
         });
 
@@ -484,13 +481,13 @@ public class UpdatesDialog {
 
     private static void renderV100(VBox c) {
         VBox banner = createBannerCard(
-                "🎉 AcadsCatchUp v1.0.0 — Initial Official Release",
+                "AcadsCatchUp v1.0.0 — Initial Official Release",
                 "Release Date: August 2026 • Build: v1.0.0-PROD-F4TAL",
                 "FOUNDATION RELEASE",
                 "#64748b"
         );
 
-        VBox features = createSectionCard("✨ Foundation Features", new String[]{
+        VBox features = createSectionCard("Foundation Features", new String[]{
                 "Role-Based Dashboards: Dedicated interfaces for Students, Professors, and System Administrators.",
                 "Academic Deficiency Tracking: Complete workflow for tracking pending, submitted, and completed requirements.",
                 "Direct File Submission: Upload assignments, files, and remarks directly with professor review queues.",

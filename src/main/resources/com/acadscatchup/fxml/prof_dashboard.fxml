@@ -24,18 +24,18 @@
                 </ImageView>
                 <Label fx:id="appTitleLabel" text="AcadsCatchUp" styleClass="app-title" minWidth="-Infinity" />
                 <Label fx:id="roleBadge" text="Professor Dashboard" styleClass="dash-role-label" minWidth="-Infinity" />
-                <Label fx:id="profSyncStatusLabel" text="🟢 Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
+                <Label fx:id="profSyncStatusLabel" text="Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
             </HBox>
 
             <Region HBox.hgrow="ALWAYS" minWidth="8" />
 
             <!-- Right Controls Cluster: Cleanly grouped, user name truncated, logout always visible -->
             <HBox alignment="CENTER_RIGHT" spacing="8" minWidth="-Infinity">
-                <Button fx:id="adminInboxBtn" text="📥 Bug Reports (0)" styleClass="btn-submitted" onAction="#handleOpenAdminInbox" minWidth="-Infinity" />
-                <Button fx:id="profInboxBtn" text="📬 Submissions (0)" styleClass="btn-submitted" onAction="#handleOpenProfInbox" minWidth="-Infinity" />
-                <Button fx:id="helpBtn" text="💬 Help / Report Bug" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
-                <Button fx:id="updatesBtn" text="🚀 Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
-                <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
+                <Button fx:id="adminInboxBtn" text="Bug Reports (0)" styleClass="btn-submitted" onAction="#handleOpenAdminInbox" minWidth="-Infinity" />
+                <Button fx:id="profInboxBtn" text="Submissions (0)" styleClass="btn-submitted" onAction="#handleOpenProfInbox" minWidth="-Infinity" />
+                <Button fx:id="helpBtn" text="Help / Report Bug" styleClass="btn-ghost" onAction="#handleOpenHelpReport" minWidth="-Infinity" />
+                <Button fx:id="updatesBtn" text="Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
+                <Button fx:id="settingsBtn" text="Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
                 <Label fx:id="profNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
                 <Button text="Logout" styleClass="btn-outline-sm" id="profLogoutBtn" fx:id="profLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />
             </HBox>
@@ -48,8 +48,8 @@
             <HBox alignment="CENTER_LEFT" spacing="6">
                 <Label text="STUDENTS" styleClass="sidebar-section-title" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="enrollStudentBtn" text="🎓 Enroll" styleClass="btn-primary" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 8;" onAction="#handleOpenEnrollDialog" />
-                <Button fx:id="addStudentBtn" text="＋ Add" styleClass="btn-secondary" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 8;" onAction="#handleManageUsers" />
+                <Button fx:id="enrollStudentBtn" text="Enroll" styleClass="btn-primary" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 8;" onAction="#handleOpenEnrollDialog" />
+                <Button fx:id="addStudentBtn" text="Add" styleClass="btn-secondary" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 8;" onAction="#handleManageUsers" />
             </HBox>
             <ComboBox fx:id="studentScopeCombo" maxWidth="Infinity" style="-fx-font-size: 11.5px;" />
             <TextField fx:id="studentSearchField" promptText="Search student..." styleClass="sidebar-search" />
@@ -108,19 +108,19 @@
                 <!-- Responsive Auto-Arranging Action Bar -->
                 <FlowPane hgap="8" vgap="8" alignment="CENTER_LEFT" styleClass="action-bar-flow">
                     <Label text="Missed Items" styleClass="section-title" minWidth="-Infinity" />
-                    <TextField fx:id="searchField" promptText="🔍  Search items..." styleClass="search-box" prefWidth="160" minWidth="110" onAction="#applyFilters" />
+                    <TextField fx:id="searchField" promptText="Search items..." styleClass="search-box" prefWidth="160" minWidth="110" onAction="#applyFilters" />
                     <Region prefWidth="8" />
-                    <Button text="+ Add Item"   styleClass="btn-primary"   id="addItemBtn"       onAction="#handleAddItem"       minWidth="-Infinity" />
-                    <Button text="✏ Edit"       styleClass="btn-secondary" id="editItemBtn"      onAction="#handleEditItem"      minWidth="-Infinity" />
-                    <Button text="🗑 Delete"    styleClass="btn-danger"    id="deleteItemBtn"    onAction="#handleDeleteItem"    minWidth="-Infinity" />
+                    <Button text="Add Item"   styleClass="btn-primary"   id="addItemBtn"       onAction="#handleAddItem"       minWidth="-Infinity" />
+                    <Button text="Edit"       styleClass="btn-secondary" id="editItemBtn"      onAction="#handleEditItem"      minWidth="-Infinity" />
+                    <Button text="Delete"    styleClass="btn-danger"    id="deleteItemBtn"    onAction="#handleDeleteItem"    minWidth="-Infinity" />
                     <Separator orientation="VERTICAL" />
-                    <Button text="★ Graded"     styleClass="btn-graded"    id="markGradedBtn"    onAction="#handleMarkGraded"    minWidth="-Infinity" />
+                    <Button text="Mark Graded" styleClass="btn-graded"    id="markGradedBtn"    onAction="#handleMarkGraded"    minWidth="-Infinity" />
                     <Separator orientation="VERTICAL" />
-                    <Button text="📄 Export CSV" styleClass="btn-ghost"     id="exportCsvBtn"     onAction="#handleExportCSV"     minWidth="-Infinity" />
+                    <Button text="Export CSV" styleClass="btn-ghost"     id="exportCsvBtn"     onAction="#handleExportCSV"     minWidth="-Infinity" />
                     <Separator fx:id="manageUsersSep" orientation="VERTICAL" />
-                    <Button fx:id="manageUsersBtn" text="👥 Manage Users" styleClass="btn-ghost" id="manageUsersBtn" onAction="#handleManageUsers" minWidth="-Infinity" />
+                    <Button fx:id="manageUsersBtn" text="Manage Users" styleClass="btn-ghost" id="manageUsersBtn" onAction="#handleManageUsers" minWidth="-Infinity" />
                     <Separator fx:id="adminSep" orientation="VERTICAL" />
-                    <Button fx:id="addSubjectBtn" text="📚 Add Subject"    styleClass="btn-secondary" id="addSubjectBtn" onAction="#handleAddSubject" minWidth="-Infinity" />
+                    <Button fx:id="addSubjectBtn" text="Add Subject"    styleClass="btn-secondary" id="addSubjectBtn" onAction="#handleAddSubject" minWidth="-Infinity" />
                 </FlowPane>
 
                 <!-- Table with full responsive width auto-sizing -->

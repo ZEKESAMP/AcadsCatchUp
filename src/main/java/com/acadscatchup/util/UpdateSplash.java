@@ -882,7 +882,7 @@ public class UpdateSplash {
                 RemoteUpdateInfo info = fetchLatestUpdate();
                 if (info != null && info.version != null && isNewerVersion(info.version, CURRENT_VERSION)) {
                     Platform.runLater(() -> {
-                        updatesBtn.setText("\uD83D\uDD04 Updates (New!)");
+                        updatesBtn.setText("Updates (New!)");
                         updatesBtn.setStyle(
                                 "-fx-background-color: rgba(240, 165, 0, 0.25); " +
                                 "-fx-text-fill: #fbbf24; " +

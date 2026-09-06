@@ -26,10 +26,10 @@ public class LiveSyncService {
     public static final String DEVELOPER = "F4TAL";
 
     public enum SyncStatus {
-        CONNECTED("🟢 Live Sync", "#10b981", "rgba(16,185,129,0.12)"),
-        SYNCING("🔄 Syncing...", "#3b82f6", "rgba(59,130,246,0.12)"),
-        RECONNECTING("🟠 Reconnecting...", "#f59e0b", "rgba(245,158,11,0.12)"),
-        OFFLINE("🔴 Offline", "#ef4444", "rgba(239,68,68,0.12)");
+        CONNECTED("Live Sync", "#10b981", "rgba(16,185,129,0.12)"),
+        SYNCING("Syncing...", "#3b82f6", "rgba(59,130,246,0.12)"),
+        RECONNECTING("Reconnecting...", "#f59e0b", "rgba(245,158,11,0.12)"),
+        OFFLINE("Offline", "#ef4444", "rgba(239,68,68,0.12)");
 
         public final String label;
         public final String textColor;

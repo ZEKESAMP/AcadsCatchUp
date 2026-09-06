@@ -44,7 +44,7 @@
                 <TableColumn fx:id="colStatus"  text="Status"   prefWidth="90"  minWidth="75"  maxWidth="110" />
             </columns>
             <placeholder>
-                <Label text="No messages in your inbox. 🎉" styleClass="table-placeholder" />
+                <Label text="No messages in your inbox." styleClass="table-placeholder" />
             </placeholder>
         </TableView>
 
@@ -56,15 +56,15 @@
                 <Label fx:id="detailSenderLabel" text="Select a message above to read its content."
                        style="-fx-font-size: 12.5px; -fx-text-fill: #38bdf8; -fx-font-weight: bold;" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnViewAttached" text="📎 View Attached" styleClass="btn-secondary"
+                <Button fx:id="btnViewAttached" text="View Attached" styleClass="btn-secondary"
                         style="-fx-background-color: rgba(56,189,248,0.2); -fx-text-fill: #38bdf8; -fx-font-weight: bold;"
                         visible="false" managed="false" minWidth="-Infinity"
                         onAction="#handleViewAttached" />
-                <Button fx:id="btnGradeItem" text="✔ Mark Item as Graded" styleClass="btn-secondary"
+                <Button fx:id="btnGradeItem" text="Mark Item as Graded" styleClass="btn-secondary"
                         style="-fx-background-color: rgba(16,185,129,0.2); -fx-text-fill: #34d399; -fx-font-weight: bold;"
                         minWidth="-Infinity"
                         onAction="#handleMarkGraded" />
-                <Button text="🗑 Delete" styleClass="btn-danger" minWidth="-Infinity" onAction="#handleDelete" />
+                <Button text="Delete" styleClass="btn-danger" minWidth="-Infinity" onAction="#handleDelete" />
             </HBox>
 
             <TextArea fx:id="detailMessageArea" editable="false" wrapText="true" prefRowCount="4"
@@ -74,7 +74,7 @@
 
         <!-- Bottom Bar -->
         <HBox alignment="CENTER_LEFT" spacing="12">
-            <Button fx:id="btnMarkAllGraded" text="✔ Mark all item as Graded" styleClass="btn-secondary"
+            <Button fx:id="btnMarkAllGraded" text="Mark all items as Graded" styleClass="btn-secondary"
                     style="-fx-background-color: rgba(16,185,129,0.2); -fx-text-fill: #34d399; -fx-font-weight: bold;"
                     visible="false" managed="false" minWidth="-Infinity"
                     onAction="#handleMarkAllGraded" />

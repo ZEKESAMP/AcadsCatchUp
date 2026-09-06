@@ -24,17 +24,17 @@
                 </ImageView>
                 <Label fx:id="appTitleLabel" text="AcadsCatchUp" styleClass="app-title" minWidth="-Infinity" />
                 <Label fx:id="roleBadge" text="Admin Dashboard" styleClass="dash-role-admin" minWidth="-Infinity" />
-                <Label fx:id="syncStatusLabel" text="🟢 Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
+                <Label fx:id="syncStatusLabel" text="Live Sync" styleClass="sync-badge" minWidth="-Infinity" />
             </HBox>
 
             <Region HBox.hgrow="ALWAYS" minWidth="8" />
 
             <!-- Right Controls Cluster -->
             <HBox alignment="CENTER_RIGHT" spacing="8" minWidth="-Infinity">
-                <Button fx:id="adminInboxBtn" text="📥 Bug Reports (0)" styleClass="btn-ghost" onAction="#handleOpenBugReports" minWidth="-Infinity" />
-                <Button fx:id="smtpConfigBtn" text="📧 SMTP Config" styleClass="btn-ghost" onAction="#handleOpenSmtpConfig" minWidth="-Infinity" />
-                <Button fx:id="updatesBtn" text="🚀 Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
-                <Button fx:id="settingsBtn" text="⚙ Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
+                <Button fx:id="adminInboxBtn" text="Bug Reports (0)" styleClass="btn-ghost" onAction="#handleOpenBugReports" minWidth="-Infinity" />
+                <Button fx:id="smtpConfigBtn" text="SMTP Config" styleClass="btn-ghost" onAction="#handleOpenSmtpConfig" minWidth="-Infinity" />
+                <Button fx:id="updatesBtn" text="Updates" styleClass="btn-ghost" onAction="#handleOpenUpdates" minWidth="-Infinity" />
+                <Button fx:id="settingsBtn" text="Settings" styleClass="btn-ghost" onAction="#handleOpenAccountSettings" minWidth="-Infinity" />
                 <Label fx:id="adminNameLabel" styleClass="user-name-label" maxWidth="175" minWidth="50" />
                 <Button text="Logout" styleClass="btn-outline-sm" id="adminLogoutBtn" fx:id="adminLogoutBtn" onAction="#handleLogout" minWidth="-Infinity" />
             </HBox>
@@ -60,15 +60,15 @@
 
             <Separator />
             <Label text="ACADEMIC CONTROLS" styleClass="sidebar-section-title" />
-            <Button fx:id="btnAddUserSidebar" text="＋ Add New User" styleClass="btn-primary" maxWidth="Infinity" onAction="#handleAddUser" />
-            <Button fx:id="btnEnrollSidebar" text="🎓 Enroll Students" styleClass="btn-secondary" maxWidth="Infinity" onAction="#handleEnrollStudent" />
-            <Button fx:id="btnManageSubjectsSidebar" text="📚 Manage Subjects" styleClass="btn-secondary" maxWidth="Infinity" onAction="#handleManageSubjects" />
+            <Button fx:id="btnAddUserSidebar" text="Add New User" styleClass="btn-primary" maxWidth="Infinity" onAction="#handleAddUser" />
+            <Button fx:id="btnEnrollSidebar" text="Enroll Students" styleClass="btn-secondary" maxWidth="Infinity" onAction="#handleEnrollStudent" />
+            <Button fx:id="btnManageSubjectsSidebar" text="Manage Subjects" styleClass="btn-secondary" maxWidth="Infinity" onAction="#handleManageSubjects" />
 
             <Separator />
             <Label text="SYSTEM TOOLS" styleClass="sidebar-section-title" />
-            <Button text="📥 View Bug Reports" styleClass="btn-ghost" maxWidth="Infinity" onAction="#handleOpenBugReports" />
-            <Button text="📧 SMTP &amp; 2FA Setup" styleClass="btn-ghost" maxWidth="Infinity" onAction="#handleOpenSmtpConfig" />
-            <Button text="↺ Reset Filters" styleClass="btn-ghost" maxWidth="Infinity" onAction="#handleResetFilters" />
+            <Button text="View Bug Reports" styleClass="btn-ghost" maxWidth="Infinity" onAction="#handleOpenBugReports" />
+            <Button text="SMTP &amp; 2FA Setup" styleClass="btn-ghost" maxWidth="Infinity" onAction="#handleOpenSmtpConfig" />
+            <Button text="Reset Filters" styleClass="btn-ghost" maxWidth="Infinity" onAction="#handleResetFilters" />
 
             <Region VBox.vgrow="ALWAYS" />
             <VBox spacing="4" style="-fx-background-color: rgba(30, 34, 56, 0.6); -fx-padding: 10; -fx-background-radius: 8; -fx-border-color: #2d3255; -fx-border-radius: 8;">
@@ -114,16 +114,16 @@
                 <!-- Action Bar -->
                 <FlowPane hgap="8" vgap="8" alignment="CENTER_LEFT" styleClass="action-bar-flow">
                     <Label text="User Accounts" styleClass="section-title" minWidth="-Infinity" />
-                    <TextField fx:id="searchField" promptText="🔍  Search users..." styleClass="search-box" prefWidth="220" minWidth="140" onKeyReleased="#handleSearchKey" />
+                    <TextField fx:id="searchField" promptText="Search users..." styleClass="search-box" prefWidth="220" minWidth="140" onKeyReleased="#handleSearchKey" />
                     <Region prefWidth="8" />
-                    <Button text="+ Add User" styleClass="btn-primary" id="adminAddUserBtn" onAction="#handleAddUser" minWidth="-Infinity" />
-                    <Button text="✏ Edit" styleClass="btn-secondary" id="adminEditUserBtn" onAction="#handleEditUser" minWidth="-Infinity" />
-                    <Button text="🗑 Delete" styleClass="btn-danger" id="adminDeleteUserBtn" onAction="#handleDeleteUser" minWidth="-Infinity" />
+                    <Button text="Add User" styleClass="btn-primary" id="adminAddUserBtn" onAction="#handleAddUser" minWidth="-Infinity" />
+                    <Button text="Edit" styleClass="btn-secondary" id="adminEditUserBtn" onAction="#handleEditUser" minWidth="-Infinity" />
+                    <Button text="Delete" styleClass="btn-danger" id="adminDeleteUserBtn" onAction="#handleDeleteUser" minWidth="-Infinity" />
                     <Separator orientation="VERTICAL" />
-                    <Button text="🎓 Enroll" styleClass="btn-secondary" onAction="#handleEnrollStudent" minWidth="-Infinity" />
-                    <Button text="📚 Add Subject" styleClass="btn-secondary" onAction="#handleAddSubject" minWidth="-Infinity" />
+                    <Button text="Enroll" styleClass="btn-secondary" onAction="#handleEnrollStudent" minWidth="-Infinity" />
+                    <Button text="Add Subject" styleClass="btn-secondary" onAction="#handleAddSubject" minWidth="-Infinity" />
                     <Separator orientation="VERTICAL" />
-                    <Button text="📄 Export CSV" styleClass="btn-ghost" onAction="#handleExportCsv" minWidth="-Infinity" />
+                    <Button text="Export CSV" styleClass="btn-ghost" onAction="#handleExportCsv" minWidth="-Infinity" />
                     <Region HBox.hgrow="ALWAYS" />
                     <Label fx:id="selectionCountLabel" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;" />
                 </FlowPane>

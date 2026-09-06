@@ -20,7 +20,7 @@
             </image>
         </ImageView>
         <VBox spacing="2">
-            <Label text="👥  Manage User Accounts" styleClass="dialog-title" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;" />
+            <Label text="Manage User Accounts" styleClass="dialog-title" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;" />
             <Label text="Add, edit, or manage professors and students" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
         </VBox>
         <Region HBox.hgrow="ALWAYS"/>
@@ -35,8 +35,8 @@
             <Region HBox.hgrow="ALWAYS" />
             <Button text="Select All" minWidth="-Infinity" styleClass="btn-secondary" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 12;" onAction="#handleSelectAll" />
             <Button text="Deselect" minWidth="-Infinity" styleClass="btn-ghost" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 12;" onAction="#handleDeselectAll" />
-            <Button fx:id="btnDeleteSelected" text="🗑 Delete Selected (0)" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleDeleteSelected" disable="true" />
-            <Button fx:id="btnBulkDeleteStudents" text="💥 Bulk Delete (All Students)" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleBulkDeleteStudents" />
+            <Button fx:id="btnDeleteSelected" text="Delete Selected (0)" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleDeleteSelected" disable="true" />
+            <Button fx:id="btnBulkDeleteStudents" text="Bulk Delete (All Students)" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 6 14;" onAction="#handleBulkDeleteStudents" />
         </HBox>
 
         <!-- User Table -->

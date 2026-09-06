@@ -35,7 +35,7 @@
             </VBox>
             <VBox spacing="4" prefWidth="220">
                 <Label text="SUBJECT PROFESSOR" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;" />
-                <Label fx:id="profNameLabel" text="👤 Sir. Ace" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #60a5fa; -fx-padding: 6 0 0 0;" />
+                <Label fx:id="profNameLabel" text="Sir. Ace" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #60a5fa; -fx-padding: 6 0 0 0;" />
             </VBox>
             <VBox spacing="4" prefWidth="160">
                 <Label text="FILTER BY YEAR" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;" />
@@ -75,9 +75,9 @@
         <Label fx:id="selectedCountLabel" text="0 students selected" minWidth="-Infinity" style="-fx-text-fill: #94a3b8; -fx-font-size: 12px; -fx-font-weight: bold;" />
         <Region HBox.hgrow="ALWAYS" />
         <Button text="Cancel" styleClass="btn-ghost" minWidth="-Infinity" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleCancel" />
-        <Button fx:id="btnUnenroll" text="❌ Unenroll" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16; -fx-background-color: rgba(239, 68, 68, 0.2); -fx-text-fill: #f87171; -fx-border-color: #ef4444; -fx-border-radius: 6; -fx-background-radius: 6;" onAction="#handleUnenroll" />
-        <Button fx:id="btnUnenrollAllSubjects" text="🗑 Unenroll from ALL Subjects" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleUnenrollAllSubjects" />
-        <Button fx:id="btnEnrollAllSubjects" text="🎓 Enroll to ALL Subjects" minWidth="-Infinity" styleClass="btn-secondary" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleEnrollAllSubjects" />
-        <Button fx:id="btnEnroll" text="💾 Save Enrollments" minWidth="-Infinity" styleClass="btn-primary" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 18;" onAction="#handleEnroll" />
+        <Button fx:id="btnUnenroll" text="Unenroll" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16; -fx-background-color: rgba(239, 68, 68, 0.2); -fx-text-fill: #f87171; -fx-border-color: #ef4444; -fx-border-radius: 6; -fx-background-radius: 6;" onAction="#handleUnenroll" />
+        <Button fx:id="btnUnenrollAllSubjects" text="Unenroll from ALL Subjects" minWidth="-Infinity" styleClass="btn-danger" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleUnenrollAllSubjects" />
+        <Button fx:id="btnEnrollAllSubjects" text="Enroll to ALL Subjects" minWidth="-Infinity" styleClass="btn-secondary" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 16;" onAction="#handleEnrollAllSubjects" />
+        <Button fx:id="btnEnroll" text="Save Enrollments" minWidth="-Infinity" styleClass="btn-primary" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 7 18;" onAction="#handleEnroll" />
     </HBox>
 </VBox>
