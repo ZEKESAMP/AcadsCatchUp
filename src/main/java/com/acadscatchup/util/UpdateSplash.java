@@ -259,33 +259,43 @@ public class UpdateSplash {
      */
     private static void applyUpdateAndRestart(File tempJar) {
         try {
-            String currentPath = UpdateSplash.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            if (currentPath.startsWith("/") && System.getProperty("os.name").toLowerCase().contains("win")) {
-                currentPath = currentPath.substring(1);
-            }
-            File currentJar = new File(currentPath);
-
-            File baseDir = currentJar.getParentFile();
-            File exeFile = new File(baseDir, "AcadsCatchUp.exe");
-
-            String restartCmd;
-            if (exeFile.exists()) {
-                restartCmd = String.format(
-                        "timeout /t 2 /nobreak >nul & move /y \"%s\" \"%s\" & start \"\" \"%s\"",
-                        tempJar.getAbsolutePath(),
-                        currentJar.getAbsolutePath(),
-                        exeFile.getAbsolutePath()
-                );
-            } else {
-                restartCmd = String.format(
-                        "timeout /t 2 /nobreak >nul & move /y \"%s\" \"%s\" & start javaw -jar \"%s\"",
-                        tempJar.getAbsolutePath(),
-                        currentJar.getAbsolutePath(),
-                        currentJar.getAbsolutePath()
-                );
+            File codeSourceJar = new File(UpdateSplash.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            File baseDir = codeSourceJar.getParentFile();
+            File portableDir = baseDir;
+            if (baseDir != null && baseDir.getName().equalsIgnoreCase("app")) {
+                portableDir = baseDir.getParentFile();
             }
 
-            new ProcessBuilder("cmd.exe", "/c", restartCmd).start();
+            File rootJar = new File(portableDir, "AcadsCatchUp.jar");
+            File appJar1 = new File(portableDir, "app" + File.separator + "AcadsCatchUp.jar");
+            File appJar2 = new File(portableDir, "app" + File.separator + "acadscatchup-app.jar");
+            File exeFile = new File(portableDir, "AcadsCatchUp.exe");
+
+            File updaterBat = File.createTempFile("acadscatchup-update-", ".bat");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(updaterBat))) {
+                writer.write("@echo off\r\n");
+                writer.write("setlocal enabledelayedexpansion\r\n");
+                writer.write(":retry\r\n");
+                writer.write("ping 127.0.0.1 -n 2 > nul\r\n");
+                writer.write("copy /y \"" + tempJar.getAbsolutePath() + "\" \"" + rootJar.getAbsolutePath() + "\" > nul\r\n");
+                writer.write("if errorlevel 1 goto retry\r\n");
+
+                writer.write("if exist \"" + appJar1.getAbsolutePath() + "\" copy /y \"" + tempJar.getAbsolutePath() + "\" \"" + appJar1.getAbsolutePath() + "\" > nul\r\n");
+                writer.write("if exist \"" + appJar2.getAbsolutePath() + "\" copy /y \"" + tempJar.getAbsolutePath() + "\" \"" + appJar2.getAbsolutePath() + "\" > nul\r\n");
+
+                writer.write("del /f /q \"" + tempJar.getAbsolutePath() + "\" > nul\r\n");
+
+                if (exeFile.exists()) {
+                    writer.write("cd /d \"" + portableDir.getAbsolutePath() + "\"\r\n");
+                    writer.write("start \"\" \"" + exeFile.getAbsolutePath() + "\"\r\n");
+                } else {
+                    writer.write("cd /d \"" + portableDir.getAbsolutePath() + "\"\r\n");
+                    writer.write("start javaw -jar \"" + rootJar.getAbsolutePath() + "\"\r\n");
+                }
+                writer.write("del /f /q \"%~f0\" & exit\r\n");
+            }
+
+            new ProcessBuilder("cmd.exe", "/c", updaterBat.getAbsolutePath()).start();
             System.exit(0);
 
         } catch (Exception e) {
