@@ -22,12 +22,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+import com.acadscatchup.util.UIUtil;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -213,13 +212,7 @@ public class AdminDashboardController {
     }
 
     private void updateSyncBadge(LiveSyncService.SyncStatus status) {
-        if (syncStatusLabel == null) return;
-        syncStatusLabel.setText(status.label);
-        syncStatusLabel.setStyle(
-                "-fx-text-fill: " + status.textColor + "; " +
-                "-fx-background-color: " + status.bgColor + "; " +
-                "-fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 3 8;"
-        );
+        UIUtil.updateSyncBadge(syncStatusLabel, status);
     }
 
     private void setupFilters() {
@@ -1134,27 +1127,8 @@ public class AdminDashboardController {
 
     @FXML
     private void handleLogout() {
-        if (liveSyncService != null) {
-            liveSyncService.shutdown();
-            liveSyncService = null;
-        }
-        Session.clear();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/acadscatchup/fxml/login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setMinWidth(480);
-            stage.setMinHeight(580);
-            stage.setTitle("AcadsCatchUp — Login");
-            com.acadscatchup.util.WindowUtil.initFullScreenWithCentering(stage, 540, 720);
-            com.acadscatchup.util.AppTrayManager.setCurrentStage(stage);
-            stage.setOnCloseRequest(e -> {
-                e.consume();
-                com.acadscatchup.util.AppTrayManager.handleCloseRequest(stage);
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+        UIUtil.performLogout(stage, liveSyncService);
+        liveSyncService = null;
     }
 }

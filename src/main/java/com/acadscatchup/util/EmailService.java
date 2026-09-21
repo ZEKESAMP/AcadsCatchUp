@@ -66,7 +66,7 @@ public class EmailService {
 
         if (p.contains("login") || p.contains("2fa")) {
             return new OtpPurposeDetails(
-                    "Acads Catch Up â€” 2-Step Verification Login Code",
+                    "Acads Catch Up — 2-Step Verification Login Code",
                     "LOGIN 2FA SECURITY",
                     "Sign-In Verification",
                     salutation + "<br><br>A sign-in attempt was initiated for your Acads Catch Up account. To complete your login and protect your account, please enter the 6-digit One-Time Password (OTP) below.",
@@ -74,7 +74,7 @@ public class EmailService {
             );
         } else if (p.contains("reset") || p.contains("password")) {
             return new OtpPurposeDetails(
-                    "Acads Catch Up â€” Password Reset Verification Code",
+                    "Acads Catch Up — Password Reset Verification Code",
                     "PASSWORD RESET",
                     "Reset Your Password",
                     salutation + "<br><br>We received a request to reset the password for your Acads Catch Up account. Use the 6-digit One-Time Password (OTP) below to authorize this password reset.",
@@ -82,7 +82,7 @@ public class EmailService {
             );
         } else if (p.contains("change") || p.contains("update") || p.contains("registration") || p.contains("link")) {
             return new OtpPurposeDetails(
-                    "Acads Catch Up â€” Email Change Authorization Code",
+                    "Acads Catch Up — Email Change Authorization Code",
                     "EMAIL ADDRESS UPDATE",
                     "Verify Email Address",
                     salutation + "<br><br>A request was made to register or update the primary Gmail address linked to your Acads Catch Up account. Please enter the 6-digit One-Time Password (OTP) below to authorize this change.",
@@ -91,7 +91,7 @@ public class EmailService {
         } else {
             // Default: First-Time Account Verification
             return new OtpPurposeDetails(
-                    "Acads Catch Up â€” Account Verification Code",
+                    "Acads Catch Up — Account Verification Code",
                     "FIRST-TIME ACCOUNT VERIFICATION",
                     "Activate Your Account",
                     salutation + "<br><br>Welcome to Acads Catch Up! To activate your student account and access your enrolled subjects and academic deadlines, please complete verification with the 6-digit One-Time Password (OTP) below.",
@@ -122,7 +122,7 @@ public class EmailService {
         }
     }
 
-    // â”€â”€ Configuration Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Configuration Management ─────────────────────────────────────────────
 
     public static synchronized void ensureConfigLoaded() {
         if (configLoaded) return;
@@ -221,7 +221,7 @@ public class EmailService {
         return hasBrevo || hasGmail;
     }
 
-    // â”€â”€ OTP Generation & Dispatch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── OTP Generation & Dispatch ────────────────────────────────────────────
 
     /**
      * Generates a 6-digit OTP, caches it with a 5-minute lifespan, and sends it via Brevo or Gmail.
@@ -329,7 +329,7 @@ public class EmailService {
         }
     }
 
-    // â”€â”€ Brevo SMTP & REST API Integration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Brevo SMTP & REST API Integration ────────────────────────────────────
 
     public static void sendBrevoSmtpEmail(String smtpLogin, String smtpKey, String senderEmail,
                                           String recipientEmail, String subject, String htmlBody) throws Exception {
@@ -470,7 +470,7 @@ public class EmailService {
         return sb.toString();
     }
 
-    // â”€â”€ Low-Level Pure Java SMTP Engine over SSL (Port 465) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Low-Level Pure Java SMTP Engine over SSL (Port 465) ───────────────────
 
     public static void testSmtpConnection(String sender, String appPassword, String testRecipient) throws Exception {
         String cleanSender = sender != null ? sender.trim() : "";
@@ -561,7 +561,7 @@ public class EmailService {
         }
     }
 
-    // â”€â”€ Professional, Purpose-Specific Email Template â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Professional, Purpose-Specific Email Template ────────────────────────
 
     private static String buildOtpHtml(String code, OtpPurposeDetails details) {
         String template = """
@@ -604,13 +604,13 @@ public class EmailService {
                           </table>
 
                           <p style="margin: 0 0 22px 0; font-size: 13.5px; color: #4b5563; font-weight: 600;">
-                            â± This One-Time Password is valid for <strong>5 minutes</strong> only.
+                            &#9201; This One-Time Password is valid for <strong>5 minutes</strong> only.
                           </p>
 
                           <!-- Security Advisory Callout Box -->
                           <div style="background-color: #f8fafc; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 4px; text-align: left; margin-bottom: 24px;">
                             <p style="margin: 0; font-size: 12.5px; color: #475569; line-height: 1.5;">
-                              <strong>ðŸ”’ Security Advisory:</strong> {{SECURITY_NOTICE}} Acads Catch Up staff will never request your verification code.
+                              <strong>&#128274; Security Advisory:</strong> {{SECURITY_NOTICE}} Acads Catch Up staff will never request your verification code.
                             </p>
                           </div>
 
@@ -621,7 +621,7 @@ public class EmailService {
                           </p>
 
                           <p style="margin: 0; font-size: 11px; color: #94a3b8;">
-                            Acads Catch Up â€¢ Developed by: <span style="color: #007bff; font-weight: 600;">F4TAL</span> â€¢ Â© 2026 All rights reserved.
+                            Acads Catch Up Developed by: <span style="color: #007bff; font-weight: 600;">F4TAL</span> &bull; &copy; 2026 All rights reserved.
                           </p>
                         </td>
                       </tr>

@@ -6,6 +6,7 @@ import com.acadscatchup.model.MissedItem;
 import com.acadscatchup.model.Subject;
 import com.acadscatchup.util.Session;
 import com.acadscatchup.util.LiveSyncService;
+import com.acadscatchup.util.UIUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -157,13 +157,7 @@ public class StudentDashboardController {
     private LiveSyncService liveSyncService = null;
 
     private void updateSyncBadge(LiveSyncService.SyncStatus status) {
-        if (syncStatusLabel == null) return;
-        syncStatusLabel.setText(status.label);
-        syncStatusLabel.setStyle(
-                "-fx-text-fill: " + status.textColor + "; " +
-                "-fx-background-color: " + status.bgColor + "; " +
-                "-fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 3 8;"
-        );
+        UIUtil.updateSyncBadge(syncStatusLabel, status);
     }
 
     private void refreshInboxBadge() {
@@ -345,21 +339,7 @@ public class StudentDashboardController {
 
         // Status badge
         colStatus.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getStatus()));
-        colStatus.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String status, boolean empty) {
-                super.updateItem(status, empty);
-                if (empty || status == null) { setGraphic(null); return; }
-                Label badge = new Label(status);
-                badge.getStyleClass().add(switch (status) {
-                    case "SUBMITTED" -> "status-badge-submitted";
-                    case "GRADED"    -> "status-badge-graded";
-                    default          -> "status-badge-pending";
-                });
-                setGraphic(badge);
-                setText(null);
-            }
-        });
+        colStatus.setCellFactory(UIUtil.createStatusCellFactory());
 
         // Row styling + double-click row shortcut
         itemsTable.setRowFactory(tv -> {
@@ -579,26 +559,9 @@ public class StudentDashboardController {
 
     @FXML
     private void handleLogout() {
-        if (liveSyncService != null) {
-            liveSyncService.shutdown();
-            liveSyncService = null;
-        }
-        Session.clear();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/acadscatchup/fxml/login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setMinWidth(480);
-            stage.setMinHeight(580);
-            stage.setTitle("AcadsCatchUp — Login");
-            com.acadscatchup.util.WindowUtil.initFullScreenWithCentering(stage, 540, 720);
-            com.acadscatchup.util.AppTrayManager.setCurrentStage(stage);
-            stage.setOnCloseRequest(e -> {
-                e.consume();
-                com.acadscatchup.util.AppTrayManager.handleCloseRequest(stage);
-            });
-        } catch (IOException e) { e.printStackTrace(); }
+        Stage stage = (Stage) studentNameLabel.getScene().getWindow();
+        UIUtil.performLogout(stage, liveSyncService);
+        liveSyncService = null;
     }
 
     @FXML

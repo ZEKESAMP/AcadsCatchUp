@@ -56,7 +56,7 @@ public class PasswordToggleHelper {
      * Self-contained PasswordBox component containing a PasswordField,
      * companion TextField, and right-aligned eye toggle button.
      */
-    public static class PasswordBox extends StackPane {
+    public static final class PasswordBox extends StackPane {
         public static final String DEVELOPER = "F4TAL";
         private final PasswordField passwordField;
         private final TextField plainTextField;

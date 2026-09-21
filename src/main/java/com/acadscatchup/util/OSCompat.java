@@ -2,7 +2,6 @@ package com.acadscatchup.util;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 
 import java.util.LinkedHashMap;
