@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
-  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.1.0/AcadsCatchUp.jar",
-  "release_notes": "AcadsCatchUp Release v1.1.0 (Final Release): Professional enterprise dashboard rework without emojis or symbols, real-time student enrollment notifications & inbox delivery, LiveSync enrolled subjects sync, responsive Updates modal with wrapping version selectors, and optimized performance."
+  "version": "1.1.1",
+  "download_url": "https://github.com/ZEKESAMP/AcadsCatchUp/releases/download/v1.1.1/AcadsCatchUp.jar",
+  "release_notes": "AcadsCatchUp Release v1.1.1 (Finalization Milestone): Complete code optimization and duplication cleanup, zero-warning compiler compilation, character encoding repairs, full SQA automated testing suite with 100% pass rate, centralized UI presentation utilities, and comprehensive academic defense documentation."
 }

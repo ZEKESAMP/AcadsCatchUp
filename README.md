@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/Database-MySQL_%7C_SQLite-005C84?style=for-the-badge&logo=mysql&logoColor=white" alt="Database" />
   <img src="https://img.shields.io/badge/SQA_Tests-100%25_Passing-10B981?style=for-the-badge&logo=checkmarx&logoColor=white" alt="SQA Tests Passed" />
   <img src="https://img.shields.io/badge/Security-DeveloperGuard_Active-6366F1?style=for-the-badge&logo=dependabot&logoColor=white" alt="Security" />
-  <img src="https://img.shields.io/badge/Version-v1.1.0--PROD--F4TAL-blue?style=for-the-badge" alt="Production Version" />
+  <img src="https://img.shields.io/badge/Version-v1.1.1--PROD--F4TAL-blue?style=for-the-badge" alt="Production Version" />
 </p>
 
 An academic task management, deficiency tracking, and remediation management desktop application engineered for higher education institutions. AcadsCatchUp bridges students, professors, and academic administrators in an audited, real-time synchronized environment for managing missed coursework (Activities, Quizzes, Examinations, and Assignments).
@@ -107,13 +107,13 @@ AcadsCatchUp
 
 ---
 
-## Capstone Academic Documentation Suite
+## Comprehensive System Documentation Suite
 
-The project includes an exhaustive academic documentation package located in [`docs/`](docs/):
+The project includes an exhaustive technical and architectural documentation package located in [`docs/`](docs/):
 
 1. [**docs/CAPSTONE_SYSTEM_DOCUMENTATION.md**](docs/CAPSTONE_SYSTEM_DOCUMENTATION.md): Comprehensive 580+ line system architecture manual, complete relational schema (DDL), and technology stack dictionary.
 2. [**docs/CAPSTONE_ALGORITHM_SPECIFICATION.md**](docs/CAPSTONE_ALGORITHM_SPECIFICATION.md): Formal computational complexity ($O$) analysis, B-Tree index scans, 2FA OTP state machines, and dual-engine failover algorithms.
-3. [**docs/CAPSTONE_PROJECT_DEFENSE_GUIDE.md**](docs/CAPSTONE_PROJECT_DEFENSE_GUIDE.md): Executive oral defense handbook featuring slide presentation outlines, panelist Q&A preparation, and ISO/IEC 25010 quality model alignment.
+3. [**docs/CAPSTONE_PROJECT_DEFENSE_GUIDE.md**](docs/CAPSTONE_PROJECT_DEFENSE_GUIDE.md): Executive project defense handbook featuring slide presentation outlines, panelist Q&A preparation, and ISO/IEC 25010 quality model alignment.
 
 ---
 

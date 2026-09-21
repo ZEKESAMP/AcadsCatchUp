@@ -33,8 +33,8 @@
 
 ### Key Metrics & Properties
 - **Application Name:** AcadsCatchUp
-- **Production Build Version:** `1.1.0-PROD-F4TAL`
-- **Current Version Tag:** `v1.1.0`
+- **Production Build Version:** `1.1.1-PROD-F4TAL`
+- **Current Version Tag:** `v1.1.1`
 - **Lead Developer:** Stevenson James G. Gastanes (F4TAL)
 - **Repository:** [`https://github.com/ZEKESAMP/AcadsCatchUp`](https://github.com/ZEKESAMP/AcadsCatchUp)
 - **Supported Platforms:** Windows 10/11 (64-bit), Linux (Debian/Ubuntu/Fedora/Arch), macOS (via Java 21+ JRE)

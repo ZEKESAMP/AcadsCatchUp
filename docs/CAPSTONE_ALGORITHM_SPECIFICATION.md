@@ -5,7 +5,7 @@
 > **Lead Developer & System Architect:** Stevenson James G. Gastanes (Alias: **F4TAL**)  
 > **Architecture:** Pure Java 21 LTS (MVC + DAO + Multi-Threaded Sync Daemons)  
 > **Milestone Status:** Capstone Final Defense & Production Release  
-> **Production Version:** v1.1.0-PROD-F4TAL  
+> **Production Version:** v1.1.1-PROD-F4TAL  
 > **Date of Finalization:** September 2026  
 
 ---

@@ -3,7 +3,7 @@
 > **Academic Degree:** Bachelor of Science in Information Technology / Computer Science  
 > **Capstone Project Title:** AcadsCatchUp: A Secure, Cross-Platform Desktop Academic Deficiency Tracking and Remediation Management System  
 > **Lead Developer & System Architect:** Stevenson James G. Gastanes (Alias: **F4TAL**)  
-> **Project Version:** v1.1.0-PROD-F4TAL  
+> **Project Version:** v1.1.1-PROD-F4TAL  
 > **Target Runtime:** Java 21 LTS (Oracle / Eclipse Temurin OpenJDK)  
 > **Academic Milestone:** Capstone Final Defense & Production Release  
 > **Date of Defense:** September 2026  
